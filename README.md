@@ -61,7 +61,12 @@ Steps included:
     deployed contract addresses, start the local VSCode LiveServer and check
     that the application runs as expected.
 
-    
+    Create new git and gitHub repositories and commit:
+    $ git commit -m "Clone 'CryptoKitties-Clone' to set up new project"
+    $ git remote add origin https://github.com/msuscens/Kitty-Masters.git
+    $ git push -u origin master
+
+
 
 
 
