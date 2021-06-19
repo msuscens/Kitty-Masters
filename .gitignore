@@ -1,0 +1,6 @@
+.DS_Store
+*/.DS_Store
+README-OLD-CryptoKitties-Clone.md
+README-UpgradeGuide.txt
+build/
+node_modules/

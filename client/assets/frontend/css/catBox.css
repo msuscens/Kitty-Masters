@@ -1,0 +1,51 @@
+.catCheckBox
+{
+    position: absolute;
+    right: 30px;
+    bottom: 45px;
+}
+
+.dnaDiv {
+    position: absolute;
+    left:40px;
+    bottom: 15px;
+}
+.genDiv {
+    position: absolute;
+    left:40px;
+    bottom: 15px;
+}
+.priceDiv {
+    position: absolute;
+    left:40px;
+    top: 35px;
+}
+.statusDiv {
+    position: absolute;
+    right:30px;
+    top: 35px;
+}
+
+.checkbox-xl .custom-control-label::before, 
+.checkbox-xl .custom-control-label::after {
+  top: 1.2rem;
+  width: 1.85rem;
+  height: 1.85rem;
+}
+.checkbox-xl .custom-control-label {
+  padding-top: 23px;
+  padding-left: 10px;
+}
+
+/*
+.checkbox-lg .custom-control-label::before, 
+.checkbox-lg .custom-control-label::after {
+  top: .8rem;
+  width: 1.55rem;
+  height: 1.55rem;
+}
+.checkbox-lg .custom-control-label {
+  padding-top: 13px;
+  padding-left: 6px;
+}
+*/

@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mark's Kitties</title>
+  <script type="text/javascript" src="assets/frontend/jquery-3.4.1.js"></script>
+  <link rel="stylesheet" href="assets/frontend/bootstrap/css/bootstrap.min.css">
+  <script src="assets/frontend/bootstrap/js/popper.js"></script>
+  <script src="assets/frontend/bootstrap/js/bootstrap.min.js"></script>
+
+  <script src="assets/contractInterface/web3.min.js"></script>
+
+  <script src="assets/contractInterface/abi.js"></script>
+  <script src="assets/contractInterface/interface.js"></script>
+
+  <link rel="stylesheet" href="assets/frontend/css/mystyle.css">
+  <link rel="stylesheet" href="assets/frontend/css/cats.css">
+  <link rel="stylesheet" href="assets/frontend/css/animations.css">
+  <link rel="stylesheet" href="assets/frontend/css/catBox.css">
+
+  <link rel="stylesheet" href="assets/frontend/css/colors.css">
+  <link rel="stylesheet" href="assets/frontend/css/factory.css">
+  <link rel="stylesheet" href="assets/frontend/css/frontend.css">
+</head>
+  <body>
+    <!-- Top Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="index.html">
+            <img src="assets/frontend/images/KittieLogo.png" width="60px" height="60px" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="catPen.html">My Kitty-Pen <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="marketplace.html">Kitty-Market</a>
+            <a hidden class="nav-item nav-link" href="factory.html" id="factoryNavLink">Kitty-Factory</a>
+          </div>
+        </div>
+    </nav>
+
+    <!-- Main page header -->
+    <div class="container p-1" style="margin-top: 2vh;margin-bottom: 6vh;">
+        <div align="center">
+          <h1 class="c-white">My Kitty-Pen</h1>
+          <p class="c-white">Kitties that you own</p>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 mt-3 ml-1">
+            <form>
+              <div class="form-group row ml-1">
+                <button type="button" class="btn btn-primary mr-1" onclick="breeding()"
+                    aria-describedby="breedHelp">Breed kitties</button>
+              </div>
+              <small id="breedHelp" class="form-text">Select two kitties, click 'Breed'<br>(to create a newborn kitty)</small>
+              <p id="breedError"></p>
+          </div>
+
+          <div class="col mt-3 ml-1">
+            <form>
+              <div class="form-group row ml-1">
+                <div class="col-lg-4">
+                  <label for="salePrice" class="col-form-label">Price(ETH)</label>
+                </div>
+                <div class="col-lg-4">
+                  <input id="salePrice" type="text" class="form-control" value="2.5">
+                </div>
+
+                <div class="col-lg-4">
+                  <button type="button" class="btn btn-success mr-1"
+                    onclick="advertiseCat()" aria-describedby="advertiseHelp">Advertise</button>
+                </div>
+                <small id="advertiseHelp" class="form-text mt-3">Select a kitty, enter a sale price, click 'Advertise'<br>(to place a for sale ad in the marketplace)</small>
+                <p id="sellError"></p>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-lg-4 mt-3 ml-1">
+            <form>
+              <div class="form-group row ml-1">
+                <button type="button" class="btn btn-success mr-1" onclick="removeAdvert()" 
+                    aria-describedby="buyHelp">Withdraw Ad</button>
+              </div>
+              <small id="buyHelp" class="form-text">Select kitty, click 'Withdraw Ad'<br>(to remove advert in the marketplace)</small>
+              <p id="buyError"></p>
+            </form>
+          </div>
+          <div id="kittyTransaction" class="alert alert-success" role="alert" style="display:none"></div>
+        </div>
+
+        <div class="row" id="rowOfCats">    <!-- Cats to be added dynamically here! -->
+        </div>
+    </div>
+    <footer align="left">
+        <p>Mark Suscens, March/April 2021</p>
+    </footer>
+
+  </body>
+
+  <script src="assets/frontend/pageLogic/catPenLogic.js"></script>
+  <script src="assets/frontend/pageLogic/sharedLogic.js"></script>
+
+  <script src="assets/frontend/components/colors.js"></script>
+  <script src="assets/frontend/components/catSettings.js"></script>
+  <script src="assets/frontend/components/catFactory.js"></script>
+  <script src="assets/frontend/components/catConstants.js"></script>
+  <script src="assets/frontend/helperFunctions.js"></script>
+
+</html>

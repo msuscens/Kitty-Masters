@@ -1,0 +1,21 @@
+.catBox {
+    background-color: #e2efff;
+    border-radius: 10px;
+    padding-top: 60px;
+    padding-left: 65px;
+    padding-bottom: 110px;
+}
+
+.cattributes {
+    padding: 25px;
+    background-color: #ededed;
+    border-radius: 10px;
+}
+
+.catBoxLarger {
+    background-color: #e2efff;
+    border-radius: 10px;
+    padding-top: 100px;
+    padding-left: 65px;
+    padding-bottom: 110px;
+}
