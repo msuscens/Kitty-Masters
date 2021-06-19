@@ -1,4 +1,5 @@
-pragma solidity 0.5.12;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.5;
 
 /*
  * Market place to trade kitties (should **in theory** be used for any ERC721 token)
@@ -50,4 +51,10 @@ interface IKittyMarketplace {
     * Requirement: There must be an active offer for _tokenId
      */
     function buyKitty(uint256 _tokenId) external payable;
+
+    /*
+    ** Checks if given tokenId is on sale or not; returning true if it is, false if not.
+    */
+    function isTokenOnSale(uint256 tokenId) external view returns (bool);
+
 }

@@ -1,6 +1,9 @@
-pragma solidity 0.5.12;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.5;
 
-contract Ownable {
+import "./IOwnable.sol";
+
+abstract contract Ownable {
     address internal _contractOwner;
 
     modifier onlyOwner() {
@@ -8,7 +11,7 @@ contract Ownable {
         _; //Continue execution
     }
     
-    constructor() public {
+    constructor() {
         _contractOwner = msg.sender;
     }
 

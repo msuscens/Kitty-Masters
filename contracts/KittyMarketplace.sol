@@ -1,18 +1,17 @@
-pragma solidity 0.5.12;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.5;
 
 import "./IKittyMarketplace.sol";
 import "./KittyContract.sol";
+import "./IOwnable.sol";
 import "./Ownable.sol";
 
-import "./Safemath.sol";
-
 contract KittyMarketplace is Ownable, IKittyMarketplace {
-    using SafeMath for uint256;
 
     KittyContract private _kittyContract;
 
     struct Offer {
-        address payable seller;
+        address seller;
         uint256 price;
         uint256 index;
         uint256 tokenId;
@@ -25,12 +24,13 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
 
 // Public & external functions
 
-    constructor(address kittyContractAddress) public {
+    constructor(address kittyContractAddress) {
         setKittyContract(kittyContractAddress);
     }
 
 
     function setKittyContract(address kittyContractAddress)
+        override
         public
         onlyOwner
     {
@@ -41,6 +41,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     * Get the details about a offer for _tokenId. Throws an error if there is no active offer for _tokenId.
      */
     function getOffer(uint256 idOfToken)
+        override
         external
         view
         returns(address seller, uint256 price, uint256 index, uint256 tokenId, bool active)
@@ -57,8 +58,12 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     /**
     * Get all tokenId's that are currently for sale. Returns an empty arror if none exist.
      */
-    function getAllTokenOnSale() external view  returns(uint256[] memory) {
-
+    function getAllTokenOnSale() 
+        override
+        external
+        view
+        returns(uint256[] memory)
+    {
         uint256 totalOffers = _offers.length;
         uint256[] memory allOfferIds = new uint256[](totalOffers);
 
@@ -67,7 +72,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         for (i = 0; i < totalOffers; i++){
             if (_offers[i].active == true) {
                 allOfferIds[activeOffers] = _offers[i].tokenId;
-                activeOffers = activeOffers.add(1);
+                activeOffers++;
             }
         }
 
@@ -88,7 +93,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     * Requirement: There can only be one active offer for a token at a time.
     * Requirement: Marketplace contract (this) needs to be an approved operator when the offer is created.
      */
-    function setOffer(uint256 price, uint256 tokenId) external {
+    function setOffer(uint256 price, uint256 tokenId) override external {
 
         require(_isKittyOwner(msg.sender, tokenId), "Only owner can offer for sale!");
         require(_isOnOffer(tokenId) == false, "Already on offer for sale!");
@@ -117,7 +122,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     * Emits the MarketTransaction event with txType "Remove offer"
     * Requirement: Only the seller of _tokenId can remove an offer.
      */
-    function removeOffer(uint256 tokenId) external {
+    function removeOffer(uint256 tokenId) override external {
 
         require(_isOnOffer(tokenId) == true, "Active offer doesn't exist!");
         require(
@@ -136,7 +141,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     * Requirement: The msg.value needs to equal the price of _tokenId
     * Requirement: There must be an active offer for _tokenId
      */
-    function buyKitty(uint256 tokenId) external payable {
+    function buyKitty(uint256 tokenId) override external payable {
         Offer memory tokenOffer = _tokenIdToOffer[tokenId];
         require(_isOnOffer(tokenId) == true, "Active offer doesn't exist!");
         require(msg.value >= tokenOffer.price, "Token purchase price not sent!");
@@ -148,9 +153,8 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         if (msg.value > 0) {
             // tokenOffer.seller.transfer(tokenOffer.price);
 
-            // *** Q. Kenneth - Is this correct?? Review / test
             // This forwards all available gas. Be sure to check the return value!
-            (bool success, ) = tokenOffer.seller.call.value(msg.value)("");
+            (bool success, ) = payable(tokenOffer.seller).call{value: msg.value}("");
             require(success, "Payment to seller failed!");
         }
         _kittyContract.safeTransferFrom(tokenOffer.seller, msg.sender, tokenId);
@@ -162,7 +166,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     /*
     ** Checks if given tokenId is on sale or not; returning true if it is, false if not.
     */
-    function isTokenOnSale(uint256 tokenId) external view returns (bool) {
+    function isTokenOnSale(uint256 tokenId) override external view returns (bool) {
         return (_isOnOffer(tokenId));
     }
 
@@ -190,7 +194,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     function _removeOffer(uint256 tokenId) internal {
         Offer memory toBeRemoved = _tokenIdToOffer[tokenId];
 
-        uint256 lastIndex = _offers.length.sub(1);
+        uint256 lastIndex = _offers.length - 1;
         if (toBeRemoved.index < lastIndex) { // not the last offer in the array
             // Move last offer record (in array) to overwrite the offer to be removed
             Offer memory lastOffer = _offers[lastIndex];

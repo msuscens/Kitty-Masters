@@ -1,15 +1,16 @@
-pragma solidity 0.5.12;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.5;
 
+import "./IKittyContract.sol";
 import "./IERC721.sol";
+import "./IOwnable.sol";
 import "./IERC721Receiver.sol";
 
-import "./Safemath.sol";
 import "./Ownable.sol";
 import "./ArrayUtils.sol";
 
 contract KittyContract is IERC721, Ownable {
 
-    using SafeMath for uint256;
     using ArrayUtils for uint256[];
 
     struct Kitty {
@@ -53,20 +54,20 @@ contract KittyContract is IERC721, Ownable {
 
 // Public & external functions
 
-    constructor(string memory name, string memory symbol) public {
-        _name = name;
-        _symbol = symbol;
+    constructor(string memory tokenName, string memory tokenSymbol) {
+        _name = tokenName;
+        _symbol = tokenSymbol;
     }
 
 
-    function createKittyGen0(uint256 genes) public onlyOwner {
+    function createKittyGen0(uint256 genes) external onlyOwner {
         require(_gen0KittiesCount < _GEN0_LIMIT, "Hit Gen0 creation limit!");
-        _gen0KittiesCount = _gen0KittiesCount.add(1);
+        _gen0KittiesCount++;
         _createKitty( 0, 0, 0, genes, msg.sender);
     }
 
 
-    function breed(uint256 mumId, uint256 dadId) public returns (uint256)
+    function breed(uint256 mumId, uint256 dadId) external returns (uint256)
     {
         // Ensure that the breeder is owner or guardian of parent cats
         require(
@@ -99,7 +100,8 @@ contract KittyContract is IERC721, Ownable {
         // Calculate new kitties Generation
         uint256 mumGen = _kitties[mumId].generation;
         uint256 dadGen = _kitties[dadId].generation;
-        uint256 newGen = mumGen.add(dadGen).div(2).add(1);
+        uint256 newGen = ((mumGen + dadGen) / 2) + 1;
+        // uint256 newGen = mumGen.add(dadGen).div(2).add(1);
 
         // Create the new kitty (with breeder becoming new kitties owner)
         uint256 newKittyId = _createKitty(
@@ -140,7 +142,7 @@ contract KittyContract is IERC721, Ownable {
 
 
     // IERC165 function implementations
-    function supportsInterface(bytes4 interfaceId) public pure returns (bool) {
+    function supportsInterface(bytes4 interfaceId) external pure returns (bool) {
         return (
             interfaceId == _INTERFACE_ID_ERC721 ||
             interfaceId == _INTERFACE_ID_ERC165
@@ -150,34 +152,43 @@ contract KittyContract is IERC721, Ownable {
 
     // IERC721 function implementations
 
-    function balanceOf(address owner) external view returns (uint256) {
+    function balanceOf(address owner)
+        override
+        external
+        view
+        returns (uint256)
+    {
         return _ownersKittyCount[owner];
     }
 
 
-    function totalSupply() external view returns (uint256) {
+    function totalSupply() override external view returns (uint256) {
         return _kitties.length;
     }
 
 
-    function name() external view returns (string memory) {
+    function name() override external view returns (string memory) {
         return _name;
     }
 
 
-    function symbol() external view returns (string memory) {
+    function symbol() override external view returns (string memory) {
         return _symbol;
     }
 
 
-    function ownerOf(uint256 tokenId) external view returns (address) {
+    function ownerOf(uint256 tokenId)
+        override
+        external
+        view
+        returns (address)
+    {
         require(_isInExistance(tokenId), "Token does not exist!");
-
         return _kittiesOwner[tokenId];
     }
 
 
-    function transfer(address to, uint256 tokenId) external {
+    function transfer(address to, uint256 tokenId) override external {
         // Checks
         require(_isNotZero(to), "Recipient's address is zero!");
         require(to != address(this), "Recipient is contract address!");
@@ -188,32 +199,39 @@ contract KittyContract is IERC721, Ownable {
     }
 
 
-    function approve(address approved, uint256 tokenId) external {
+    function approve(address approved, uint256 tokenId) override external {
         require(
             _isOwner(msg.sender, tokenId) ||
             _isOperator(_kittiesOwner[tokenId], msg.sender),
             "Not token owner, nor operator!"
         );
         require(_isNotZero(approved), "0 address can't be an approver!");   // Additional check
-
         _approve(msg.sender, approved, tokenId);
     }
 
 
-    function setApprovalForAll(address operator, bool approved) external {
+    function setApprovalForAll(address operator, bool approved)
+        override
+        external
+    {
         require(operator != msg.sender);
         _setApprovalForAll(msg.sender, operator, approved);
     }
 
 
-    function getApproved(uint256 tokenId) external view returns (address) {
+    function getApproved(uint256 tokenId)
+        override
+        external
+        view
+        returns (address)
+    {
         require(_isInExistance(tokenId), "Token does not exist!");
-
         return _kittiesApprovedOperator[tokenId];
     }
 
 
     function isApprovedForAll(address owner, address operator)
+        override
         external
         view
         returns (bool)
@@ -228,6 +246,7 @@ contract KittyContract is IERC721, Ownable {
         uint256 tokenId, 
         bytes calldata data
     )
+        override
         external
     {  
         _safeTransferFrom(msg.sender, from, to, tokenId, data);
@@ -239,13 +258,17 @@ contract KittyContract is IERC721, Ownable {
         address to,
         uint256 tokenId
     )
+        override
         external
     {
         _safeTransferFrom(msg.sender, from, to, tokenId, "");
     }
 
 
-    function transferFrom(address from, address to, uint256 tokenId) external {
+    function transferFrom(address from, address to, uint256 tokenId)
+        override
+        external
+    {
         require(
             _isOwnerOrApproved(msg.sender, from, to, tokenId),
             "No authority to transfer token!"
@@ -329,12 +352,12 @@ contract KittyContract is IERC721, Ownable {
             // Remove kittie token from the sender
             delete _kittiesApprovedOperator[tokenId];
             _ownersKittyIds[from].removeFrom(tokenId);
-            _ownersKittyCount[from] = _ownersKittyCount[from].sub(1);
+            _ownersKittyCount[from]--;
         }
 
         // Give token to the receiver
         _ownersKittyIds[to].push(tokenId);
-        _ownersKittyCount[to] = _ownersKittyCount[to].add(1);
+        _ownersKittyCount[to]++;
         _kittiesOwner[tokenId] = to;
 
         emit Transfer(from, to, tokenId);
@@ -440,13 +463,15 @@ contract KittyContract is IERC721, Ownable {
         Kitty memory newKitty = Kitty(
             {
                 genes: genes,
-                birthTime: uint64(now),
+                birthTime: uint64(block.timestamp),
                 mumId: uint64(mumId),
                 dadId: uint64(dadId),
                 generation: uint64(generation)
             }
         );
-        uint256 newKittenId = (_kitties.push(newKitty)).sub(1);
+        _kitties.push(newKitty);
+        uint256 newKittenId = _kitties.length - 1;
+
         emit Birth(owner, newKittenId, mumId, dadId, genes, generation);
         _safeTransfer(address(0), owner, newKittenId, "");
         return newKittenId;
@@ -460,30 +485,30 @@ contract KittyContract is IERC721, Ownable {
         returns (uint256)
     {
         uint256[8] memory newGenes;
-        uint8 random = uint8(now.mod(256));
+        uint8 random = uint8(block.timestamp % 256);
         uint256 index = 8; // counter for 8 x 2-digit pairs (that make up dna)
 
         // Create gene array (for each 2-digit pair of the 16-digit dna)
         uint256 i;
-        for (i = 1; i <= 128; i= i.mul(2) ) {
-            index = index.sub(1); // move back one 2-digit pair
+        for (i = 1; i <= 128; i *= 2) {
+            index--; // move back one 2-digit pair
             // DNA 16 digits
             if (random & i != 0) {
-                newGenes[index] = uint8(mumDna.mod(100));  // get last 2 digits
+                newGenes[index] = uint8(mumDna % 100);  // get last 2 digits
             } else {
-                newGenes[index] = uint8(dadDna.mod(100));  
+                newGenes[index] = uint8(dadDna % 100);  
             }
             // remove last two digits of the dna
-            mumDna = mumDna.div(100);
-            dadDna = dadDna.div(100);
+            mumDna /= 100;
+            dadDna /= 100;
         } 
         assert(index == 0);            // processed all 8 dna digit-pairs
         assert(newGenes.length == 8);  // correct number of new dna digit-pairs
 
         uint256 dnaSequence;
         for (i = 0; i < 8; i++) {   // i==0 gives the 2 most-sig gene digits
-            dnaSequence = dnaSequence.add(newGenes[i]);  
-            if (i != 7) dnaSequence = dnaSequence.mul(100);
+            dnaSequence += newGenes[i];  
+            if (i != 7) dnaSequence *= 100;
         }
 
         return dnaSequence;
@@ -502,23 +527,23 @@ contract KittyContract is IERC721, Ownable {
         uint256[8] memory newGenes;
         
         // Get 8-digit pseudo-random integer (assumes 1+ secs since last get)
-        uint256 value = _getHashAsInteger(now); 
-        uint8 random = uint8(value.mod(256));  //8 least-sig digits (2^8 = 256)
+        uint256 value = _getHashAsInteger(block.timestamp); 
+        uint8 random = uint8(value % 256);  //8 least-sig digits (2^8 = 256)
         
         uint256 index = 8; // counter for 8 x 2-digit pairs (that make up dna)
 
         // Create gene array (for each 2-digit pair of the 16-digit dna)
         uint256 i;
-        for (i = 1; i <= 128; i = i.mul(2)) {
-            index = index.sub(1);  // move back one 2-digit pair
+        for (i = 1; i <= 128; i *= 2) {
+            index--;  // move back one 2-digit pair
             if (random & i != 0) {
-                newGenes[index] = uint8(mumDna.mod(100));  // Take last 2 digits
+                newGenes[index] = uint8(mumDna % 100);  // Take last 2 digits
             } else {
-                newGenes[index] = uint8(dadDna.mod(100));  
+                newGenes[index] = uint8(dadDna % 100);  
             }
             // remove last two digits of the dna
-            mumDna = mumDna.div(100);
-            dadDna = dadDna.div(100);
+            mumDna /= 100;
+            dadDna /= 100;
         } 
         assert(index == 0);            // processed all 8 dna digit-pairs
         assert(newGenes.length == 8);  // correct number of new dna digit-pairs
@@ -526,8 +551,8 @@ contract KittyContract is IERC721, Ownable {
         // Construct the new (16-digit) dna number (from 8 x 2-digit genes)
         uint256 dnaSequence;
         for (i = 0; i < 8; i++) {   // i==0 gives the 2 most-sig gene digits
-            dnaSequence = dnaSequence.add(newGenes[i]);  
-            if (i != 7) dnaSequence = dnaSequence.mul(100);
+            dnaSequence += newGenes[i];  
+            if (i != 7) dnaSequence *= 100;
         }
 
         return dnaSequence;
@@ -554,8 +579,8 @@ contract KittyContract is IERC721, Ownable {
         uint256[16] memory newGenes;
 
         // Get 16-digit pseudo-random number (assumes 1+ secs since last get)
-        uint256 value = _getHashAsInteger(now);
-        uint16 random = uint16(value.mod(65536)); //Last 16 digits (2^&16==65536)
+        uint256 value = _getHashAsInteger(block.timestamp);
+        uint16 random = uint16(value % 65536); //Last 16 digits (2^&16==65536)
         
         uint256 index = 16; // counter for 16 digit dna digits
 
@@ -563,17 +588,17 @@ contract KittyContract is IERC721, Ownable {
         // Note: most-sig digit's value of 16-digit binary num = 2^15 = 32,768
         //      (most-sign digit's value of 8-digit binary number = 2^7 = 128)
         uint256 i;
-        for (i = 1; i <= 32768; i= i.mul(2)) {
-            index = index.sub(1);
+        for (i = 1; i <= 32768; i *= 2) {
+            index--;
             if (random & i != 0) {                   // Select mum's dna digit
-                newGenes[index] = uint16(mumDna.mod(10)); 
+                newGenes[index] = uint16(mumDna % 10); 
             } else {                                 // Select dad's dna digit
-                newGenes[index] = uint16(dadDna.mod(10)); 
+                newGenes[index] = uint16(dadDna % 10); 
             }
             
             // Remove the processed least-sig digit
-            mumDna = mumDna.div(10);
-            dadDna = dadDna.div(10);
+            mumDna /= 10;
+            dadDna /= 10;
         } 
         assert(index == 0);            // processed all 16 dna digits
         assert(newGenes.length == 16); // correct number of new dna digits
@@ -581,8 +606,8 @@ contract KittyContract is IERC721, Ownable {
         // Construct the (16-digit) dna number (from gene digits)
         uint256 dnaSequence;
         for (i = 0; i < 16; i++) {
-            dnaSequence = dnaSequence.add(newGenes[i]); // i==0 is most-sig gene digit
-            if (i != 15) dnaSequence = dnaSequence.mul(10);
+            dnaSequence += newGenes[i]; // i==0 is most-sig gene digit
+            if (i != 15) dnaSequence *= 10;
         }
 
         return dnaSequence;
@@ -605,8 +630,8 @@ contract KittyContract is IERC721, Ownable {
         uint256[16] memory newGenes;
 
         // Get pseudo-random 16-digit number 
-        uint256 value = _getHashAsInteger(now);
-        uint16 random = uint16(value.mod(65536)); //Last 16 digits (2^&16==65536)
+        uint256 value = _getHashAsInteger(block.timestamp);
+        uint16 random = uint16(value % 65536); //Last 16 digits (2^&16==65536)
         
         // initialise counters for processing dna
         uint256 index = 16;         // counter for 16 digit dna digits
@@ -614,36 +639,36 @@ contract KittyContract is IERC721, Ownable {
         
         // Mix dna of parents, from least-significant dna digit, gene by gene
         uint256 i = 1;      
-        for (i = 1; i <= 32768; i= i.mul(2)) {
-            index = index.sub(1);
-            geneNumber = geneNumber.sub(1);
+        for (i = 1; i <= 32768; i *= 2) {
+            index--;
+            geneNumber--;
             if (random & i != 0) {                    // Select mum's dna gene
-                newGenes[index] = uint16(mumDna.mod(10)); 
+                newGenes[index] = uint16(mumDna % 10); 
                 if (_dnaFormat[geneNumber] == 2) {    // Process 2nd gene digit
                     // Move on past processed first digit (of 2-digit value)
-                    i = i.mul(2);
-                    index = index.sub(1); 
-                    mumDna = mumDna.div(10);
-                    dadDna = dadDna.div(10);
+                    i *= 2;
+                    index--; 
+                    mumDna /= 10;
+                    dadDna /= 10;
                     // Store second digit of mum's gene value
-                    newGenes[index] = uint16(mumDna.mod(10));
+                    newGenes[index] = uint16(mumDna % 10);
                 }
             } else {                                   // Select dad's dna gene
-                newGenes[index] = uint16(dadDna.mod(10));
+                newGenes[index] = uint16(dadDna % 10);
                 if (_dnaFormat[geneNumber] == 2) {     // Process 2nd gene digit
                     // Move on past processed first digit (of 2-digit value)
-                    i = i.mul(2);
-                    index = index.sub(1); 
-                    mumDna = mumDna.div(10);
-                    dadDna = dadDna.div(10);
+                    i *= 2;
+                    index--; 
+                    mumDna /= 10;
+                    dadDna /= 10;
                     // Store second digit of dad's gene value
-                    newGenes[index] = uint16(dadDna.mod(10));
+                    newGenes[index] = uint16(dadDna % 10);
                 }
             }
             
             // Move past the last processed digit, ready for next gene value
-            mumDna = mumDna.div(10);
-            dadDna = dadDna.div(10);
+            mumDna /= 10;
+            dadDna /= 10;
         }
         assert(geneNumber == 0);       // processed all 10 dna genes
         assert(index == 0);            // processed all 16 dna digits
@@ -656,27 +681,27 @@ contract KittyContract is IERC721, Ownable {
         // Find this 'target' gene in the dna
         uint256 dnaPos = 0;
         for (i = 0; i < targetGene; i++) {
-           dnaPos = dnaPos.add(_dnaFormat[i]);
+           dnaPos += _dnaFormat[i];
         }
         uint256 geneDigits = _dnaFormat[targetGene];
         
         // Get next random digit (discarding previously used 16 random digits)
-        uint256 unusedDigits = value.div(65536);       // 2^&16 = 65,536
-        uint256 randomDigit = unusedDigits.mod(10);
+        uint256 unusedDigits = value / 65536;       // 2^&16 = 65,536
+        uint256 randomDigit = unusedDigits % 10;
         
         // Randomise the digit(s) of this target gene
         newGenes[dnaPos] = randomDigit;
         if (geneDigits == 2) { 
-            unusedDigits = unusedDigits.div(10);
-            randomDigit = unusedDigits.mod(10);
+            unusedDigits /= 10;
+            randomDigit = unusedDigits % 10;
             newGenes[dnaPos+1] = randomDigit;
         }
 
         // Construct new (16-digit) dna (from individual gene digits)
         uint256 dnaSequence;
         for (i = 0; i < 16; i++) {
-            dnaSequence = dnaSequence.add(newGenes[i]);  // i==0 is most-sig gene digit
-            if (i != 15) dnaSequence = dnaSequence.mul(10);
+            dnaSequence += newGenes[i];  // i==0 is most-sig gene digit
+            if (i != 15) dnaSequence *= 10;
         }
 
         return dnaSequence;
@@ -689,9 +714,9 @@ contract KittyContract is IERC721, Ownable {
         returns (uint256)
     {
     // Create new dna from first half of mum's dna and second half of dad's dna      
-        uint256 firstEightDigits = mumDna.div(100000000);
-        uint256 lastEightDigits = dadDna.mod(100000000);
-        uint256 newDna = (firstEightDigits.mul(100000000)).add(lastEightDigits);
+        uint256 firstEightDigits = mumDna / 100000000;
+        uint256 lastEightDigits = dadDna % 100000000;
+        uint256 newDna = (firstEightDigits * 100000000) + lastEightDigits;
         return newDna;
     }
 }

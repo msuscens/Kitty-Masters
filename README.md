@@ -67,12 +67,17 @@ Steps included:
     $ git remote add origin https://github.com/msuscens/Kitty-Masters.git
     $ git push -u origin master
 
-2. Install OpenZeppelin and Truffle support libraries (required to make
- contracts upgradeable, for proxy deployment/contract upgrade, and to
- support truffle test assertions):
+
+2. Install OpenZeppelin and Truffle libraries to provide:
+  i) support truffle test assertions:
     $ npm install truffle-assertions
+
+ ii) libary of upgradeable compatible OpenZeppelin contracts (v0.4):
     $ npm install @openzeppelin/contracts-upgradeable
     
+iii) the OpenZeppelin Truffle upgrades plug-in for proxy/contract deployment 
+and contract upgrade:
+
     $ sudo npm install --save-dev @openzeppelin/truffle-upgrades
     
     NB. Attempted 'truffle-upgrades' npm install failed with the error:
@@ -96,7 +101,19 @@ Steps included:
         53 vulnerabilities (24 low, 18 moderate, 11 high)
     
 
-    
+3. Convert contracts to use solidity V0.8.5 (from solc v0.5.12)
+      i) Update truffle-config.js to specify compiler version 0.8.5
+     ii) Update all contracts, interfaces and libraries to declare:
+            pragma solidity 0.8.5;
+    iii) Add 'SPDX-License-Identifier: MIT' comment in each .sol contract
+        and library file (to eliminate compile warnings)
+     iv) Update KittyContract.sol in accordance with 0.8.x syntax
+      v) Update KittyMarketplace.sol in accordance with 0.8.x syntax
+     vi) Add IKittyContract.sol and IOwnable.sol interface files (and import
+        in KittyMarketplace) to fix the
+        issue/warning of two KittyContracts being compiled
+
+
 
 
  
