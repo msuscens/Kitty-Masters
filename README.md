@@ -31,12 +31,13 @@ Note: Kitty Masters will not add further user functionality (above that already
 present in my CryptoKitties-Clone project) and will employ the same UI.
 (https://github.com/msuscens/CryptoKitties-Clone)
 
+
+
 RECORD OF IMPLEMENTAION STEPS
 This will record the implementation steps taken to date on thethis project 
 and draw upon the steps that I worked out in my project to take make my
 MultiSigWallet contract project code and make it upgradeable/pausable:  
 https://github.com/msuscens/Upgradeable-MultiSig-Wallet
-
 
 1. Clone "CryptoKitties-Clone" to set up new project (KittyMasters)
 Steps included:
@@ -66,9 +67,34 @@ Steps included:
     $ git remote add origin https://github.com/msuscens/Kitty-Masters.git
     $ git push -u origin master
 
+2. Install OpenZeppelin and Truffle support libraries (required to make
+ contracts upgradeable, for proxy deployment/contract upgrade, and to
+ support truffle test assertions):
+    $ npm install truffle-assertions
+    $ npm install @openzeppelin/contracts-upgradeable
+    
+    $ sudo npm install --save-dev @openzeppelin/truffle-upgrades
+    
+    NB. Attempted 'truffle-upgrades' npm install failed with the error:
+        npm ERR! code ERESOLVE
+        npm ERR! ERESOLVE unable to resolve dependency tree
+        npm ERR! 
+        npm ERR! Found: bignumber.js@7.2.1
+        etc
+    [ Also see: https://forum.openzeppelin.com/t/error-installing-truffle-upgrades/7243 ]
+    To resolve install truffle again:
+    $ npm install truffle
+        Note: Reports depeciated warnings and vulnerabilities upon completion:
+        40 vulnerabilities (15 low, 15 moderate, 10 high)
+    Such warnings and vulnerabilities were also encountered during the
+    Upgradeable-MultiSig-Wallet project truffle install, and is a known
+    Truffle issue: https://github.com/trufflesuite/truffle/issues/3986
+    I therefore ignore these vulnerabilities, and proceed with install:
 
-
-
+    $ npm install --save-dev @openzeppelin/truffle-upgrades
+        Albeit this reports further depreciated warnings and vulnerabilities:
+        53 vulnerabilities (24 low, 18 moderate, 11 high)
+    
 
     
 

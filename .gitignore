@@ -4,3 +4,5 @@ README-OLD-CryptoKitties-Clone.md
 README-UpgradeGuide.txt
 build/
 node_modules/
+.openzeppelin/unknown-*.json
+
