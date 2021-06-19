@@ -113,7 +113,14 @@ and contract upgrade:
         in KittyMarketplace) to fix the
         issue/warning of two KittyContracts being compiled
 
-
+4. Update to web3.js latest version 1.3.6 (was on 1.3.4)
+    a.    $ npm install web3
+        BUT probabaly not necessary since I then:
+            a) deleted ./contractInterface/web3.min.js file (v1.3.4) and 
+            b) update web3 version in each html file by including:
+             <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    b. Remove depreciated ethereum.enable() method, replacing it with:
+        ethereum.request({ method: 'eth_accounts' })
 
 
  

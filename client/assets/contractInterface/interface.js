@@ -1,9 +1,9 @@
 
 const web3 = new Web3(Web3.givenProvider);
-// console.log(web3.version)
+console.log(web3.version)
 
-const KITTY_CONTRACT_ADDRESS = "0x02e260B27fBC4e4A9A0A9e79E04b1c0138c34e65"
-const MARKETPLACE_ADDRESS = "0x933Ac90f693c32c4Ad6052bdeA826b24B7dB22b3"
+const KITTY_CONTRACT_ADDRESS = "0x41E04F1b4C02ADdBadDA45710B96B939064755a6"
+const MARKETPLACE_ADDRESS = "0xc6cF2B98890240cCa929E8C9B1e331c4116ca295"
 
 let Instance_Of_KittyContract
 let Instance_Of_Marketplace
@@ -11,13 +11,8 @@ let User
 
 async function initiateConnection(){
     try {
-        // Prompt user to allow our website to use their metamask account to interact with the blockchain
-        // window.ethereum.enable().then(function(accounts){
-        //     instance = new web3.eth.Contract(abi.kittyContract, KITTY_CONTRACT_ADDRESS, {from: accounts[0]})
-        //     User = accounts[0]
-        // })
+        let accounts = await window.ethereum.request({ method: 'eth_accounts' })
 
-        let accounts = await window.ethereum.enable()
         Instance_Of_KittyContract = new web3.eth.Contract(abi.kittyContract, KITTY_CONTRACT_ADDRESS, {from: accounts[0]})
         Instance_Of_Marketplace = new web3.eth.Contract(abi.marketplace, MARKETPLACE_ADDRESS, {from: accounts[0]})
         User = accounts[0]
@@ -140,6 +135,7 @@ async function getCatDetails(catId) {
 async function breedCats(mumId, dadId){
     try {
         await Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}, function(err, txHash){
+        // await Instance_Of_KittyContract.methods.breed(mumId, dadId).send(function(err, txHash){
             if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}': " + err
             else {
                 console.log(txHash)
@@ -176,6 +172,7 @@ async function getAllCatIdsOnSale() {
         await Instance_Of_Marketplace.methods.getAllTokenOnSale().call({}, function(err, idsTokensOnSale){
             if (err) throw "Error from getAllTokenOnSale().call(): " + err
             catIdsOnSale = idsTokensOnSale
+            console.log("catIdsOnSale:", catIdsOnSale)
         })
         return catIdsOnSale
     }
@@ -259,15 +256,6 @@ async function setMarketplaceApproval(){
                 if (err) console.log(err)
                 else console.log(txHash)
             })
-
-/* *** Question for Kenneth:
-/* Filips code - what he's doing here (vs method I use above) with .on('receipt' ... can't see code beyond that point, is there an extra parameter??
-            await Instance_Of_KittyContract.methods.setApprovalForAll(MARKETPLACE_ADDRESS, true).send().on('receipt', function(receipt) {
-                // tx done
-                console.log("tx done");
-                getInventorty()
-            })
-*** */
         }
     }
     catch (err) {
@@ -279,6 +267,10 @@ async function setMarketplaceApproval(){
 
 async function setForSale(catId, salePriceInWei) {
     try {
+        console.log("In setForSale")
+        console.log("catId: ", catId)
+        console.log("salePriceInWei: ", salePriceInWei)
+
         await Instance_Of_Marketplace.methods.setOffer(salePriceInWei, catId).send({}, function(err, txHash){
             if (err) {
                 throw(err)
