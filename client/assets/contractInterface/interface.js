@@ -1,9 +1,9 @@
 
-const web3 = new Web3(Web3.givenProvider);
-console.log(web3.version)
+const web3 = new Web3(Web3.givenProvider)
+console.log("Web3 version: ", web3.version)
 
-const KITTY_CONTRACT_ADDRESS = "0x41E04F1b4C02ADdBadDA45710B96B939064755a6"
-const MARKETPLACE_ADDRESS = "0xc6cF2B98890240cCa929E8C9B1e331c4116ca295"
+const KITTY_CONTRACT_ADDRESS = "0xfFAeB5876b2AAD215d5e9f1A206257a1307f66b1"
+const MARKETPLACE_ADDRESS = "0x0eA9C066cB0a1B6419669DCAE1146199d3796bBd"
 
 let Instance_Of_KittyContract
 let Instance_Of_Marketplace
@@ -19,6 +19,8 @@ async function initiateConnection(){
 
         if (User.length > 0) {
             console.log("Connected with account :" + User)
+            console.log("Instance_Of_KittyContract.options.address :", Instance_Of_KittyContract.options.address)
+            console.log("Instance_Of_Marketplace.options.address :", Instance_Of_Marketplace.options.address)
             return true
         }
     }
@@ -59,8 +61,8 @@ function onBirthEvent(uiCallbackFunc) {
 async function isOwnerOfKittyContract() {
     try {
         let isOwner; 
-        await Instance_Of_KittyContract.methods.getContractOwner().call({}, function(err, contractOwner){
-            if (err) throw "Error from getContractOwner().call(): " + err
+        await Instance_Of_KittyContract.methods.owner().call({}, function(err, contractOwner){
+            if (err) throw "Error from owner().call(): " + err
             isOwner = String(contractOwner).toLowerCase() === String(User).toLowerCase()
         })
         return isOwner
@@ -135,7 +137,6 @@ async function getCatDetails(catId) {
 async function breedCats(mumId, dadId){
     try {
         await Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}, function(err, txHash){
-        // await Instance_Of_KittyContract.methods.breed(mumId, dadId).send(function(err, txHash){
             if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}': " + err
             else {
                 console.log(txHash)

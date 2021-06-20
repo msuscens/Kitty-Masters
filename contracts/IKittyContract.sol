@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.5;
 
-import "./IERC721.sol";
-import "./IOwnable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-interface IKittyContract is IERC721, IOwnable {
+interface IKittyContract is IERC721 {
 
     event Birth(
         address owner,
@@ -14,7 +13,6 @@ interface IKittyContract is IERC721, IOwnable {
         uint256 genes,
         uint256 generation
     );
-
 
 // Public & external functions
 
@@ -34,7 +32,11 @@ interface IKittyContract is IERC721, IOwnable {
 
 
     // IERC165 function implementations
-    function supportsInterface(bytes4 interfaceId) external pure returns (bool);
+    function supportsInterface(bytes4 interfaceId)
+        override
+        external
+        pure
+        returns (bool);
 
 
     // IERC721 function implementations
@@ -45,11 +47,11 @@ interface IKittyContract is IERC721, IOwnable {
         view
         returns (uint256);
 
-    function totalSupply() override external view returns (uint256);
+    function totalSupply() external view returns (uint256);
 
-    function name() override external view returns (string memory);
+    function name() external view returns (string memory);
 
-    function symbol() override external view returns (string memory);
+    function symbol() external view returns (string memory);
 
     function ownerOf(uint256 tokenId)
         override
@@ -57,7 +59,7 @@ interface IKittyContract is IERC721, IOwnable {
         view
         returns (address);
 
-    function transfer(address to, uint256 tokenId) override external;
+    function transfer(address to, uint256 tokenId) external;
     
     function approve(address approved, uint256 tokenId) override external;
 

@@ -234,7 +234,7 @@ function showFactoryLink() {
 function hideFactoryLink() {
     try {
         const factoryLink = document.getElementById('factoryNavLink')
-        factoryLink.setAttribute("hidden")
+        factoryLink.setAttribute("hidden", true)
     }
     catch (error) {
         console.log("Error from hideFactoryLink(): " + error)

@@ -2,9 +2,9 @@
 pragma solidity 0.8.5;
 
 import "./IKittyMarketplace.sol";
-import "./KittyContract.sol";
-import "./IOwnable.sol";
-import "./Ownable.sol";
+import "./KittyContract.sol";   //BUT DO I NEED/WANT THIS?? INSTEAD INVOKE IKittyContract in code below!!?
+
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract KittyMarketplace is Ownable, IKittyMarketplace {
 
@@ -20,11 +20,13 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
 
     Offer[] private _offers;
     mapping(uint256 => Offer) private _tokenIdToOffer;
-
+    
 
 // Public & external functions
 
-    constructor(address kittyContractAddress) {
+    constructor(address kittyContractAddress)
+        Ownable()
+    {
         setKittyContract(kittyContractAddress);
     }
 
@@ -37,9 +39,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         _kittyContract = KittyContract(kittyContractAddress);
     }
 
-    /**
-    * Get the details about a offer for _tokenId. Throws an error if there is no active offer for _tokenId.
-     */
+
     function getOffer(uint256 idOfToken)
         override
         external
@@ -55,9 +55,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         active = _tokenIdToOffer[idOfToken].active;
     }
 
-    /**
-    * Get all tokenId's that are currently for sale. Returns an empty arror if none exist.
-     */
+
     function getAllTokenOnSale() 
         override
         external
@@ -86,13 +84,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         return activeOfferIds;
     }
 
-    /**
-    * Creates a new offer for _tokenId for the price _price.
-    * Emits the MarketTransaction event with txType "Create offer"
-    * Requirement: Only the owner of _tokenId can create an offer.
-    * Requirement: There can only be one active offer for a token at a time.
-    * Requirement: Marketplace contract (this) needs to be an approved operator when the offer is created.
-     */
+    
     function setOffer(uint256 price, uint256 tokenId) override external {
 
         require(_isKittyOwner(msg.sender, tokenId), "Only owner can offer for sale!");
@@ -117,11 +109,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         emit MarketTransaction("Create offer", msg.sender, tokenId);
     }
 
-    /**
-    * Removes an existing offer.
-    * Emits the MarketTransaction event with txType "Remove offer"
-    * Requirement: Only the seller of _tokenId can remove an offer.
-     */
+    
     function removeOffer(uint256 tokenId) override external {
 
         require(_isOnOffer(tokenId) == true, "Active offer doesn't exist!");
@@ -134,13 +122,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
         emit MarketTransaction("Remove offer", msg.sender, tokenId);
     }
 
-    /**
-    * Executes the purchase of _tokenId.
-    * Sends the funds to the seller and transfers the token using transferFrom in Kittycontract.
-    * Emits the MarketTransaction event with txType "Buy".
-    * Requirement: The msg.value needs to equal the price of _tokenId
-    * Requirement: There must be an active offer for _tokenId
-     */
+    
     function buyKitty(uint256 tokenId) override external payable {
         Offer memory tokenOffer = _tokenIdToOffer[tokenId];
         require(_isOnOffer(tokenId) == true, "Active offer doesn't exist!");
@@ -163,9 +145,6 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
     }
 
 
-    /*
-    ** Checks if given tokenId is on sale or not; returning true if it is, false if not.
-    */
     function isTokenOnSale(uint256 tokenId) override external view returns (bool) {
         return (_isOnOffer(tokenId));
     }

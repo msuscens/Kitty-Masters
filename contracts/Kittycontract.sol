@@ -2,14 +2,12 @@
 pragma solidity 0.8.5;
 
 import "./IKittyContract.sol";
-import "./IERC721.sol";
-import "./IOwnable.sol";
-import "./IERC721Receiver.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-import "./Ownable.sol";
 import "./ArrayUtils.sol";
 
-contract KittyContract is IERC721, Ownable {
+contract KittyContract is Ownable, IKittyContract {
 
     using ArrayUtils for uint256[];
 
@@ -42,32 +40,32 @@ contract KittyContract is IERC721, Ownable {
     mapping(uint256 => address) private _kittiesApprovedOperator;
     mapping(address => mapping(address => bool)) private _ownersApprovedOperators;
 
-    event Birth(
-        address owner,
-        uint256 kittenId,
-        uint256 mumId,
-        uint256 dadId,
-        uint256 genes,
-        uint256 generation
-    );
-
 
 // Public & external functions
 
-    constructor(string memory tokenName, string memory tokenSymbol) {
+    constructor(string memory tokenName, string memory tokenSymbol)
+        Ownable()
+    {
         _name = tokenName;
         _symbol = tokenSymbol;
     }
 
 
-    function createKittyGen0(uint256 genes) external onlyOwner {
+    function createKittyGen0(uint256 genes)
+        override
+        external
+        onlyOwner
+    {
         require(_gen0KittiesCount < _GEN0_LIMIT, "Hit Gen0 creation limit!");
         _gen0KittiesCount++;
         _createKitty( 0, 0, 0, genes, msg.sender);
     }
 
 
-    function breed(uint256 mumId, uint256 dadId) external returns (uint256)
+    function breed(uint256 mumId, uint256 dadId) 
+        override
+        external
+        returns (uint256)
     {
         // Ensure that the breeder is owner or guardian of parent cats
         require(
@@ -115,13 +113,17 @@ contract KittyContract is IERC721, Ownable {
     }
 
 
-    function getKitty(uint256 kittyId) external view returns (
-        uint256 genes,
-        uint64 birthTime, 
-        uint64 mumId,
-        uint64 dadId,
-        uint64 generation
-    )
+    function getKitty(uint256 kittyId)
+        override
+        external
+        view
+        returns (
+            uint256 genes,
+            uint64 birthTime, 
+            uint64 mumId,
+            uint64 dadId,
+            uint64 generation
+        )
     {
         require(_isInExistance(kittyId), "No such kitty id!");
         
@@ -135,14 +137,24 @@ contract KittyContract is IERC721, Ownable {
     }
 
 
-    function getAllYourKittyIds() external view returns(uint256[] memory) {
+    function getAllYourKittyIds() 
+        override
+        external 
+        view 
+        returns(uint256[] memory) 
+    {
         // Set pointer to owners array of kitty Ids
         return _ownersKittyIds[msg.sender];
     }
 
 
     // IERC165 function implementations
-    function supportsInterface(bytes4 interfaceId) external pure returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        override
+        external
+        pure
+        returns (bool)
+    {
         return (
             interfaceId == _INTERFACE_ID_ERC721 ||
             interfaceId == _INTERFACE_ID_ERC165

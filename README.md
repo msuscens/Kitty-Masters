@@ -122,5 +122,24 @@ and contract upgrade:
     b. Remove depreciated ethereum.enable() method, replacing it with:
         ethereum.request({ method: 'eth_accounts' })
 
-
+5. Update contracts to use (latest) Open Zeppelin contracts
+    a. Install OpenZeppelin contracts (v4.1.0):
+        $ npm install @openzeppelin/contracts
+    b. Replace local versions of IERC721.sol, IERC721Receiver.sol, and
+        Ownable.sol (in KittyMasters/contracts) with @openZeppelin versions
+        of each of these interfaces/contracts (in the directory:
+        node_modules/@openzeppelin/contracts).
+        This required improving/correcting! the inherritence structure 
+        (from contracts and interfaces), ie, they are now as follows:
+            interface IKittyContract is IERC721 { ... }
+            contract KittyContract is Ownable, IKittyContract { ... }
+            interface IKittyMarketplace {
+            contract KittyMarketplace is Ownable, IKittyMarketplace {
+        Notes: 
+            i) There is a bug in solc 0.8.5 that raises 'unreachable code'
+            warnings - this should be fixed when 8.6 is released.  These 
+            warnings should therefore be ignored: 
+            https://github.com/ethereum/solidity/issues/11522
+            
+        
  
