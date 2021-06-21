@@ -122,14 +122,14 @@ and contract upgrade:
     b. Remove depreciated ethereum.enable() method, replacing it with:
         ethereum.request({ method: 'eth_accounts' })
 
-5. Update contracts to use (latest) Open Zeppelin contracts
+5. Update to use (latest) OpenZeppelin contracts
     a. Install OpenZeppelin contracts (v4.1.0):
         $ npm install @openzeppelin/contracts
     b. Replace local versions of IERC721.sol, IERC721Receiver.sol, and
         Ownable.sol (in KittyMasters/contracts) with @openZeppelin versions
         of each of these interfaces/contracts (in the directory:
         node_modules/@openzeppelin/contracts).
-        This required improving/correcting! the inherritence structure 
+        This required improving (correcting!) the inherritence structure 
         (from contracts and interfaces), ie, they are now as follows:
             interface IKittyContract is IERC721 { ... }
             contract KittyContract is Ownable, IKittyContract { ... }
@@ -141,5 +141,10 @@ and contract upgrade:
             warnings should therefore be ignored: 
             https://github.com/ethereum/solidity/issues/11522
             
-        
+6. Write initial Truffle tests for KittyContract (kittyContract_test.js)
+    a. Initial state tests
+    b. Test structure for functionality - specific test not yet written
+    c. Tests for upgrade (commented-out/skipped until contract refactored)
+
+
  
