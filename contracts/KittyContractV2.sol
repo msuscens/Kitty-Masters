@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
 
 
-contract KittyContract is OwnableUpgradeable, ERC721Upgradeable {
+contract KittyContractV2 is OwnableUpgradeable, ERC721Upgradeable {
 
     struct Kitty {
         uint256 genes;
@@ -394,6 +394,7 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable {
             // Remove kittie token from the sender
             delete _kittiesApprovedOperator[tokenId];
             _removeFrom(_ownersKittyIds[from], tokenId);
+
             _ownersKittyCount[from]--;
         }
 

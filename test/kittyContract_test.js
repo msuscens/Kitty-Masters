@@ -6,9 +6,9 @@
 const truffleAssert = require("truffle-assertions")
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 
-const Utilities = artifacts.require("ArrayUtils")
+//const Utilities = artifacts.require("ArrayUtils")
 const KittyContract = artifacts.require("KittyContract")
-//const KittyContractV2 = artifacts.require("KittyContractV2")  // UNCOMMENT WHEN READY TO UPGRADE TO V2
+const KittyContractV2 = artifacts.require("KittyContractV2")
 
 const tokenName = "Mark-Crypto-Kitty"
 const tokenSymbol = "MCK"
@@ -22,17 +22,16 @@ contract("KittyContract", async accounts => {
 
         // Contract deployment with linked library
         // (before refactoring to make upgradeable)
+        /*
         const myLibrary = await Utilities.new();
         await KittyContract.detectNetwork();
         await KittyContract.link('Utilities', myLibrary.address);
         kittyContract = await KittyContract.new(tokenName, tokenSymbol);
+        */
 
         // Deploys KittyContract 'logic'' contract (together with a Truffle proxy) - 
         // NB 'deployProxy' automatically calls initialize with given arguments
-        // *** TODO: Refactor KittyContract to make it into an upgradable 'logic'
-        // contract (for use with a proxy).
-        //     AND THEN UNCOMMENT LINE BELOW:    ****
-        //kittyContract = await deployProxy(KittyContract, [tokenName, tokenSymbol])
+        kittyContract = await deployProxy(KittyContract, [tokenName, tokenSymbol])
     })
 
       
@@ -236,7 +235,7 @@ contract("KittyContract", async accounts => {
 
     // TODO: Enable (remove .skip) once we have a refactored contract for
     // upgradeability a KittyContractV2 contract required to test upgradability
-    describe.skip('\nUpgraded to V2 Wallet', () => {
+    describe('\nUpgraded to V2 Wallet', () => {
 
         let ownerV1 
         let nameV1
@@ -253,15 +252,16 @@ contract("KittyContract", async accounts => {
             nameV1 = await kittyContract.name()
             symbolV1 = await kittyContract.symbol()
             totalSupplyV1 = await kittyContract.totalSupply()
-            balanceAccount0V1 = await kittyContract.balanceOf( account[0])
-            balanceAccount1V1 = await kittyContract.balanceOf( account[1])
+            balanceAccount0V1 = await kittyContract.balanceOf( accounts[0])
+            balanceAccount1V1 = await kittyContract.balanceOf( accounts[1])
 
             // Upgrade to new version of KityyContract (V2)
             // Note: upgradeProxy returns the proxy
             kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
+            console.log("Upgrade to KittyContractV2 completed!")
         })
 
-        describe('Keeps pre-update state', () => {
+        describe('Keeps pre-updgrade state variables', () => {
 
             it('should have the same contract owner', async () => {
 

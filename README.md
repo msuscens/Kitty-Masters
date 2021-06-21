@@ -149,6 +149,42 @@ and contract upgrade:
     the method given here:
     https://forum.openzeppelin.com/t/trouble-linking-library-contracts-with-openzeppelin-test-environment/2235/3
 
+7. Refactor KittyContract to an upgradeable contract
+   (i.e. to follow OpenZeppelin's "transparent upgradeable proxy" pattern)
+    a. Replace constructor with 'initialize()' function, adding 'intializer'
+        modifier (from OZ 'Initializable' base contract).  (And taking care
+        to mannually call the initialzers of all parent contracts.)
+    b. Reworked the KittyContract's inherritence hierarchy (and interface) to
+        compile with OZ Upgradeable base contract versions for ERC721 
+        (ERC721Upgradeable) and Ownable (OwnableUpgradeable), these are under:
+        @openzeppelin/contracts-upgradeable/ subdirectories.
+    c.  Updated KittyContract's function override and visibility signature so
+        that its functions are employed instead of very similar versions in
+        OZ base ERC721Upgradeable base contract.
+        [ NOTE: Could be refactored to use OZ base functions in many cases,
+        which would greatly simplify the code.]
+    d. Removed the ArrayUtils library that provided the removeFrom() function
+        (used in  KittyContract's transfer(...) function).  Added a new 
+        KittyContract function '_removeFrom(...)' as a replacement.
+    e. Moved intialisation of state variables from their declaration into the
+        'initialize()' function (i.e variables: _GEN0_LIMIT and _dnaFormat).
+    f. Updated the truffle tests (kittyContract_test.js) to deploy 
+        KittyContract as an upgradeable contract, with deployProxy() function,
+        and ensuring that the 'Initial State' tests still pass.
+    g. Created a KittyContractV2 (exact copy of KittyContract code for now 
+        but just with an updated contract name) and confirmed that the contract
+        upgrade to V2 tests (under 'Keeps pre-updgrade state variables') pass.
+    h. Updated KittyContract migrations file (2_token_migrations.js) to 
+        for deployment of the logic contract (with proxy), and deployed.
+    j. Updated client/assets/contractInterface/abi.js (and contract addresses
+        in client/assets/contractInterfaceinterface.js), and ran/tested the
+        application using the website.
+
+   Note: See this guide:
+   https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable
+
+
+
 
 
  
