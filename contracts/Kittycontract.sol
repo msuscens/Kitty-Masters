@@ -44,7 +44,7 @@ contract KittyContract is Ownable, IKittyContract {
 // Public & external functions
 
     constructor(string memory tokenName, string memory tokenSymbol)
-        Ownable()
+    //    Ownable()
     {
         _name = tokenName;
         _symbol = tokenSymbol;

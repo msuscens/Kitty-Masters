@@ -145,6 +145,10 @@ and contract upgrade:
     a. Initial state tests
     b. Test structure for functionality - specific test not yet written
     c. Tests for upgrade (commented-out/skipped until contract refactored)
+    Note: To link libraries to contracts within my Truffle Test script, used
+    the method given here:
+    https://forum.openzeppelin.com/t/trouble-linking-library-contracts-with-openzeppelin-test-environment/2235/3
+
 
 
  

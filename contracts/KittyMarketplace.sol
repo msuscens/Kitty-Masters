@@ -2,7 +2,7 @@
 pragma solidity 0.8.5;
 
 import "./IKittyMarketplace.sol";
-import "./KittyContract.sol";   //BUT DO I NEED/WANT THIS?? INSTEAD INVOKE IKittyContract in code below!!?
+import "./KittyContract.sol"; 
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -25,7 +25,7 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
 // Public & external functions
 
     constructor(address kittyContractAddress)
-        Ownable()
+        // Ownable()
     {
         setKittyContract(kittyContractAddress);
     }

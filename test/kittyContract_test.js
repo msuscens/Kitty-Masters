@@ -29,8 +29,9 @@ contract("KittyContract", async accounts => {
 
         // Deploys KittyContract 'logic'' contract (together with a Truffle proxy) - 
         // NB 'deployProxy' automatically calls initialize with given arguments
-        // ** Refactor - Make KittyContract so that it uses an initialiize
-        // rather than a constructor.  AND THEN UNCOMMENT BELOW:
+        // *** TODO: Refactor KittyContract to make it into an upgradable 'logic'
+        // contract (for use with a proxy).
+        //     AND THEN UNCOMMENT LINE BELOW:    ****
         //kittyContract = await deployProxy(KittyContract, [tokenName, tokenSymbol])
     })
 
@@ -79,7 +80,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nCreating Genernation 0 Kitties", () => {
+    describe("\nGeneration 0 Kitties", () => {
 
         it("should only allow contract owner to create a Gen0 kitty", async () => {
 
@@ -90,11 +91,11 @@ contract("KittyContract", async accounts => {
             )
         })
 
-        //  *** TODO ADD MORE TESTS HERE !???
+        //  *** TODO ADD MORE TESTS HERE .....
     })
 
 
-    describe("\nBreeding Kitties", () => {
+    describe("\nBreed Kitties", () => {
 
         it("should be able to breed two kitties to create a newborn kitty", async () => {
 
@@ -114,11 +115,11 @@ contract("KittyContract", async accounts => {
             )
         })
 
-        //  *** TODO ADD MORE TESTS !???
+        //  *** TODO ADD MORE TESTS HERE .....
     })
 
 
-    describe("\nTransfering Kitties ", () => {
+    describe("\nTransfer Kitties ", () => {
 
         it("should be able to transfer ownership of a kitty to a new owner", async () => {
 
@@ -147,14 +148,14 @@ contract("KittyContract", async accounts => {
             )
         })
 
-        //  *** TODO ADD MORE TESTS
+        //  *** TODO ADD MORE TESTS HERE .....
     })
 
 
-    describe("\nKitty owner giving 'Operator Approval'", () => {
+    describe("\nOwner grants 'Operator Approval'", () => {
 
 
-        it("should be able to grant operator approval on a single kitty", async () => {
+        it("should be able to grant 'operator approval' on a single kitty", async () => {
 
             // *** TODO ***
             assert.equal(
@@ -163,7 +164,7 @@ contract("KittyContract", async accounts => {
             )
         })
 
-        it("should be able to grant operator approval on all of their kitties", async () => {
+        it("should be able to grant 'operator approval' on all of their kitties", async () => {
 
             // *** TODO ***
             assert.equal(
@@ -175,7 +176,7 @@ contract("KittyContract", async accounts => {
 
     })
 
-    describe("\nApproved Operator of a Kitty", () => {
+    describe("\nAn 'Approved Operator'", () => {
 
         it("should be able to transfer the kitty to another owner", async () => {
 
@@ -189,9 +190,40 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nCompiles to ERC165", () => {
+    describe("\nKittyContract has ERC165 supportsInterface()", () => {
 
-        it("should correctly implement the function supportsInterface()", async () => {
+        it("should indicate that an unimplemented interface standard is NOT supported", async () => {
+
+            // *** TODO ***
+            assert.equal(
+                false,
+                true
+            )
+        })
+
+        it("should indicate that contract is XXX interface standard compliant", async () => {
+
+            // *** TODO ***
+            assert.equal(
+                false,
+                true
+            )
+        })
+
+        it("should indicate that contract is YYY interface standard compliant", async () => {
+
+            // *** TODO ***
+            assert.equal(
+                false,
+                true
+            )
+        })
+
+    })
+
+    describe("\nProxy Admin", () => {
+
+        it('should allow (only) contract owner to invoke proxy admin functions', async () => {
 
             // *** TODO ***
             assert.equal(
@@ -202,6 +234,8 @@ contract("KittyContract", async accounts => {
     })
 
 
+    // TODO: Enable (remove .skip) once we have a refactored contract for
+    // upgradeability a KittyContractV2 contract required to test upgradability
     describe.skip('\nUpgraded to V2 Wallet', () => {
 
         let ownerV1 
@@ -288,19 +322,32 @@ contract("KittyContract", async accounts => {
 
         })
 
-        describe('\nNew KittyContract V2 Functionality', () => {
+
+        describe('Proxy Admin', () => {
+        // Repeated from above - TODO: Cut & paste it here once developed
+            it('should allow (only) contract owner to invoke proxy admin functions', async () => {
+
+                // *** TODO ***
+                assert.equal(
+                    false,
+                    true
+                )
+            })
+        })
+
+
+        describe('Added Functionality', () => {
 
             it('should allow (only) the owner to set the contract version number', async () => {
-
+                
                 await truffleAssert.reverts(
-                    kittyContractV2.setVersion(2, {from: accounts[1]}),
+                    kittyContractV2.setVersion(2, {from: accounts[4]}),
                 )
 
                 await truffleAssert.passes(
-                    kittyContractV2.setWalletVersion(2, {from: accounts[0]}),
-                    "Owner unable to set contract version number"
+                    kittyContractV2.setVersion(2),
+                    "Owner was unable to initially set the wallet's version number"
                 )
-
             })
 
             it('should be able to get the contract version number', async () => {

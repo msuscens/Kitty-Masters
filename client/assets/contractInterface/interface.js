@@ -2,8 +2,8 @@
 const web3 = new Web3(Web3.givenProvider)
 console.log("Web3 version: ", web3.version)
 
-const KITTY_CONTRACT_ADDRESS = "0xfFAeB5876b2AAD215d5e9f1A206257a1307f66b1"
-const MARKETPLACE_ADDRESS = "0x0eA9C066cB0a1B6419669DCAE1146199d3796bBd"
+const KITTY_CONTRACT_ADDRESS = "0x02e260B27fBC4e4A9A0A9e79E04b1c0138c34e65"
+const MARKETPLACE_ADDRESS = "0x933Ac90f693c32c4Ad6052bdeA826b24B7dB22b3"
 
 let Instance_Of_KittyContract
 let Instance_Of_Marketplace
