@@ -333,7 +333,7 @@ contract("KittyContract", async accounts => {
             kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
         })
 
-        
+
         describe('Post-upgrade State Variables', () => {
 /* *** See above - Following test doesn't work
             it('should have an updated logic contract address', async () => {
@@ -440,9 +440,14 @@ contract("KittyContract", async accounts => {
 
                 await truffleAssert.passes(
                     kittyContractV2.pause(),
-                    "Failed to pause contract!"
+                    "Failed to put contract into 'paused' state!"
                 )
-
+                let paused = await kittyContractV2.paused()
+                assert.deepEqual(
+                    Boolean(paused), 
+                    true, 
+                    "kittyContractV2 is NOT in expected 'paused' state!"
+                )
                 await truffleAssert.reverts(
                     kittyContractV2.getVersion()
                 )
@@ -452,9 +457,14 @@ contract("KittyContract", async accounts => {
 
                 await truffleAssert.passes(
                     kittyContractV2.unpause(),
-                    "Failed to unpause contract!"
+                    "Failed to 'unpause' contract state!"
                 )
-
+                let paused = await kittyContractV2.paused()
+                assert.deepEqual(
+                    Boolean(paused), 
+                    false, 
+                    "kittyContractV2 is NOT in expected 'unpaused' state!"
+                )
                 await truffleAssert.passes(
                     kittyContractV2.getVersion(),
                     "Failed to execute unpaused getVersion() function!"

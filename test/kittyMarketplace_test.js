@@ -248,25 +248,35 @@ contract("KittyMarketplace", async accounts => {
                 )
             })
 
-            it.skip('should NOT allow paused getVersion() function to be exectuted', async () => {
+            it('should NOT allow paused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
                     kittyMarketplaceV2.pause(),
-                    "Failed to pause contract!"
+                    "Failed to put contract into 'paused' state!"
                 )
-
+                let paused = await kittyMarketplaceV2.paused()
+                assert.deepEqual(
+                    Boolean(paused), 
+                    true, 
+                    "kittyMarketplaceV2 is NOT in expected 'paused' state!"
+                )
                 await truffleAssert.reverts(
                     kittyMarketplaceV2.getVersion()
                 )
             })
 
-            it.skip('should allow unpaused getVersion() function to be exectuted', async () => {
+            it('should allow unpaused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
                     kittyMarketplaceV2.unpause(),
-                    "Failed to unpause contract!"
+                    "Failed to put contract into 'unpaused' state!"
                 )
-
+                let paused = await kittyMarketplaceV2.paused()
+                assert.deepEqual(
+                    Boolean(paused), 
+                    false, 
+                    "kittyMarketplaceV2 is NOT in expected 'unpaused' state!"
+                )
                 await truffleAssert.passes(
                     kittyMarketplaceV2.getVersion(),
                     "Failed to execute unpaused getVersion() function!"

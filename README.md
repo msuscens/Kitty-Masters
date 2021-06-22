@@ -184,7 +184,7 @@ and contract upgrade:
    Note: See this guide:
    https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable
 
-8. Added 'pausable' capability to the KittyContract
+8. Add 'pausable' capability to the KittyContract
     a. Add ERC721PausableUpgradeable was an extension contract to the existing
         ERC721Upgradeable, ie. KittyContract now inherits from both and 
         overrides the multiply inherited function _beforeTokenTransfer(...)
@@ -206,6 +206,7 @@ and contract upgrade:
         Truflle Tests or the Truffle console.  However, left the (not working)
         tests/proxy admin function calls comment-out in test script.
  
+
 9. Write initial Truffle tests for KittyMarketplace (kittyMarketplace_test.js)
     a. Initial state tests
     b. Test structure for contract's functionality - specific tests TBD
@@ -236,4 +237,16 @@ and contract upgrade:
         address of the referenced KittyContract
     b. Update the tests (kittyMarketplace_test.js) to check that the same address
         for KittyContract is held by KittyMarketplace post a contract upgrade.
+
+12. Add 'pausable' capability to the KittyMarketplace contract
+    a. Add PausableUpgradeable as a Kittymarketplace inherrited parent contract
+        ie. KittyMarketplace inherits from both OZ contracts OwnableUpgradeable 
+        and PausableUpgradeable. 
+        ["@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol"]
+    b. Update KittyMarketplaceV2 to add the new functions: pause() and unpause()
+        Give the pause() function the modifiy 'whenNotPaused' and the unpause()
+        function the modifier 'whenPaused'.  Add the 'whenNotPaused' modifier
+        to the getVersion() function.
+    c. Update Truffle tests (kittyMarketplace_test.js) so that the 'pausable' 
+        functional tests are executed (no longer skipped) and check they pass.
 

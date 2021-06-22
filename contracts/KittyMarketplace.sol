@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.5;
 
-
 import "./IKittyMarketplace.sol";
 import "./KittyContract.sol"; 
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
-contract KittyMarketplace is OwnableUpgradeable, IKittyMarketplace {
+contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMarketplace {
 
     KittyContract private _kittyContract;
 

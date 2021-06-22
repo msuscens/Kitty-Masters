@@ -20,11 +20,10 @@ contract KittyMarketplaceV2 is KittyMarketplace {
         _version = number;
     }
 
-    function getVersion() public view  returns (uint) {
+    function getVersion() public view whenNotPaused returns (uint) {
         return _version;
     }
 
-/*
     function pause() public onlyOwner whenNotPaused {
         _pause();
     }
@@ -32,5 +31,4 @@ contract KittyMarketplaceV2 is KittyMarketplace {
     function unpause() public onlyOwner whenPaused {
         _unpause();
     }
-*/
 }
