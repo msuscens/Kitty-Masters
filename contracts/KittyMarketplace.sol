@@ -43,6 +43,16 @@ contract KittyMarketplace is OwnableUpgradeable, IKittyMarketplace {
     }
 
 
+    function getKittyContract()
+        override
+        external
+        view
+        returns(address kittyContract)
+    {
+        return(address(_kittyContract));
+    }
+
+
     function getOffer(uint256 idOfToken)
         override
         external

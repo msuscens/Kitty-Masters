@@ -230,3 +230,10 @@ and contract upgrade:
     f. Update client/assets/contractInterface/abi.js (and contract addresses
         in client/assets/contractInterfaceinterface.js). Run/tested the
         application using the website.
+
+11. Add upgrade test to check linked KittyContract address is maintained
+    a. Add new getKittyContract() function to KittyMarketplace that returns the
+        address of the referenced KittyContract
+    b. Update the tests (kittyMarketplace_test.js) to check that the same address
+        for KittyContract is held by KittyMarketplace post a contract upgrade.
+

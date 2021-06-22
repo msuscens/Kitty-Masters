@@ -22,16 +22,12 @@ contract("KittyMarketplace", async accounts => {
 
         kittyContract = await KittyContract.deployed()
 
-        // Deploy the Marketplace (before refactoring to make contract upgradeable)
         /*
+        // Deploy the Marketplace (before refactoring to make contract upgradeable)
         kittyMarketplace = await KittyMarketplace.deployed()
         */
 
-        // Deploys kittyMarketplace 'logic'' contract (with a Truffle proxy) - 
-        // NB 'deployProxy' automatically calls the contract's initialize(...)
-        // function with the given arguments. If function is not named
-        // 'initialize(...)' it's actual name can be specified with the
-        // optional {initializer: '<function name>'} parameter.
+        // Deploy kittyMarketplace 'logic'' contract (with a Truffle proxy) - 
         kittyMarketplace = await deployProxy(
             KittyMarketplace,
             [kittyContract.address],
@@ -52,9 +48,8 @@ contract("KittyMarketplace", async accounts => {
             assert.equal(owner, accounts[0])
         })
 
-        it.skip ("should be associated with correct KittyContract", async () => {
+        it("should be associated with correct KittyContract", async () => {
 
-            // *** TODO: Implement kittyMarketplace.getKittyContract() getter function ***
             let linkedKittyContract
             await truffleAssert.passes(
                 linkedKittyContract = await kittyMarketplace.getKittyContract(),
@@ -187,11 +182,10 @@ contract("KittyMarketplace", async accounts => {
         before(async function() {
             // Get contract's state (before upgrade)
             ownerV1 = await kittyMarketplace.owner()
-            // linkedKittyContractV1 = await kittyMarketplace.getKittyContract()  // *** TODO Implement getKittyContract() ***
+            linkedKittyContractV1 = await kittyMarketplace.getKittyContract()
             kittiesForSaleV1 = await kittyMarketplace.getAllTokenOnSale()
 
             // Upgrade to new version of KittyMarketplace (V2)
-            // Note: upgradeProxy returns the proxy
             kittyMarketplaceV2 = await upgradeProxy(kittyMarketplace.address, KittyMarketplaceV2)
         })
 
@@ -208,13 +202,13 @@ contract("KittyMarketplace", async accounts => {
                 )
             })
 
-            it.skip('should have the same Kitty contract linked to it', async () => {
+            it('should have the same KittyContract address', async () => {
 
                 const linkedKittyContractV2 = await kittyMarketplaceV2.getKittyContract()
                 assert.deepEqual(
                     linkedKittyContractV2, 
                     linkedKittyContractV1, 
-                    "Linked KittyContract has changed!"
+                    "Associated KittyContract has changed!"
                 )
             })
 

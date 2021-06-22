@@ -18,6 +18,11 @@ interface IKittyMarketplace {
     function setKittyContract(address _kittyContractAddress) external;
 
     /**
+    * Get the current KittyContract address held by the Marketplace contract.
+     */
+    function getKittyContract() external view returns(address kittyContractAddress);
+
+    /**
     * Get the details about a offer for _tokenId. Throws an error if there is no active offer for _tokenId.
      */
     function getOffer(uint256 _tokenId) external view returns ( address seller, uint256 price, uint256 index, uint256 tokenId, bool active);
