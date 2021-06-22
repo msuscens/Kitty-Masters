@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.5;
 
-
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
+
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
 
-
-contract KittyContract is OwnableUpgradeable, ERC721Upgradeable {
+contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableUpgradeable {
 
     struct Kitty {
         uint256 genes;
@@ -49,7 +49,7 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable {
 
 // Public & external functions
 
-    function initialize(
+    function init_KittyContract(
         string memory tokenName, 
         string memory tokenSymbol
     )
@@ -58,11 +58,21 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable {
     {
         OwnableUpgradeable.__Ownable_init();
         ERC721Upgradeable.__ERC721_init(tokenName, tokenSymbol);
+        ERC721PausableUpgradeable.__ERC721Pausable_init();
         _name = tokenName;
         _symbol = tokenSymbol;
 
         _GEN0_LIMIT = 10;
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
+    }
+
+
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+        internal
+        virtual
+        override(ERC721Upgradeable, ERC721PausableUpgradeable) 
+    {
+        super._beforeTokenTransfer(from, to, amount);
     }
 
 

@@ -183,8 +183,25 @@ and contract upgrade:
    Note: See this guide:
    https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable
 
+8. Added 'pausable' capability to the KittyContract
+    a. Add ERC721PausableUpgradeable was an extension contract to the existing
+        ERC721Upgradeable, ie. KittyContract now inherrits from both and 
+        overrides the multiply inherrited function _beforeTokenTransfer(...)
+    b. Create new KittyContractV2 contract that inherrits from KittyContract 
+        and calls the KittyContract initialiser from its own initialize()
+        function.  KittyContractV2 defines the new functions: getVersion(),
+        setVersion(), pause(), and unpause().
+    c. Renamed KittyContract's initialize() function to 'init_KittyContract()'
+        and refactored the Truffle tests (kittyContract_test.js) and migration
+        file (2_token_migrations.js) to pass this (non-default) function name
+        to 'deployProxy()' using the {initializer: 'init_KittyContract'}
+        argument.
+    c. Revised Truffle tests to test 'pausable' functionality. And adding the 
+        'whenNotPaused' modifer to KittyContractV2's getVersion() function.
 
-
-
-
+    Note: Added Truffle tests to check the Proxy's admin functions but the
+        'deployProxy()' and 'upgradeProxy()' functions don't expose the admin
+        functions and so it appears that admin functions are not callable via
+        Truflle Tests or the Truffle console.  However, left the (not working)
+        tests/proxy admin function calls comment-out in test script.
  

@@ -30,8 +30,15 @@ contract("KittyContract", async accounts => {
         */
 
         // Deploys KittyContract 'logic'' contract (together with a Truffle proxy) - 
-        // NB 'deployProxy' automatically calls initialize with given arguments
-        kittyContract = await deployProxy(KittyContract, [tokenName, tokenSymbol])
+        // NB 'deployProxy' automatically calls initialize with given arguments and
+        // calls the initializer function, which if not called initializer then it's
+        // name is specified with the {initializer: '<function name>'} parameter.
+        kittyContract = await deployProxy(
+            KittyContract,
+            [tokenName, tokenSymbol],
+            {initializer: 'init_KittyContract', from: accounts[0]}
+        )
+
     })
 
       
@@ -79,7 +86,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nGeneration 0 Kitties", () => {
+    describe.skip("\nGeneration 0 Kitties", () => {
 
         it("should only allow contract owner to create a Gen0 kitty", async () => {
 
@@ -94,7 +101,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nBreed Kitties", () => {
+    describe.skip("\nBreed Kitties", () => {
 
         it("should be able to breed two kitties to create a newborn kitty", async () => {
 
@@ -118,7 +125,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nTransfer Kitties ", () => {
+    describe.skip("\nTransfer Kitties ", () => {
 
         it("should be able to transfer ownership of a kitty to a new owner", async () => {
 
@@ -151,7 +158,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nOwner grants 'Operator Approval'", () => {
+    describe.skip("\nOwner grants 'Operator Approval'", () => {
 
 
         it("should be able to grant 'operator approval' on a single kitty", async () => {
@@ -175,7 +182,7 @@ contract("KittyContract", async accounts => {
 
     })
 
-    describe("\nAn 'Approved Operator'", () => {
+    describe.skip("\nApproved Operator", () => {
 
         it("should be able to transfer the kitty to another owner", async () => {
 
@@ -189,7 +196,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe("\nKittyContract has ERC165 supportsInterface()", () => {
+    describe.skip("\nKittyContract has ERC165 supportsInterface()", () => {
 
         it("should indicate that an unimplemented interface standard is NOT supported", async () => {
 
@@ -220,27 +227,92 @@ contract("KittyContract", async accounts => {
 
     })
 
-    describe("\nProxy Admin", () => {
+/*  *** Follwing test don't work as 'deployProxy()' doesn't expose the
+        proxy's admin functions.  Therefore it appears that this isn't
+        testable here with Truffle test or in Truffle console!??  ****
 
-        it('should allow (only) contract owner to invoke proxy admin functions', async () => {
+    describe('\nProxy Contract Administrator', () => {
 
-            // *** TODO ***
+        it('should be the only one able to change the Administrator', async () => {
+
+            await truffleAssert.reverts(
+                admin = kittyContract.changeAdmin(accounts[1], {from: accounts[1]}),
+                "Non-owner was able to change the Proxy administrator!"
+            )
+
+            // Change the administrator
+            await truffleAssert.passes(
+                admin = kittyContract.changeAdmin(accounts[1], {from: accounts[0]}),
+            )
+            let admin
+            await truffleAssert.passes(
+                admin = kittyContract.admin({from: accounts[1]})
+            )
             assert.equal(
-                false,
-                true
+                admin,
+                accounts[1]
+            )
+
+            // Change the administrator back again
+            await truffleAssert.passes(
+                admin = kittyContract.changeAdmin(accounts[0], {from: accounts[1]}),
+            )
+            await truffleAssert.passes(
+                admin = kittyContract.admin({from: accounts[0]})
+            )
+            assert.equal(
+                admin,
+                accounts[0]
             )
         })
+
+        it('should be the only one able to change the implementation (logic contract) address', async () => {
+
+            await truffleAssert.reverts(
+                kittyContract.upgradeTo("0x", {from: accounts[1]}),
+                "Non-Admin updated the implementation (logic contract) address!"
+            )
+
+            // Change the implementation
+            let originalImplementation
+            await truffleAssert.passes(
+                originalImplementation = kittyContract.implementation({from: accounts[0]}),
+            )
+            await truffleAssert.passes(
+                kittyContract.upgradeTo("0x", {from: accounts[0]})
+            )
+            let newImplementation
+            await truffleAssert.passes(
+                newImplementation = kittyContract.implementation({from: accounts[0]}),
+            )
+            assert.equal(
+                newImplementation,
+                "0x"
+            )
+
+            // Change the implementation back again
+            await truffleAssert.passes(
+                kittyContract.upgradeTo(originalImplementation, {from: accounts[0]}),
+            )
+            await truffleAssert.passes(
+                newImplementation = kittyContract.implementation({from: accounts[0]})
+            )
+            assert.equal(
+                newImplementation,
+                originalImplementation
+            )
+        })
+
     })
+*/
 
-
-    // TODO: Enable (remove .skip) once we have a refactored contract for
-    // upgradeability a KittyContractV2 contract required to test upgradability
     describe('\nUpgraded to V2 Wallet', () => {
 
+        // let logicContractV1
         let ownerV1 
         let nameV1
         let symbolV1
-        let totalSupplyV1 
+        let totalSupplyV1
         let balanceAccount0V1
         let balanceAccount1V1
 
@@ -248,6 +320,7 @@ contract("KittyContract", async accounts => {
 
         before(async function() {
             // Get contract's state (before upgrade)
+            // logicContractV1 = await kittyContract.implementation({from: accounts[0]})
             ownerV1 = await kittyContract.owner()
             nameV1 = await kittyContract.name()
             symbolV1 = await kittyContract.symbol()
@@ -261,7 +334,25 @@ contract("KittyContract", async accounts => {
             console.log("Upgrade to KittyContractV2 completed!")
         })
 
-        describe('Keeps pre-updgrade state variables', () => {
+
+
+        describe('Proxy\'s Post-updgrade state variables', () => {
+/* *** See above - Following test doesn't work
+            it('should have an updated logic contract address', async () => {
+
+                const logicContractV2 = await kittyContractV2.implementation({from: accounts[0]})
+                assert.deepEqual(
+                    logicContractV2,
+                    kittyContractV2.address,
+                    "Logic contract addresses of V1 and V2 are the same!"
+                )
+                assert.deepNotEqual(
+                    logicContractV2,
+                    logicContractV1,
+                    "Logic contract address has NOT changed!"
+                )
+            })
+*** */
 
             it('should have the same contract owner', async () => {
 
@@ -323,19 +414,6 @@ contract("KittyContract", async accounts => {
         })
 
 
-        describe('Proxy Admin', () => {
-        // Repeated from above - TODO: Cut & paste it here once developed
-            it('should allow (only) contract owner to invoke proxy admin functions', async () => {
-
-                // *** TODO ***
-                assert.equal(
-                    false,
-                    true
-                )
-            })
-        })
-
-
         describe('Added Functionality', () => {
 
             it('should allow (only) the owner to set the contract version number', async () => {
@@ -360,37 +438,30 @@ contract("KittyContract", async accounts => {
                 )
             })
 
-            it('should NOT allow paused transfer() function to be exectuted', async () => {
+            it('should NOT allow paused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
                     kittyContractV2.pause(),
                     "Failed to pause contract!"
                 )
 
-                //transfer(address to, uint256 tokenId)
-                const tokenId = 1   // Ensure token is owned by account
                 await truffleAssert.reverts(
-                    kittyContractV2.transfer(account[0], tokenId)
+                    kittyContractV2.getVersion()
                 )
-
             })
 
-            it('should allow unpaused transfer() function to be exectuted', async () => {
+            it('should allow unpaused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
                     kittyContractV2.unpause(),
                     "Failed to unpause contract!"
                 )
 
-                const tokenId = 1   // Ensure token is owned by account - REFACTOR (as repeated above)
                 await truffleAssert.passes(
-                    kittyContractV2.transfer(account[0], tokenId),
-                    "Failed to execute unpaused 'whenNotPaused' function!"
+                    kittyContractV2.getVersion(),
+                    "Failed to execute unpaused getVersion() function!"
                 )
-
             })
-
         })
-
     })
 })

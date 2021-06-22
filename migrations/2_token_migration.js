@@ -11,8 +11,7 @@ module.exports = async function (deployer, network, accounts) {
   kittyProxyInstance = await deployProxy(
     KittyContract, 
     [tokenName, tokenSymbol], 
-    { deployer }
+    { deployer, initializer: 'init_KittyContract', from: accounts[0]}
   )
-  console.log("Deployed (proxy & logic), kittyProxyInstance:", kittyProxyInstance.address)
   
 }
