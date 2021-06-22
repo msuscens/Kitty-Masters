@@ -6,7 +6,6 @@
 const truffleAssert = require("truffle-assertions")
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 
-//const Utilities = artifacts.require("ArrayUtils")
 const KittyContract = artifacts.require("KittyContract")
 const KittyContractV2 = artifacts.require("KittyContractV2")
 
@@ -30,9 +29,10 @@ contract("KittyContract", async accounts => {
         */
 
         // Deploys KittyContract 'logic'' contract (together with a Truffle proxy) - 
-        // NB 'deployProxy' automatically calls initialize with given arguments and
-        // calls the initializer function, which if not called initializer then it's
-        // name is specified with the {initializer: '<function name>'} parameter.
+        // NB 'deployProxy' automatically calls the contract's initialize(...)
+        // function with the given arguments. If function is not named
+        // 'initialize(...)' it's actual name can be specified with the
+        // optional {initializer: '<function name>'} parameter.
         kittyContract = await deployProxy(
             KittyContract,
             [tokenName, tokenSymbol],
@@ -86,7 +86,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe.skip("\nGeneration 0 Kitties", () => {
+    describe.skip("Generation 0 Kitties", () => {
 
         it("should only allow contract owner to create a Gen0 kitty", async () => {
 
@@ -101,7 +101,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe.skip("\nBreed Kitties", () => {
+    describe.skip("Breed Kitties", () => {
 
         it("should be able to breed two kitties to create a newborn kitty", async () => {
 
@@ -125,7 +125,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe.skip("\nTransfer Kitties ", () => {
+    describe.skip("Transfer Kitties ", () => {
 
         it("should be able to transfer ownership of a kitty to a new owner", async () => {
 
@@ -158,7 +158,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe.skip("\nOwner grants 'Operator Approval'", () => {
+    describe.skip("Owner grants 'Operator Approval'", () => {
 
 
         it("should be able to grant 'operator approval' on a single kitty", async () => {
@@ -182,7 +182,7 @@ contract("KittyContract", async accounts => {
 
     })
 
-    describe.skip("\nApproved Operator", () => {
+    describe.skip("Approved Operator", () => {
 
         it("should be able to transfer the kitty to another owner", async () => {
 
@@ -196,7 +196,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe.skip("\nKittyContract has ERC165 supportsInterface()", () => {
+    describe.skip("KittyContract has ERC165 supportsInterface()", () => {
 
         it("should indicate that an unimplemented interface standard is NOT supported", async () => {
 
@@ -306,7 +306,7 @@ contract("KittyContract", async accounts => {
     })
 */
 
-    describe('\nUpgraded to V2 Wallet', () => {
+    describe('Upgraded to KittyContract Version 2', () => {
 
         // let logicContractV1
         let ownerV1 
@@ -331,12 +331,10 @@ contract("KittyContract", async accounts => {
             // Upgrade to new version of KityyContract (V2)
             // Note: upgradeProxy returns the proxy
             kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
-            console.log("Upgrade to KittyContractV2 completed!")
         })
 
-
-
-        describe('Proxy\'s Post-updgrade state variables', () => {
+        
+        describe('Post-upgrade State Variables', () => {
 /* *** See above - Following test doesn't work
             it('should have an updated logic contract address', async () => {
 
@@ -424,7 +422,7 @@ contract("KittyContract", async accounts => {
 
                 await truffleAssert.passes(
                     kittyContractV2.setVersion(2),
-                    "Owner was unable to initially set the wallet's version number"
+                    "Owner was unable to set the wallet's version number"
                 )
             })
 

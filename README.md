@@ -143,8 +143,9 @@ and contract upgrade:
             
 6. Write initial Truffle tests for KittyContract (kittyContract_test.js)
     a. Initial state tests
-    b. Test structure for functionality - specific test not yet written
-    c. Tests for upgrade (commented-out/skipped until contract refactored)
+    b. Test structure for contract's functionality - specific tests TBD
+    c. Tests for upgrade (commented-out/skipped until contract is 
+    refactored to be upgrade compatible)
     Note: To link libraries to contracts within my Truffle Test script, used
     the method given here:
     https://forum.openzeppelin.com/t/trouble-linking-library-contracts-with-openzeppelin-test-environment/2235/3
@@ -205,3 +206,8 @@ and contract upgrade:
         Truflle Tests or the Truffle console.  However, left the (not working)
         tests/proxy admin function calls comment-out in test script.
  
+9. Write initial Truffle tests for KittyMarketplace (kittyMarketplace_test.js)
+    a. Initial state tests
+    b. Test structure for contract's functionality - specific tests TBD
+    c. Tests for contract upgrade (commented-out/skipped until contract is
+    refactored to be upgrade compatible)
