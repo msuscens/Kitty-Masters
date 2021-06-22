@@ -116,6 +116,19 @@ const abi = {
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "from",
@@ -138,6 +151,19 @@ const abi = {
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "owner",
       "outputs": [
@@ -145,6 +171,20 @@ const abi = {
           "internalType": "address",
           "name": "",
           "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
         }
       ],
       "stateMutability": "view",
@@ -204,7 +244,7 @@ const abi = {
           "type": "string"
         }
       ],
-      "name": "initialize",
+      "name": "init_KittyContract",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -578,17 +618,6 @@ const abi = {
   ],
   marketplace: [
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "kittyContractAddress",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {
@@ -662,6 +691,19 @@ const abi = {
         }
       ],
       "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "kittyContractAddress",
+          "type": "address"
+        }
+      ],
+      "name": "init_KittyMarketplace",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

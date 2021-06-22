@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.5;
 
+
 import "./IKittyMarketplace.sol";
 import "./KittyContract.sol"; 
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract KittyMarketplace is Ownable, IKittyMarketplace {
+contract KittyMarketplace is OwnableUpgradeable, IKittyMarketplace {
 
     KittyContract private _kittyContract;
 
@@ -24,9 +25,11 @@ contract KittyMarketplace is Ownable, IKittyMarketplace {
 
 // Public & external functions
 
-    constructor(address kittyContractAddress)
-        // Ownable()
+    function init_KittyMarketplace(address kittyContractAddress)
+        public
+        initializer
     {
+        OwnableUpgradeable.__Ownable_init();
         setKittyContract(kittyContractAddress);
     }
 

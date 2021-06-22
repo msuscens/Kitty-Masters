@@ -3,12 +3,12 @@ const KittyContract = artifacts.require("KittyContract")
 
 const tokenName = "Mark-Crypto-Kitty"
 const tokenSymbol = "MCK"
-let kittyProxyInstance
+let kittyInstance
 
 module.exports = async function (deployer, network, accounts) {
 
-  // Deploy the Wallet proxy with associated Logic contract and initialize
-  kittyProxyInstance = await deployProxy(
+  // Deploy the Logic contract and initialize (with associated proxy)
+  kittyInstance = await deployProxy(
     KittyContract, 
     [tokenName, tokenSymbol], 
     { deployer, initializer: 'init_KittyContract', from: accounts[0]}

@@ -8,7 +8,7 @@ const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 
 const KittyContract = artifacts.require("KittyContract")
 const KittyMarketplace = artifacts.require("KittyMarketplace")
-//const KittyMarketplaceV2 = artifacts.require("KittyMarketplaceV2")
+const KittyMarketplaceV2 = artifacts.require("KittyMarketplaceV2")
 
 
 contract("KittyMarketplace", async accounts => {
@@ -20,22 +20,24 @@ contract("KittyMarketplace", async accounts => {
 
     before(async function() {
 
-        // Deploy the Marketplace (before refactoring to make contract upgradeable)
         kittyContract = await KittyContract.deployed()
+
+        // Deploy the Marketplace (before refactoring to make contract upgradeable)
+        /*
         kittyMarketplace = await KittyMarketplace.deployed()
+        */
 
         // Deploys kittyMarketplace 'logic'' contract (with a Truffle proxy) - 
         // NB 'deployProxy' automatically calls the contract's initialize(...)
         // function with the given arguments. If function is not named
         // 'initialize(...)' it's actual name can be specified with the
         // optional {initializer: '<function name>'} parameter.
-        /* *** UNCOMMENT ONCE CONTRACT IS REFACTORED TO BE AN UPGRADEABLE LOGIC ****
         kittyMarketplace = await deployProxy(
             KittyMarketplace,
             [kittyContract.address],
             {initializer: 'init_KittyMarketplace', from: accounts[0]}
         )
-        ***** */
+
     })
 
       
@@ -174,7 +176,7 @@ contract("KittyMarketplace", async accounts => {
         //  *** TODO ADD MORE TESTS HERE .....
     })
 
-    describe.skip('Upgraded to KittyMarketplace Version 2', () => {
+    describe('Upgraded to KittyMarketplace Version 2', () => {
 
         let ownerV1 
         let linkedKittyContractV1
@@ -185,7 +187,7 @@ contract("KittyMarketplace", async accounts => {
         before(async function() {
             // Get contract's state (before upgrade)
             ownerV1 = await kittyMarketplace.owner()
-            linkedKittyContractV1 = await kittyMarketplace.getKittyContract()
+            // linkedKittyContractV1 = await kittyMarketplace.getKittyContract()  // *** TODO Implement getKittyContract() ***
             kittiesForSaleV1 = await kittyMarketplace.getAllTokenOnSale()
 
             // Upgrade to new version of KittyMarketplace (V2)
@@ -206,7 +208,7 @@ contract("KittyMarketplace", async accounts => {
                 )
             })
 
-            it('should have the same Kitty contract linked to it', async () => {
+            it.skip('should have the same Kitty contract linked to it', async () => {
 
                 const linkedKittyContractV2 = await kittyMarketplaceV2.getKittyContract()
                 assert.deepEqual(
@@ -218,7 +220,7 @@ contract("KittyMarketplace", async accounts => {
 
             it('should have the same Kitty\'s for sale', async () => {
 
-                const kittiesForSaleV2 = await kittyContractV2.getAllTokenOnSale()
+                const kittiesForSaleV2 = await kittyMarketplace.getAllTokenOnSale()
                 assert.deepEqual(
                     kittiesForSaleV2, 
                     kittiesForSaleV1, 
@@ -252,7 +254,7 @@ contract("KittyMarketplace", async accounts => {
                 )
             })
 
-            it('should NOT allow paused getVersion() function to be exectuted', async () => {
+            it.skip('should NOT allow paused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
                     kittyMarketplaceV2.pause(),
@@ -264,7 +266,7 @@ contract("KittyMarketplace", async accounts => {
                 )
             })
 
-            it('should allow unpaused getVersion() function to be exectuted', async () => {
+            it.skip('should allow unpaused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
                     kittyMarketplaceV2.unpause(),

@@ -122,14 +122,14 @@ and contract upgrade:
     b. Remove depreciated ethereum.enable() method, replacing it with:
         ethereum.request({ method: 'eth_accounts' })
 
-5. Update to use (latest) OpenZeppelin contracts
-    a. Install OpenZeppelin contracts (v4.1.0):
+5. Update KittyContract & KittyMArketplace to use OpenZeppelin contracts
+    a. Install latest OpenZeppelin contracts (v4.1.0):
         $ npm install @openzeppelin/contracts
     b. Replace local versions of IERC721.sol, IERC721Receiver.sol, and
         Ownable.sol (in KittyMasters/contracts) with @openZeppelin versions
         of each of these interfaces/contracts (in the directory:
         node_modules/@openzeppelin/contracts).
-        This required improving (correcting!) the inherritence structure 
+        This required improving (correcting!) the inheritance structure 
         (from contracts and interfaces), ie, they are now as follows:
             interface IKittyContract is IERC721 { ... }
             contract KittyContract is Ownable, IKittyContract { ... }
@@ -155,7 +155,7 @@ and contract upgrade:
     a. Replace constructor with 'initialize()' function, adding 'intializer'
         modifier (from OZ 'Initializable' base contract).  (And taking care
         to mannually call the initialzers of all parent contracts.)
-    b. Reworked the KittyContract's inherritence hierarchy (and interface) to
+    b. Reworked the KittyContract's inheritance hierarchy (and interface) to
         compile with OZ Upgradeable base contract versions for ERC721 
         (ERC721Upgradeable) and Ownable (OwnableUpgradeable), these are under:
         @openzeppelin/contracts-upgradeable/ subdirectories.
@@ -186,9 +186,9 @@ and contract upgrade:
 
 8. Added 'pausable' capability to the KittyContract
     a. Add ERC721PausableUpgradeable was an extension contract to the existing
-        ERC721Upgradeable, ie. KittyContract now inherrits from both and 
-        overrides the multiply inherrited function _beforeTokenTransfer(...)
-    b. Create new KittyContractV2 contract that inherrits from KittyContract 
+        ERC721Upgradeable, ie. KittyContract now inherits from both and 
+        overrides the multiply inherited function _beforeTokenTransfer(...)
+    b. Create new KittyContractV2 contract that inherits from KittyContract 
         and calls the KittyContract initialiser from its own initialize()
         function.  KittyContractV2 defines the new functions: getVersion(),
         setVersion(), pause(), and unpause().
@@ -211,3 +211,22 @@ and contract upgrade:
     b. Test structure for contract's functionality - specific tests TBD
     c. Tests for contract upgrade (commented-out/skipped until contract is
     refactored to be upgrade compatible)
+
+10. Refactor KittyMarketplace to be contract upgradeable
+   (i.e. to follow OpenZeppelin's "transparent upgradeable proxy" pattern)
+    a. Replace the Ownable inherited base-contract with OwnableUpgradeable
+        [ @openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol ]
+    b. Replace constructor with an 'initialize' function, adding 'intializer'
+        modifier (from OZ 'Initializable' base-contract):
+        function init_KittyMarketplace(address memory kittyContractAddress)
+    c. Update KittyMarketplace migrations script (2_market_migrations.js) 
+        to deploy as upgradeable contract (using deployProxy function).
+    d. Update the truffle tests (kittyMarketplace_test.js) to deploy 
+        KittyMarketplace as an upgradeable contract, using deployProxy() 
+        function.  Check that the 'Initial State' tests still pass.
+    e. Create a KittyMarketplaceV2 (inherits from KittyMarketplace) with
+        added functions setVersion(), getVersion() and version variable.
+        Check relevant tests pass under: 'Upgraded to KittyMarketplace V2'.
+    f. Update client/assets/contractInterface/abi.js (and contract addresses
+        in client/assets/contractInterfaceinterface.js). Run/tested the
+        application using the website.
