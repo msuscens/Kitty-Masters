@@ -19,26 +19,16 @@ contract("KittyContract", async accounts => {
     let kittyContract
     before(async function() {
 
-        // Contract deployment with linked library
-        // (before refactoring to make upgradeable)
-        /*
-        const myLibrary = await Utilities.new();
-        await KittyContract.detectNetwork();
-        await KittyContract.link('Utilities', myLibrary.address);
-        kittyContract = await KittyContract.new(tokenName, tokenSymbol);
-        */
-
-        // Deploys KittyContract 'logic'' contract (together with a Truffle proxy) - 
+        // Deploys KittyContract 'logic'' contract (together with a proxy)
         // NB 'deployProxy' automatically calls the contract's initialize(...)
         // function with the given arguments. If function is not named
-        // 'initialize(...)' it's actual name can be specified with the
-        // optional {initializer: '<function name>'} parameter.
+        // 'initialize' it's actual name can be specified with the optional
+        // {initializer: '<function name>'} parameter.
         kittyContract = await deployProxy(
             KittyContract,
             [tokenName, tokenSymbol],
             {initializer: 'init_KittyContract', from: accounts[0]}
         )
-
     })
 
       
@@ -50,7 +40,7 @@ contract("KittyContract", async accounts => {
                 owner = await kittyContract.owner(),
                 "Unable to get owner!"
             )
-            assert.equal(owner, accounts[0])
+            assert.deepStrictEqual(owner, accounts[0])
         })
 
         it ("should have the expected token name", async () => {
@@ -59,7 +49,7 @@ contract("KittyContract", async accounts => {
                 name = await kittyContract.name(),
                 "Unable to get token name!"
             )
-            assert.equal(name, tokenName)
+            assert.deepStrictEqual(name, tokenName)
         })
 
         it ("should have the expected token symbol", async () => {
@@ -68,7 +58,7 @@ contract("KittyContract", async accounts => {
                 symbol = await kittyContract.symbol(),
                 "Unable to get token symbol!"
             )
-            assert.equal(symbol, tokenSymbol)
+            assert.deepStrictEqual(symbol, tokenSymbol)
         })
 
         it ("should have an initial total supply of 0 tokens", async () => {
@@ -77,7 +67,7 @@ contract("KittyContract", async accounts => {
                 total = await kittyContract.totalSupply(),
                 "Unable to get token's total supply"
             )
-            assert.equal(
+            assert.deepStrictEqual(
                 Number(total),
                 0,
                 `There are ${total} tokens but expected 0!`
@@ -91,13 +81,11 @@ contract("KittyContract", async accounts => {
         it("should only allow contract owner to create a Gen0 kitty", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
-
-        //  *** TODO ADD MORE TESTS HERE .....
     })
 
 
@@ -106,7 +94,7 @@ contract("KittyContract", async accounts => {
         it("should be able to breed two kitties to create a newborn kitty", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -115,13 +103,11 @@ contract("KittyContract", async accounts => {
         it("should be maintain kitty's details (eg. mum, dad, generation)", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
-
-        //  *** TODO ADD MORE TESTS HERE .....
     })
 
 
@@ -130,7 +116,7 @@ contract("KittyContract", async accounts => {
         it("should be able to transfer ownership of a kitty to a new owner", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -139,32 +125,29 @@ contract("KittyContract", async accounts => {
         it("should keep track of who owns each kitty", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
 
-        it("should keep track of how many kitties any particular address owns", async () => {
+        it("should maintain number of kitties each address owns", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
-
-        //  *** TODO ADD MORE TESTS HERE .....
     })
 
 
     describe.skip("Owner grants 'Operator Approval'", () => {
 
-
         it("should be able to grant 'operator approval' on a single kitty", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -173,26 +156,24 @@ contract("KittyContract", async accounts => {
         it("should be able to grant 'operator approval' on all of their kitties", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )            
         })
-
-
     })
+
 
     describe.skip("Approved Operator", () => {
 
         it("should be able to transfer the kitty to another owner", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
-
     })
 
 
@@ -201,7 +182,7 @@ contract("KittyContract", async accounts => {
         it("should indicate that an unimplemented interface standard is NOT supported", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -210,7 +191,7 @@ contract("KittyContract", async accounts => {
         it("should indicate that contract is XXX interface standard compliant", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -219,96 +200,16 @@ contract("KittyContract", async accounts => {
         it("should indicate that contract is YYY interface standard compliant", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
-
     })
 
-/*  *** Follwing test don't work as 'deployProxy()' doesn't expose the
-        proxy's admin functions.  Therefore it appears that this isn't
-        testable here with Truffle test or in Truffle console!??  ****
-
-    describe('\nProxy Contract Administrator', () => {
-
-        it('should be the only one able to change the Administrator', async () => {
-
-            await truffleAssert.reverts(
-                admin = kittyContract.changeAdmin(accounts[1], {from: accounts[1]}),
-                "Non-owner was able to change the Proxy administrator!"
-            )
-
-            // Change the administrator
-            await truffleAssert.passes(
-                admin = kittyContract.changeAdmin(accounts[1], {from: accounts[0]}),
-            )
-            let admin
-            await truffleAssert.passes(
-                admin = kittyContract.admin({from: accounts[1]})
-            )
-            assert.equal(
-                admin,
-                accounts[1]
-            )
-
-            // Change the administrator back again
-            await truffleAssert.passes(
-                admin = kittyContract.changeAdmin(accounts[0], {from: accounts[1]}),
-            )
-            await truffleAssert.passes(
-                admin = kittyContract.admin({from: accounts[0]})
-            )
-            assert.equal(
-                admin,
-                accounts[0]
-            )
-        })
-
-        it('should be the only one able to change the implementation (logic contract) address', async () => {
-
-            await truffleAssert.reverts(
-                kittyContract.upgradeTo("0x", {from: accounts[1]}),
-                "Non-Admin updated the implementation (logic contract) address!"
-            )
-
-            // Change the implementation
-            let originalImplementation
-            await truffleAssert.passes(
-                originalImplementation = kittyContract.implementation({from: accounts[0]}),
-            )
-            await truffleAssert.passes(
-                kittyContract.upgradeTo("0x", {from: accounts[0]})
-            )
-            let newImplementation
-            await truffleAssert.passes(
-                newImplementation = kittyContract.implementation({from: accounts[0]}),
-            )
-            assert.equal(
-                newImplementation,
-                "0x"
-            )
-
-            // Change the implementation back again
-            await truffleAssert.passes(
-                kittyContract.upgradeTo(originalImplementation, {from: accounts[0]}),
-            )
-            await truffleAssert.passes(
-                newImplementation = kittyContract.implementation({from: accounts[0]})
-            )
-            assert.equal(
-                newImplementation,
-                originalImplementation
-            )
-        })
-
-    })
-*/
 
     describe('Upgraded to KittyContract Version 2', () => {
 
-        // let logicContractV1
         let ownerV1 
         let nameV1
         let symbolV1
@@ -320,7 +221,6 @@ contract("KittyContract", async accounts => {
 
         before(async function() {
             // Get contract's state (before upgrade)
-            // logicContractV1 = await kittyContract.implementation({from: accounts[0]})
             ownerV1 = await kittyContract.owner()
             nameV1 = await kittyContract.name()
             symbolV1 = await kittyContract.symbol()
@@ -328,34 +228,18 @@ contract("KittyContract", async accounts => {
             balanceAccount0V1 = await kittyContract.balanceOf( accounts[0])
             balanceAccount1V1 = await kittyContract.balanceOf( accounts[1])
 
-            // Upgrade to new version of KityyContract (V2)
-            // Note: upgradeProxy returns the proxy
+            // Upgrade to new version of KittyContract (V2)
+            // [Note: upgradeProxy() returns the proxy contract]
             kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
         })
 
 
-        describe('Post-upgrade State Variables', () => {
-/* *** See above - Following test doesn't work
-            it('should have an updated logic contract address', async () => {
-
-                const logicContractV2 = await kittyContractV2.implementation({from: accounts[0]})
-                assert.deepEqual(
-                    logicContractV2,
-                    kittyContractV2.address,
-                    "Logic contract addresses of V1 and V2 are the same!"
-                )
-                assert.deepNotEqual(
-                    logicContractV2,
-                    logicContractV1,
-                    "Logic contract address has NOT changed!"
-                )
-            })
-*** */
+        describe('Unchanged State Variables: Post-upgrade', () => {
 
             it('should have the same contract owner', async () => {
 
                 const ownerV2 = await kittyContractV2.owner()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     ownerV2,
                     ownerV1,
                     "Contract owner has changed!"
@@ -365,7 +249,7 @@ contract("KittyContract", async accounts => {
             it('should have the same token name', async () => {
 
                 const nameV2 = await kittyContractV2.name()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     nameV2, 
                     nameV1, 
                     "Token name has changed!"
@@ -375,7 +259,7 @@ contract("KittyContract", async accounts => {
             it('should have the same token symbol', async () => {
 
                 const symbolV2 = await kittyContractV2.symbol()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     symbolV2, 
                     symbolV1, 
                     "Token symbol has changed!"
@@ -385,7 +269,7 @@ contract("KittyContract", async accounts => {
             it('should have the same total supply', async () => {
 
                 const totalSupplyV2 = await kittyContractV2.totalSupply()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     totalSupplyV2, 
                     totalSupplyV1, 
                     "Total supply has changed!"
@@ -395,20 +279,19 @@ contract("KittyContract", async accounts => {
             it('should have the same owner\'s token balance', async () => {
 
                 const balanceAccount0V2 = await kittyContractV2.balanceOf(accounts[0])
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     balanceAccount0V2, 
                     balanceAccount0V1, 
                     "Owner account[0] token balance has changed!"
                 )
 
                 const balanceAccount1V2 = await kittyContractV2.balanceOf(accounts[1])
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     balanceAccount1V2, 
                     balanceAccount1V1, 
                     "Owner account[1] token balance has changed!"
                 )
             })
-
         })
 
 
@@ -429,7 +312,7 @@ contract("KittyContract", async accounts => {
             it('should be able to get the contract version number', async () => {
 
                 let version = await kittyContractV2.getVersion()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     Number(version), 
                     2, 
                     "KittyContract version is incorrect!"
@@ -438,16 +321,23 @@ contract("KittyContract", async accounts => {
 
             it('should NOT allow paused getVersion() function to be exectuted', async () => {
 
+                // Put contract into paused state
                 await truffleAssert.passes(
                     kittyContractV2.pause(),
                     "Failed to put contract into 'paused' state!"
                 )
-                let paused = await kittyContractV2.paused()
-                assert.deepEqual(
+                let paused
+                await truffleAssert.passes(
+                    paused = kittyContractV2.paused(),
+                    "Failed to get contract's paused state!"
+                )
+                assert.deepStrictEqual(
                     Boolean(paused), 
                     true, 
                     "kittyContractV2 is NOT in expected 'paused' state!"
                 )
+
+                // Check function modified with 'whenNotPaused' doesn't run
                 await truffleAssert.reverts(
                     kittyContractV2.getVersion()
                 )
@@ -460,7 +350,7 @@ contract("KittyContract", async accounts => {
                     "Failed to 'unpause' contract state!"
                 )
                 let paused = await kittyContractV2.paused()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     Boolean(paused), 
                     false, 
                     "kittyContractV2 is NOT in expected 'unpaused' state!"

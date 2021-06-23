@@ -7,6 +7,8 @@ const truffleAssert = require("truffle-assertions")
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 
 const KittyContract = artifacts.require("KittyContract")
+const KittyContractV2 = artifacts.require("KittyContractV2")
+
 const KittyMarketplace = artifacts.require("KittyMarketplace")
 const KittyMarketplaceV2 = artifacts.require("KittyMarketplaceV2")
 
@@ -22,18 +24,12 @@ contract("KittyMarketplace", async accounts => {
 
         kittyContract = await KittyContract.deployed()
 
-        /*
-        // Deploy the Marketplace (before refactoring to make contract upgradeable)
-        kittyMarketplace = await KittyMarketplace.deployed()
-        */
-
-        // Deploy kittyMarketplace 'logic'' contract (with a Truffle proxy) - 
+        // Deploy upgradeable kittyMarketplace 'logic'' contract (with a proxy) 
         kittyMarketplace = await deployProxy(
             KittyMarketplace,
             [kittyContract.address],
             {initializer: 'init_KittyMarketplace', from: accounts[0]}
         )
-
     })
 
       
@@ -45,7 +41,7 @@ contract("KittyMarketplace", async accounts => {
                 owner = await kittyMarketplace.owner(),
                 "Unable to get owner!"
             )
-            assert.equal(owner, accounts[0])
+            assert.deepStrictEqual(owner, accounts[0])
         })
 
         it("should be associated with correct KittyContract", async () => {
@@ -55,7 +51,7 @@ contract("KittyMarketplace", async accounts => {
                 linkedKittyContract = await kittyMarketplace.getKittyContract(),
                 "Unable to get KittyContract's address!"
             )
-            assert.equal(
+            assert.deepStrictEqual(
                 linkedKittyContract,
                 kittyContract.address
             )
@@ -69,7 +65,7 @@ contract("KittyMarketplace", async accounts => {
         it("should allow token owner to offer their kitty 'for sale'", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -78,7 +74,7 @@ contract("KittyMarketplace", async accounts => {
         it("should allow an approved operator to put up the kitty 'for sale'", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -87,7 +83,7 @@ contract("KittyMarketplace", async accounts => {
         it("should NOT allow non-owner/non-operator to put up a kitty 'for sale'", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -96,21 +92,21 @@ contract("KittyMarketplace", async accounts => {
         it("should allow (only) owner/operator to withdraw a kitty from sale", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
 
-        //  *** TODO ADD MORE TESTS HERE .....
     })
+
 
     describe.skip("Browsing the marketplace (to see whats for sale)", () => {
 
         it("should be able to get which kitties (token Ids) are for sale", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -119,7 +115,7 @@ contract("KittyMarketplace", async accounts => {
         it("should be able to get a kitty's 'for sale' price", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -128,15 +124,13 @@ contract("KittyMarketplace", async accounts => {
         it("should be able to get a 'for sale' kitty's personal details (dna, mum, dad, generation)", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
 
-        //  *** TODO ADD MORE TESTS HERE .....
     })
-
 
 
     describe.skip("Buying a Kitty (from the marketplace) ", () => {
@@ -144,7 +138,7 @@ contract("KittyMarketplace", async accounts => {
         it("should not be possible to buy your own kitty", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -153,7 +147,7 @@ contract("KittyMarketplace", async accounts => {
         it("should allow kitty to be bought providing that the buyer pays for it", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
@@ -162,14 +156,14 @@ contract("KittyMarketplace", async accounts => {
         it("should immediately remove any sold kitty from the marketplace", async () => {
 
             // *** TODO ***
-            assert.equal(
+            assert.deepStrictEqual(
                 false,
                 true
             )
         })
 
-        //  *** TODO ADD MORE TESTS HERE .....
     })
+
 
     describe('Upgraded to KittyMarketplace Version 2', () => {
 
@@ -195,7 +189,7 @@ contract("KittyMarketplace", async accounts => {
             it('should have the same contract owner', async () => {
 
                 const ownerV2 = await kittyMarketplaceV2.owner()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     ownerV2,
                     ownerV1,
                     "KittyMarketplace contract's owner has changed!"
@@ -205,7 +199,7 @@ contract("KittyMarketplace", async accounts => {
             it('should have the same KittyContract address', async () => {
 
                 const linkedKittyContractV2 = await kittyMarketplaceV2.getKittyContract()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     linkedKittyContractV2, 
                     linkedKittyContractV1, 
                     "Associated KittyContract has changed!"
@@ -215,7 +209,7 @@ contract("KittyMarketplace", async accounts => {
             it('should have the same Kitty\'s for sale', async () => {
 
                 const kittiesForSaleV2 = await kittyMarketplace.getAllTokenOnSale()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     kittiesForSaleV2, 
                     kittiesForSaleV1, 
                     "Kitty tokens that are 'for sale' have changed!"
@@ -223,6 +217,7 @@ contract("KittyMarketplace", async accounts => {
             })
 
         })
+
 
         describe('Added Functionality', () => {
 
@@ -241,7 +236,7 @@ contract("KittyMarketplace", async accounts => {
             it('should be able to get the contract version number', async () => {
 
                 let version = await kittyMarketplaceV2.getVersion()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     Number(version), 
                     2, 
                     "KittyMarketplace version is incorrect!"
@@ -255,7 +250,7 @@ contract("KittyMarketplace", async accounts => {
                     "Failed to put contract into 'paused' state!"
                 )
                 let paused = await kittyMarketplaceV2.paused()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     Boolean(paused), 
                     true, 
                     "kittyMarketplaceV2 is NOT in expected 'paused' state!"
@@ -272,7 +267,7 @@ contract("KittyMarketplace", async accounts => {
                     "Failed to put contract into 'unpaused' state!"
                 )
                 let paused = await kittyMarketplaceV2.paused()
-                assert.deepEqual(
+                assert.deepStrictEqual(
                     Boolean(paused), 
                     false, 
                     "kittyMarketplaceV2 is NOT in expected 'unpaused' state!"
@@ -284,6 +279,29 @@ contract("KittyMarketplace", async accounts => {
             })
         })
 
-    //  *** TODO ADD MORE TESTS HERE .....
+    })
+
+
+    describe("Upgraded KittyContract (used by KittyMarketplace)", () => {
+
+        it("(the KittyMarketplace) continues to reference correct KittyContract (when it is upgraded)", async () => {
+
+            // Get KittyMarketplace's current KittyContract (proxy) address
+            let proxyKittyContract
+            await truffleAssert.passes(
+                proxyKittyContract = await kittyMarketplace.getKittyContract(),
+                "Failed to get KittyNarketplace's current KittyContract address"
+            )
+
+            // Upgraded (proxy) to use new KittyContract logic contract (KittyContractV2)
+            let kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
+
+            // Check updgraded KittyContract (proxy) is at the same address
+            assert.deepStrictEqual(
+                proxyKittyContract, 
+                kittyContractV2.address, 
+                "KittyContract and KittyContractV2 have different proxy addresses!"
+            )
+        })
     })
 })

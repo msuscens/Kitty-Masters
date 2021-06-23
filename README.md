@@ -250,3 +250,7 @@ and contract upgrade:
     c. Update Truffle tests (kittyMarketplace_test.js) so that the 'pausable' 
         functional tests are executed (no longer skipped) and check they pass.
 
+13. Add test for KittyMarketplace to check it maintains access to an upgraded
+    KittyContract. Update all tests to use deepStrictEqual() and remove all
+    redundant comments.  Update website's contractInterface (abi.js and
+    interface.js files) with latest abi and (deployed) contract addresses.
