@@ -254,3 +254,294 @@ and contract upgrade:
     KittyContract. Update all tests to use deepStrictEqual() and remove all
     redundant comments.  Update website's contractInterface (abi.js and
     interface.js files) with latest abi and (deployed) contract addresses.
+
+
+HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
+14. Host website at: https://reverent-mirzakhani-acd298.netlify.app
+    a. Sign-up for netlify account (app.netlify.com) and login via GitHub
+    b Create a new site (with continuous deployment) called: "Kitty Masters"
+    c. Approve access to my KittyMasters GitHub repository
+    d. Set owner and Branch to deploy: master
+    e. Set Publish directory (be setitng base directory): client
+    f. Click 'Deploy Site'
+    g. Generated url: https://reverent-mirzakhani-acd298.netlify.app
+
+15. Testnet Deployment (to Ropsten, using Infura)
+    a. Configure truffle.config to:
+    i) Uncomment the lines:
+        // const HDWalletProvider = require('@truffle/hdwallet-provider');
+        // const infuraKey = "fj4jll3k.....";
+        //
+        // const fs = require('fs');
+        // const mnemonic = fs.readFileSync(".secret").toString().trim();
+    ii) Uncomment the lines under "module.exports = { ...", within section:
+        "networks: { ..." ie.:
+            // ropsten: {
+                // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
+                // network_id: 3,       // Ropsten's id
+                // gas: 5500000,        // Ropsten has a lower block limit than mainnet
+                // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+                // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+                // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+            // },
+    iii) Register with Infura (https://infura.io) / login in
+     iv) Configure a new project from the Infura dashboard: ie.
+            - click 'Ethereum' (left-side menu)
+            - click 'Create New Project'
+            - enter project name: Kitty Masters
+            - copy (infura) project secret and paste into truffle.config
+                (as infuraKey string value, see i above)
+            - copy (infura) project id and paste into truffle.config
+                (over 'YOUR-PROJECT-ID', see ii above)
+    b) Add truffle-config.js to the .gitignore file
+        (IMPORTANT: So as not to put project secret onto GitHub!!)
+
+16. Initial wallet and set .secret file
+    (i.e. for HDWalletProvider defined in truffle-config.js)
+    a. Install the wallet (using package.json - assumes npm is installed):
+        $ npm install @truffle/hdwallet-provider --save
+        (ie. @truffle/hdwallet-provider copied from truffle-config.js,
+        see 15ai above)
+        NOTE: --save option saves this into the package.json file
+        so someone downloads the repository from GitHub then any --save
+        packages will be installed automatically.
+    b. Create .secret file (new file in the root project directory) and 
+    paste into it mnuemonic seed phrase from MetaMask
+    (Get seed phrase from MetaMask: With ROPSTEN network selected, via 
+    settings, security, show seed phrase.)
+    c. IMPORTANT: Add .secret to .gitignore
+
+17. Add test Rospten ETH to my MM wallet, using faucet:
+    https://faucet.dimensions.network/
+    (My Account 12 & 13 now each has 5 ETH Ropsten, but then transfered
+    1 ETH into Account 1 from Account 13, since Account 1 will be used
+    (by default) for the deployment(from which gas will need to be paid)
+
+18. Deploy to the Ropsten network, using truffle consile, ie.
+    $ truffle console --network ropsten
+    truffle(ropsten)> migrate
+
+    Note: With VPN on it failed to migrate when it execued 2_token_migration.js,
+    with the following error output:
+
+        Compiling your contracts...
+        ===========================
+        > Everything is up to date, there is nothing to compile.
+
+        Starting migrations...
+        ======================
+        > Network name:    'ropsten'
+        > Network id:      3
+        > Block gas limit: 22668699 (0x159e59b)
+
+        2_token_migration.js
+        ====================
+        /Users/Mark/Documents/BlockChain/IvanOnTechAcademy/Bootcamp/KittyMasters/node_modules/safe-event-emitter/index.js:74
+            throw err
+            ^
+
+        Error: PollingBlockTracker - encountered an error while attempting to update latest block:
+        Error: ESOCKETTIMEDOUT
+            at ClientRequest.<anonymous> (/Users/Mark/Documents/BlockChain/IvanOnTechAcademy/Bootcamp/KittyMasters/node_modules/request/request.js:816:19)
+            at Object.onceWrapper (events.js:421:28)
+            at ClientRequest.emit (events.js:315:20)
+            at TLSSocket.emitRequestTimeout (_http_client.js:784:9)
+
+            etc, etc.
+        
+    See for potential solutions to this issue: https://github.com/trufflesuite/truffle/issues/3356
+    RESOLVED for me by switching off my VPN.
+    Summary for migration:
+    =======
+    > Total deployments:   5
+    > Final cost:          0.008366625871716212 ETH
+
+
+    FULL DEPLOYMENT DETAILS:
+
+        truffle(ropsten)> migrate
+
+        Compiling your contracts...
+        ===========================
+        > Everything is up to date, there is nothing to compile.
+
+
+
+        Starting migrations...
+        ======================
+        > Network name:    'ropsten'
+        > Network id:      3
+        > Block gas limit: 22020126 (0x150001e)
+
+
+        2_token_migration.js
+        ====================
+
+        Deploying 'KittyContract'
+        -------------------------
+        > transaction hash:    0xf77cbb464ad01c36992517cbe0f556f8b860f7f759584d13a491525cb8950acd
+        > Blocks: 2            Seconds: 12
+        > contract address:    0xe9F881eFcB894cF16c20DB1020693FeBC7974Fe1
+        > block number:        10515046
+        > block timestamp:     1624702992
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.995748253503913583
+        > gas used:            3913583 (0x3bb76f)
+        > gas price:           1.009999999 gwei
+        > value sent:          0 ETH
+        > total cost:          0.003952718826086417 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10515049)
+        > confirmation number: 2 (block: 10515050)
+
+        Deploying 'ProxyAdmin'
+        ----------------------
+        > transaction hash:    0x7322431ea983d12eb1eb08e814249e96ced0be15294c07db7c4b662f459ea2c5
+        > Blocks: 0            Seconds: 12
+        > contract address:    0x3f62AbF91e53123077e069022694f98c5eC4dF6a
+        > block number:        10515051
+        > block timestamp:     1624703041
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.995259393304397603
+        > gas used:            484020 (0x762b4)
+        > gas price:           1.009999999 gwei
+        > value sent:          0 ETH
+        > total cost:          0.00048886019951598 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10515053)
+        > confirmation number: 2 (block: 10515054)
+
+        Deploying 'TransparentUpgradeableProxy'
+        ---------------------------------------
+        > transaction hash:    0x3409384b619c3b3faaba79eaaf0c8d02e22c92a34ebd35775029ee7da964600d
+        > Blocks: 1            Seconds: 8
+        > contract address:    0xd25e3d27344284A6637EbC124831beE0fc86432b
+        > block number:        10515055
+        > block timestamp:     1624703084
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.994238576205408313
+        > gas used:            1010710 (0xf6c16)
+        > gas price:           1.009999999 gwei
+        > value sent:          0 ETH
+        > total cost:          0.00102081709898929 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10515056)
+        > confirmation number: 2 (block: 10515057)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:     0.005462396124591687 ETH
+
+
+        3_market_migration.js
+        =====================
+
+        Deploying 'KittyMarketplace'
+        ----------------------------
+        > transaction hash:    0x52721458ee06198a1ba3160274c7bc875380d50faa04784cad207c0bd6780ead
+        > Blocks: 0            Seconds: 4
+        > contract address:    0x090A2baC4DA5852600aCF998a97e88211A1B898b
+        > block number:        10515062
+        > block timestamp:     1624703139
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.991978988047645529
+        > gas used:            2208403 (0x21b293)
+        > gas price:           1.009999999 gwei
+        > value sent:          0 ETH
+        > total cost:          0.002230487027791597 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10515063)
+        > confirmation number: 2 (block: 10515064)
+
+        Deploying 'TransparentUpgradeableProxy'
+        ---------------------------------------
+        > transaction hash:    0x0703e0f0c6049ba203043a54e03845d90d84da09024209212b555698ff6a826a
+        > Blocks: 1            Seconds: 4
+        > contract address:    0x33018792B8eb4022bD60650928c3CBd59cefA912
+        > block number:        10515066
+        > block timestamp:     1624703170
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.991305245328312601
+        > gas used:            667072 (0xa2dc0)
+        > gas price:           1.009999999 gwei
+        > value sent:          0 ETH
+        > total cost:          0.000673742719332928 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10515067)
+        > confirmation number: 2 (block: 10515068)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:     0.002904229747124525 ETH
+
+
+        Summary
+        =======
+        > Total deployments:   5
+        > Final cost:          0.008366625871716212 ETH
+
+
+        - Blocks: 0            Seconds: 0
+        - Blocks: 0            Seconds: 0
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+        - Blocks: 0            Seconds: 0
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+
+        truffle(ropsten)> 
+
+19. Connect our website (front-end) to the contracts on the Ropsten Testnet
+    a. Copy our 'TransparentUpgradeableProxy' contract addresses for our
+    KittyContract and the KittyMarketplace contract (from Truffle console 
+    output) and paste these addresses into the address constants in:
+    client/assets/contractInterface/interface.js file, ie.
+
+        const KITTY_CONTRACT_ADDRESS = "0xd25e3d27344284A6637EbC124831beE0fc86432b"
+        const MARKETPLACE_ADDRESS = "0x33018792B8eb4022bD60650928c3CBd59cefA912"
+
+    b. Commit all changes to git and gitHub (for steps 14-19 above).  Upon GitHub
+    commit () this should trigger an (automatic) update to our website code
+    (hosted by netify). And we should now be able to use our Kitty Masters website:
+    https://reverent-mirzakhani-acd298.netlify.app
+    With our deployed contracts (on Ropsten network) and our MetaMask (Ropsten)
+    wallet.
+    [   Note The Truffle accounts[]0 will be the contract owner (and will have
+        the access to the Kitty-Factory to create new Gen0 kitties). From
+        truffle console we can find the accounts that are available:
+            truffle(ropsten)> accounts
+            [
+            '0x55ebCd51fb6ca806889d9632b03c6d8b6738742f',
+            '0x6323e230aA62d473B7ebBE987F547D2305A7d062',
+            '0x1CB34ecE74DE387dF91706e2F2A59F6fF85E4e49',
+            '0x65f6c9DDbC3BEae63C8967c5ED40dD26d0944467',
+            '0x4afA3515D1453177a5662DAE2dF75919620D8C0d',
+            '0x9d8E58BAe55126480Bc1cbd561190267c39C4C2a',
+            '0x637867dfDDDFD61aEE4C64BE0E67c51dF214206B',
+            '0x6Ad1F76Fa4d261E1615e010C2f1AcfeB0DAf38eB',
+            '0xAA1f34c4C24bFb2D8447E57C4E4B5931752Ab151',
+            '0x5a095175bcde85b66A5447a6CBC5D616D0AF412a'
+            ]
+            truffle(ropsten)> 
+
+        To change the accounts[0] default address that truffle uses for
+        deployment, add the alternative default address to truffle-config.js
+        file (within the Ropsten network configuration object), ie. Add:
+            from: "ADDRESS"
+        with ADDRESS being the address to be used as the default account
+        (ie. one of the truffle accounts listed above).  See commentted-out
+        line (added to truffle-config.js)
+    ]
+

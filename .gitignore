@@ -4,5 +4,10 @@ README-OLD-CryptoKitties-Clone.md
 README-UpgradeGuide.txt
 build/
 node_modules/
-.openzeppelin/unknown-*.json
+truffle-config.js
+.secret
 
+# OpenZeppelin
+#.openzeppelin/unknown-*.json
+.openzeppelin/dev-*.json
+.openzeppelin/.session

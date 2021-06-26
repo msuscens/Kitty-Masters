@@ -1,0 +1,382 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x3f62AbF91e53123077e069022694f98c5eC4dF6a",
+    "txHash": "0x7322431ea983d12eb1eb08e814249e96ced0be15294c07db7c4b662f459ea2c5"
+  },
+  "proxies": [
+    {
+      "address": "0xd25e3d27344284A6637EbC124831beE0fc86432b",
+      "txHash": "0x3409384b619c3b3faaba79eaaf0c8d02e22c92a34ebd35775029ee7da964600d",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x33018792B8eb4022bD60650928c3CBd59cefA912",
+      "txHash": "0x0703e0f0c6049ba203043a54e03845d90d84da09024209212b555698ff6a826a",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "63b1d1be1036f5b32ed1f717480ddc23f844bdea493de11142c5d865438fa107": {
+      "address": "0xe9F881eFcB894cF16c20DB1020693FeBC7974Fe1",
+      "txHash": "0xf77cbb464ad01c36992517cbe0f556f8b860f7f759584d13a491525cb8950acd",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "ERC165Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:35"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:24"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:27"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "_owners",
+            "type": "t_mapping(t_uint256,t_address)",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:30"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "_balances",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:33"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "_tokenApprovals",
+            "type": "t_mapping(t_uint256,t_address)",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:36"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "_operatorApprovals",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:39"
+          },
+          {
+            "contract": "ERC721Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)44_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:383"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:28"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:96"
+          },
+          {
+            "contract": "ERC721PausableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol:38"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_GEN0_LIMIT",
+            "type": "t_uint64",
+            "src": "KittyContract.sol:26"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_dnaFormat",
+            "type": "t_array(t_uint256)dyn_storage",
+            "src": "KittyContract.sol:27"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_gen0KittiesCount",
+            "type": "t_uint256",
+            "src": "KittyContract.sol:29"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "KittyContract.sol:30"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "KittyContract.sol:31"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_kitties",
+            "type": "t_array(t_struct(Kitty)95_storage)dyn_storage",
+            "src": "KittyContract.sol:33"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_kittiesOwner",
+            "type": "t_mapping(t_uint256,t_address)",
+            "src": "KittyContract.sol:34"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_ownersKittyCount",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "KittyContract.sol:35"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_ownersKittyIds",
+            "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
+            "src": "KittyContract.sol:36"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_kittiesApprovedOperator",
+            "type": "t_mapping(t_uint256,t_address)",
+            "src": "KittyContract.sol:38"
+          },
+          {
+            "contract": "KittyContract",
+            "label": "_ownersApprovedOperators",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+            "src": "KittyContract.sol:39"
+          }
+        ],
+        "types": {
+          "t_uint64": {
+            "label": "uint64"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_array(t_struct(Kitty)95_storage)dyn_storage": {
+            "label": "struct KittyContract.Kitty[]"
+          },
+          "t_struct(Kitty)95_storage": {
+            "label": "struct KittyContract.Kitty",
+            "members": [
+              {
+                "label": "genes",
+                "type": "t_uint256"
+              },
+              {
+                "label": "birthTime",
+                "type": "t_uint64"
+              },
+              {
+                "label": "mumId",
+                "type": "t_uint64"
+              },
+              {
+                "label": "dadId",
+                "type": "t_uint64"
+              },
+              {
+                "label": "generation",
+                "type": "t_uint64"
+              }
+            ]
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+            "label": "mapping(address => uint256[])"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+            "label": "mapping(address => mapping(address => bool))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)44_storage": {
+            "label": "uint256[44]"
+          }
+        }
+      }
+    },
+    "814ef297ac17dabd24ad7277a9ae87adb18d46929669dda2beb108994dd590f6": {
+      "address": "0x090A2baC4DA5852600aCF998a97e88211A1B898b",
+      "txHash": "0x52721458ee06198a1ba3160274c7bc875380d50faa04784cad207c0bd6780ead",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:28"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:96"
+          },
+          {
+            "contract": "KittyMarketplace",
+            "label": "_kittyContract",
+            "type": "t_contract(KittyContract)1926",
+            "src": "KittyMarketplace.sol:12"
+          },
+          {
+            "contract": "KittyMarketplace",
+            "label": "_offers",
+            "type": "t_array(t_struct(Offer)2021_storage)dyn_storage",
+            "src": "KittyMarketplace.sol:22"
+          },
+          {
+            "contract": "KittyMarketplace",
+            "label": "_tokenIdToOffer",
+            "type": "t_mapping(t_uint256,t_struct(Offer)2021_storage)",
+            "src": "KittyMarketplace.sol:23"
+          }
+        ],
+        "types": {
+          "t_contract(KittyContract)1926": {
+            "label": "contract KittyContract"
+          },
+          "t_array(t_struct(Offer)2021_storage)dyn_storage": {
+            "label": "struct KittyMarketplace.Offer[]"
+          },
+          "t_struct(Offer)2021_storage": {
+            "label": "struct KittyMarketplace.Offer",
+            "members": [
+              {
+                "label": "seller",
+                "type": "t_address"
+              },
+              {
+                "label": "price",
+                "type": "t_uint256"
+              },
+              {
+                "label": "index",
+                "type": "t_uint256"
+              },
+              {
+                "label": "tokenId",
+                "type": "t_uint256"
+              },
+              {
+                "label": "active",
+                "type": "t_bool"
+              }
+            ]
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_uint256,t_struct(Offer)2021_storage)": {
+            "label": "mapping(uint256 => struct KittyMarketplace.Offer)"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    }
+  }
+}
