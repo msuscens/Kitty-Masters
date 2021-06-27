@@ -11,9 +11,7 @@ let User
 
 async function initiateConnection(){
     try {
-        let accounts = await window.ethereum.request({ method: 'eth_accounts' })
-        console.log(accounts)
-
+        let accounts = await web3.eth.getAccounts()
         Instance_Of_KittyContract = new web3.eth.Contract(abi.kittyContract, KITTY_CONTRACT_ADDRESS, {from: accounts[0]})
         Instance_Of_Marketplace = new web3.eth.Contract(abi.marketplace, MARKETPLACE_ADDRESS, {from: accounts[0]})
         User = accounts[0]

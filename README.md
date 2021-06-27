@@ -572,4 +572,13 @@ HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
     a. Amend truffle-config.js, to read projectId from secret json file
     b. Amend .secret file to use json format (and rename secrets.json)
 
+21. Minor refactor of website's getting of user's wallet account
+    Now uses:
+        let accounts = await web3.eth.getAccounts()
+    Instead of:
+        let accounts = await window.ethereum.request({method: 'eth_accounts'})
+    The window.ethereum.request call may have been a factor in the issue 
+    experienced where accounts were being requrned as a empty array (see
+    NOTE under 19 above).
+
 
