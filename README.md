@@ -580,5 +580,39 @@ HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
     The window.ethereum.request call may have been a factor in the issue 
     experienced where accounts were being requrned as a empty array (see
     NOTE under 19 above).
+    [ Background Source for conencting to testnet:
+        https://docs.openzeppelin.com/learn/connecting-to-public-test-networks
+    ]
+
+
+GNOSIS SAFE: See section "Transfer control of upgrades to a Gnosis Safe": 
+https://forum.openzeppelin.com/t/openzeppelin-upgrades-step-by-step-tutorial-for-truffle/3579
+and
+https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades/7423
+
+Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
+    Therefore need to deploy a version of KittyMasters contracts to the
+    Rinkerby testnet (and make it accessable through a website url).
+    See step 23 below (ie. after we set up Gnosis safe).
+
+
+22. Create a Gnosis Safe for ourselves on Rinkerby network
+    Follow the steps below, as given in this article:
+    https://help.gnosis-safe.io/en/articles/3876461-create-a-gnosis-safe-account
+    (NB don't create on mainnet, instead use link below for Rinkerby network)
+    a. Obtained 3 (Rinkeby) Test ETH for Account1: https://faucet.rinkeby.io/
+    b. Open the web app at https://rinkeby.gnosis-safe.io
+    c. Connect wallet (in app), ie. connect to MetaMask (on Rinkerby network)
+    d. Create safe controlled by 3 user accounts:
+        i) Name of Safe: 'KittyMasters-Rinkeby'
+        ii) Owners:
+            1. MM Account1: 0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+            2. MM Account2: 0x6323e230aA62d473B7ebBE987F547D2305A7d062
+            3. MM Account3: 0x4afA3515D1453177a5662DAE2dF75919620D8C0d
+        iii) Any transaction requires: 2 out 3 owners
+        iv) Create safe, address: 0x7bE70cbBED2b059fa6231AB7918C4F101169B607
+    Access via:
+    https://rinkeby.gnosis-safe.io/app/#/safes/0x7bE70cbBED2b059fa6231AB7918C4F101169B607
+
 
 
