@@ -5,9 +5,9 @@ README-UpgradeGuide.txt
 build/
 node_modules/
 truffle-config.js
-.secret
+secrets.json
 
 # OpenZeppelin
-#.openzeppelin/unknown-*.json
+.openzeppelin/unknown-*.json
 .openzeppelin/dev-*.json
 .openzeppelin/.session

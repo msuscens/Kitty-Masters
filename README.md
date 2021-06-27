@@ -545,3 +545,31 @@ HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
         line (added to truffle-config.js)
     ]
 
+    NOTE: MetaMask didn't connect upon completining the above steps and then
+    opening the website (https://reverent-mirzakhani-acd298.netlify.app).
+    I traced this to an issue in initiateConnection() function in the file 
+    client/assets/contractInterface/interface.js
+    The User was not being set to an account (accounts[0]) because the 
+    following line was returning an empty accounts array:
+        let accounts = await window.ethereum.request({ method: 'eth_accounts' })
+    Despite reseting MetMask account (under settings->Advanced), restarting 
+    my Mac etc. I repeatidly got the same error.  I also used the browser  
+    console to enter the above line manually which also resulted in an empty 
+    accounts array. However, while experimenting with trying to get the 
+    accounts to return, I entered the following command (not used in my code)
+    into the browser console:
+        web3.eth.requestAccounts().then(console.log);
+    MM immediately asked for permission to connect and then sucessfully
+    connected to the website - all now functioning correctly!?  Stranger still
+    I was unable to reproduce the initial empty accounts array issue - I closed
+    the browser tab, reset my MM account, restarted my Mac, logged back into MM
+    and brought back up the website in a new tab).  Therefore, I currently
+    don't know what the underlying issue was with web3/MM or why the above 
+    command entered via the console (but not used in the code) resolved the 
+    issue!?
+
+20. Minor refactor of secret file reading
+    a. Amend truffle-config.js, to read projectId from secret json file
+    b. Amend .secret file to use json format (and rename secrets.json)
+
+
