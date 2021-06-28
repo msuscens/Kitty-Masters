@@ -586,15 +586,15 @@ HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
     ]
 
 
-GNOSIS SAFE: See section "Transfer control of upgrades to a Gnosis Safe": 
+GNOSIS SAFE AS THE ADMINISTRATOR OF OUR CONTRACTS PROXYADMIN
+(Allowing the owners of the 'Gnosis Safe' to make contract upgrades) 
+
+Guide: "Transfer control of upgrades to a Gnosis Safe": 
 https://forum.openzeppelin.com/t/openzeppelin-upgrades-step-by-step-tutorial-for-truffle/3579
-and
-https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades/7423
 
 Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
-    Therefore need to deploy a version of KittyMasters contracts to the
-    Rinkerby testnet (and make it accessable through a website url).
-    See step 23 below (ie. after we set up Gnosis safe).
+    Therefore first I need to deploy a version of KittyMasters contracts to
+    the Rinkerby testnet. See step 23 below (ie. after we set up Gnosis safe).
 
 22. Create a Gnosis Safe for ourselves on Rinkerby network
     Follow the steps below, as given in this article:
@@ -615,7 +615,7 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
     https://rinkeby.gnosis-safe.io/app/#/safes/0x7bE70cbBED2b059fa6231AB7918C4F101169B607
 
 
-23. Testnet Deployment to Rinkeby, using existing Infura KittyMasters project)
+23. Testnet Deployment to Rinkeby, using existing Infura KittyMasters project
     a. Add an entry for the rinkeby network into the truffle.config.js file
     (that will use same infura project id and MM wallet seed phrase), ie.
 
@@ -914,3 +914,32 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
         =======
         > Total deployments:   2
         > Final cost:          0.006819723 ETH
+
+
+26. How to upgrade contracts using Gnosis Safe
+    [ Note: We're going to use Defender (as a layer above our "Gnosis Safe") to 
+      upgrade our contracts.  However, this documents how to use "Gnosis Safe"
+      directly to perform a contract upgrade (i.e. without Defender) ]
+    a. Open up webpage to our "KittyMasters-Rinkeby" Gnosis Safe:
+        https://rinkeby.gnosis-safe.io/app/#/safes/0x7bE70cbBED2b059fa6231AB7918C4F101169B607
+    b. (optionally) Click on 'ADDRESS BOOK' (left-hand side menu) and
+        'create entry' for the contract proxies, eg:
+        KittyContractProxy: 0xE52b75B7201C8AcDa96407f92Ba27ab2ce252ae1
+        KittyMarketplaceProxy: 0x823c8b731B3e07A9310853de418F54FeE22f76b1
+    c. Click 'APPS' (lefthand-side menu on 'KittyMasters-Rinkeby' Gnosis Safe page)
+    d. Click on 'OpenZeppelin' app, that opens up an 'Upgrade a contract' page and enter:
+         i. Contract address: <address of the proxy></address>
+                                0xE52b75B7201C8AcDa96407f92Ba27ab2ce252ae1
+                                <KittyContract's proxy address>
+        ii. New implementation address: <address new implementation contract>
+                                0x7d519941ecC45FD3b27571594d9385B2C68f67D8
+                                <KittyContractV2's address>
+        (Note address book doesn't work here- need to paste in actual addreses)
+    e. Click 'Upgrade' to create a transaction and sign it with your
+        connected Metamask wallet
+    f. Once the transaction is created it will need to be confirmed by other
+        owners of the Gnosis Safe 'KittyMasters-Rinkerby' to get 2/3 approvals 
+        (before the transaction is submitted).  Such transactions awaiting
+        confirmation can be viewed when clicking 'TRANSACTIONS (leftside-menu),
+        and be confirmed or rejected.
+
