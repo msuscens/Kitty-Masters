@@ -831,3 +831,86 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
         =======
         > Total deployments:   0
         > Final cost:          0 
+
+25. Deploy the V2 contract implementations (on Rinkeby) of the
+    KittyContract and the KittyMarketplace (in prep for upgrade)
+    a. Write migrations for each new (V2) contract, that validates and
+    deploys the V2 contracts, using truffle-upgrades' prepareUpgrade().
+    See new migration files:
+        5_prepare_upgrade_kittyContractV2.js
+        6_prepare_upgrade_kittyMarketplaceV2.js
+    b. Execute these migration to deploy the V2 contracts:
+        $ npx truffle migrate --network rinkeby
+
+        Compiling your contracts...
+        ===========================
+        > Everything is up to date, there is nothing to compile.
+
+
+        Starting migrations...
+        ======================
+        > Network name:    'rinkeby'
+        > Network id:      4
+        > Block gas limit: 10000000 (0x989680)
+
+
+        5_prepare_upgrade_kittyContractV2.js
+        ====================================
+
+        Deploying 'KittyContractV2'
+        ---------------------------
+        > transaction hash:    0x8996e34776a74da7c6438f4897c85608618c1b504bb916a0d7c677c4431bf5bc
+        > Blocks: 1            Seconds: 16
+        > contract address:    0x7d519941ecC45FD3b27571594d9385B2C68f67D8
+        > block number:        8844569
+        > block timestamp:     1624905256
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.986720333
+        > gas used:            4261014 (0x410496)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.004261014 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8844570)
+        > confirmation number: 2 (block: 8844571)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:         0.004261014 ETH
+
+
+        6_prepare_upgrade_kittyMarketplaceV2.js
+        =======================================
+
+        Deploying 'KittyMarketplaceV2'
+        ------------------------------
+        > transaction hash:    0x64d3cb35309e91daf17dbef18469b9d8324fc8008bc2a3f584835a2f42e56799
+        > Blocks: 0            Seconds: 8
+        > contract address:    0x749acc358F71f4207B228FFD7B805118CEd30be0
+        > block number:        8844573
+        > block timestamp:     1624905316
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.984132811
+        > gas used:            2558709 (0x270af5)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.002558709 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8844574)
+        > confirmation number: 2 (block: 8844575)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:         0.002558709 ETH
+
+
+        Summary
+        =======
+        > Total deployments:   2
+        > Final cost:          0.006819723 ETH
