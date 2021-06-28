@@ -257,6 +257,7 @@ and contract upgrade:
 
 
 HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
+
 14. Host website at: https://reverent-mirzakhani-acd298.netlify.app
     a. Sign-up for netlify account (app.netlify.com) and login via GitHub
     b Create a new site (with continuous deployment) called: "Kitty Masters"
@@ -595,7 +596,6 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
     Rinkerby testnet (and make it accessable through a website url).
     See step 23 below (ie. after we set up Gnosis safe).
 
-
 22. Create a Gnosis Safe for ourselves on Rinkerby network
     Follow the steps below, as given in this article:
     https://help.gnosis-safe.io/en/articles/3876461-create-a-gnosis-safe-account
@@ -614,5 +614,185 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
     Access via:
     https://rinkeby.gnosis-safe.io/app/#/safes/0x7bE70cbBED2b059fa6231AB7918C4F101169B607
 
+
+23. Testnet Deployment to Rinkeby, using existing Infura KittyMasters project)
+    a. Add an entry for the rinkeby network into the truffle.config.js file
+    (that will use same infura project id and MM wallet seed phrase), ie.
+
+        rinkeby: {
+            provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${projectId}`),
+
+            network_id: 4,       // Rinkeby's id
+            gas: 5500000,        // Ropsten has a lower block limit than mainnet
+            confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+            timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+            skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
+            // from: "ADDRESS"     // To specify a different default account (instead of truffle's accounts[0])
+        },
+
+    b. Switch off VPN to avoid migrate throw / PollingBlockTracker error
+        (as also experiecned under 18 above)
+    c. Deploy to the Rinkeby network, using truffle consile, ie.
+        $ truffle console --network rinkeby
+        truffle(rinkeby)> migrate
+
+        Compiling your contracts...
+        ===========================
+        > Everything is up to date, there is nothing to compile.
+
+        Starting migrations...
+        ======================
+        > Network name:    'rinkeby'
+        > Network id:      4
+        > Block gas limit: 10019366 (0x98e226)
+
+
+        2_token_migration.js
+        ====================
+
+        Deploying 'KittyContract'
+        -------------------------
+        > transaction hash:    0xe6d52a09b4723168e91b17b5a7db68d21d6beb034707f965d084840ae263ffc3
+        > Blocks: 3            Seconds: 40
+        > contract address:    0x3f62AbF91e53123077e069022694f98c5eC4dF6a
+        > block number:        8842261
+        > block timestamp:     1624870600
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.995466673
+        > gas used:            3913583 (0x3bb76f)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.003913583 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8842262)
+        > confirmation number: 2 (block: 8842263)
+
+        Deploying 'ProxyAdmin'
+        ----------------------
+        > transaction hash:    0x60778d605ee1532d4da8c9a3e568427d2fa0e04540bba1d824802c6a02cffb90
+        > Blocks: 0            Seconds: 8
+        > contract address:    0xd25e3d27344284A6637EbC124831beE0fc86432b
+        > block number:        8842264
+        > block timestamp:     1624870645
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.994982653
+        > gas used:            484020 (0x762b4)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.00048402 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8842265)
+        > confirmation number: 2 (block: 8842266)
+
+        Deploying 'TransparentUpgradeableProxy'
+        ---------------------------------------
+        > transaction hash:    0xeb6caf4c2ef1fa6aff422fdcea229edeb2d99bbc958cf6508ff7bab967d3cbbf
+        > Blocks: 2            Seconds: 40
+        > contract address:    0xE52b75B7201C8AcDa96407f92Ba27ab2ce252ae1
+        > block number:        8842269
+        > block timestamp:     1624870720
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.993971943
+        > gas used:            1010710 (0xf6c16)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.00101071 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8842270)
+        > confirmation number: 2 (block: 8842271)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:         0.005408313 ETH
+
+
+        3_market_migration.js
+        =====================
+
+        Deploying 'KittyMarketplace'
+        ----------------------------
+        > transaction hash:    0x5b3125bbefc27875befc4caf60b468aaafc89f19922594f9b88e6aa585539757
+        > Blocks: 1            Seconds: 24
+        > contract address:    0x33018792B8eb4022bD60650928c3CBd59cefA912
+        > block number:        8842275
+        > block timestamp:     1624870810
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.991734727
+        > gas used:            2208403 (0x21b293)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.002208403 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8842276)
+        > confirmation number: 2 (block: 8842277)
+
+        Deploying 'TransparentUpgradeableProxy'
+        ---------------------------------------
+        > transaction hash:    0x2a79a7ae28d23e70b841ce39d47fedc54de0333edebee45703c5eebd109a3fbf
+        > Blocks: 0            Seconds: 8
+        > contract address:    0x823c8b731B3e07A9310853de418F54FeE22f76b1
+        > block number:        8842278
+        > block timestamp:     1624870855
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             2.991067643
+        > gas used:            667084 (0xa2dcc)
+        > gas price:           1 gwei
+        > value sent:          0 ETH
+        > total cost:          0.000667084 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 8842279)
+        > confirmation number: 2 (block: 8842280)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:         0.002875487 ETH
+
+
+        Summary
+        =======
+        > Total deployments:   5
+        > Final cost:          0.0082838 ETH
+
+
+        - Blocks: 0            Seconds: 0
+        - Blocks: 0            Seconds: 0
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+        - Blocks: 0            Seconds: 0
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+
+        truffle(rinkeby)> 
+
+    d) Confirm accounts are as expected (same as in MM wallet):
+
+        truffle(rinkeby)> let accounts = await web3.eth.getAccounts()
+        undefined
+        truffle(rinkeby)> accounts
+        [
+        '0x55ebCd51fb6ca806889d9632b03c6d8b6738742f',
+        '0x6323e230aA62d473B7ebBE987F547D2305A7d062',
+        '0x1CB34ecE74DE387dF91706e2F2A59F6fF85E4e49',
+        '0x65f6c9DDbC3BEae63C8967c5ED40dD26d0944467',
+        '0x4afA3515D1453177a5662DAE2dF75919620D8C0d',
+        '0x9d8E58BAe55126480Bc1cbd561190267c39C4C2a',
+        '0x637867dfDDDFD61aEE4C64BE0E67c51dF214206B',
+        '0x6Ad1F76Fa4d261E1615e010C2f1AcfeB0DAf38eB',
+        '0xAA1f34c4C24bFb2D8447E57C4E4B5931752Ab151',
+        '0x5a095175bcde85b66A5447a6CBC5D616D0AF412a'
+        ]
+        truffle(rinkeby)> 
 
 
