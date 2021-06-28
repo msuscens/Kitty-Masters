@@ -795,4 +795,39 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
         ]
         truffle(rinkeby)> 
 
+24. Transfer control of contract upgrades to Gnosis Safe (KittyMasters-Rinkeby)
+    (ie. change the owner of the proxy's Admin contract from the truffle
+    deployer (acccounts[0]) to our Gnosis Safe contract)
+    a. Write migration script to transfer control of the (rinkeby) proxyAdmin 
+        to our (rinkeby) Gnosis Safe, see new migrations file:
+        '4_transfer-ownership_proxyAdmin.js'
+    b. Execute script to transfer proxyAdmin ownership to our 'Gnosis Safe'
+        contract (at 0x7bE70cbBED2b059fa6231AB7918C4F101169B607), ie.
 
+        $ npx truffle migrate --network rinkeby
+
+        Compiling your contracts...
+        ===========================
+        > Everything is up to date, there is nothing to compile.
+
+        Starting migrations...
+        ======================
+        > Network name:    'rinkeby'
+        > Network id:      4
+        > Block gas limit: 10000000 (0x989680)
+
+        4_transfer_ownership_proxyAdmin.js
+        ==================================
+        ✔ 0xE52b75B7201C8AcDa96407f92Ba27ab2ce252ae1 (transparent) proxy ownership transfered through admin proxy
+        ✔ 0x823c8b731B3e07A9310853de418F54FeE22f76b1 (transparent) proxy ownership transfered through admin proxy
+        Transfered ProxyAdmin ownership to 'Gnosis Safe' on rinkeby.
+        (Rinkeby) Gnosis Safe' address: 0x7bE70cbBED2b059fa6231AB7918C4F101169B607
+
+        > Saving migration to chain.
+        -------------------------------------
+        > Total cost:                   0 undefined
+
+        Summary
+        =======
+        > Total deployments:   0
+        > Final cost:          0 
