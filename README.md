@@ -943,3 +943,65 @@ Note: Gnosis Safe is not currently on Ropsten but only Rinkerby (and Mainnet).
         confirmation can be viewed when clicking 'TRANSACTIONS (leftside-menu),
         and be confirmed or rejected.
 
+
+DEFENDER ADMIN - Managing Upgrades
+
+27. Add the KittyContract to Defender
+
+Guide: "Workshop Recap: Managing Smart Contract Upgrades":
+https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades/7423
+
+    a. Sign up for a defender, create an account and login:
+        https://defender.openzeppelin.com
+    b. Click 'Add a contract' and enter for the contract to be managed:
+          i) Name: Give the proxy contract a name (any name),
+                    e.g. "KittyContract (proxy)"
+         ii) Network: Where the contract is deployed,
+                in our case: 'Rinkeby'
+        iii) Address of the proxy contract,
+                in our case: 0xE52b75B7201C8AcDa96407f92Ba27ab2ce252ae1
+                (ie. KittyContract's proxy address)
+        iv) ABI: If contract has been verified on Etherscan then ABI will be
+            pulled into Defender and displayed in the ABI text box. Otherwise,
+            manually copy and paste the contract's ABI into the text box.
+        
+        Defender will analyse the contract, pulling information from etherscan
+        including the contract's: 
+        - ABI (if contract has previously been verified on etherscan),
+        - if it's upgradeable and beneath this:
+            - address of the current implementation contract,
+            - address of the ProxyAdmin contract (for upgrades),
+            - address of the controlling Gnosis Safe contract, and
+        - if it is pausable, ie. ABI defines a pause() function.
+
+        In our case Defender gives (under confirmation its upgradeable):
+            ABI - Blank.  We must paste in contracts ABI since we haven't 
+                verified our contract on etherscan - see see iv above and
+                the note below on 'Verifying Smart Contracts'.
+            Upgradeable (EIP1967) - confirmed; under which we have:
+                Current implementation address:
+                0x3f62AbF91e53123077e069022694f98c5eC4dF6a
+                Upgrades proxy admin:
+                0xd25e3d27344284A6637EbC124831beE0fc86432b
+                Controlled by Gnosis Safe at:
+                0x7bE70cbBED2b059fa6231AB7918C4F101169B607
+            Not pausible - since no pause() function is defined in this version
+                of the KittyContract.
+
+        Note: Verifying Smart Contracts: Multi-file verification is recommended 
+        (over creating a single flattened file) and can be performed with a
+        truffle plugin, for details see:
+        https://forum.openzeppelin.com/t/verify-smart-contract-inheriting-from-openzeppelin-contracts/4119
+        Background on licencing and single or multi-file verification and licensing, see:
+        https://forum.openzeppelin.com/t/solidity-0-6-8-introduces-spdx-license-identifiers/2859
+
+        To view our contracts verification status:
+        https://rinkeby.etherscan.io/address/0xe52b75b7201c8acda96407f92ba27ab2ce252ae1#code
+        [ To manually verify: Select 'verify' (top left menu 'Misc' -> 'verify')
+         and enter the requested details.]
+
+           v) Click 'Add' to add the contract to Defender Admin
+
+        The contract should now be displayed on its contract page (with space below
+        the contract information where any proposals will be displyed).
+
