@@ -1005,3 +1005,49 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
         The contract should now be displayed on its contract page (with space below
         the contract information where any proposals will be displyed).
 
+28. Upgrade the KittyContract to KittyContractV2
+
+    a. From Defender's KittyContract contract page, click '+ New Proposal' then
+        select 'Upgrade', and complete the fields in the proposal form, ie:
+        - New implementation address: 0x7d519941ecC45FD3b27571594d9385B2C68f67D8
+            [ Note: Click on entered address to add to address book:
+                'KittyContractV2 (implementation)'
+            ]
+        - Title: 'Upgrade KittyContract implementation to KittyContractV2'
+        - Description: 'Add functionality to ....'
+        And then click "Create Upgrade Proposal" (and confirm with MM), 
+        which will display the proposal summary page (showing approval pending)
+    b. Click 'Approve' (assuming MM is switched to one of the GnosisSafe
+        owning accounts) and sign the message with MM (to provide the first of
+        the 2/3 required approvals
+    c. Switch MM Account to another owner account (Account2). From the Admin
+        dashboard click on the 'Active proposal' for the Upgrade, then 
+        click: 'Approve' (to provide second 2/3 required approvals)
+    d. Click 'Execute' and sign the transaction with MM to execute it.
+        The transaction will execute the upgrade!  Note: May check the
+        trasaction on Etherscan - click the symbol next to the 'EXECUTED'
+        label (above the proposal name) to view the transaction
+    e.
+
+    Note: This can also be done from a script using defender upgrade plug-in
+    (defender.proposeUpgrade(...) that uses Defender Admin API under the hood.
+
+29.  Call KittContractV2 setVersion() function from Defender Admin
+        TODO: Document in accordance with this: https://forum.openzeppelin.com/t/new-admin-action-error-could-not-validate-transaction-cannot-estimate-gas-transaction-may-fail-or-may-require-manual-gas-limit/10582/9
+
+30.  Upgrade compiler version to 0.8.6, that eliminates the v0.8.5 compiler's
+    bug of giving 'unreachable code' warnings.
+
+_______________
+TO DO ....
+
+xx. Add the Marketplace contract to Defender (verifying contract first)
+
+    a. Use the truffle plug-in to verify the Rinkerby deployed Marketplace
+        contract, following the guide:
+        https://forum.openzeppelin.com/t/verify-smart-contract-inheriting-from-openzeppelin-contracts/4119
+        
+
+
+    b. From the Defender Admin dashboard, repeat the steps from 27b (above)
+        but this time adding the KittyContract.
