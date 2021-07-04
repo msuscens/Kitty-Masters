@@ -255,6 +255,40 @@ https://forum.openzeppelin.com/t/deployproxy-using-truffle-migrate-reset-errors-
 _________________________
 
 
+In original local directory (ie. not the git clone directory) it compiles and migrates fine:
+I.e.
+MMB:KittyMasters Mark$ truffle compile -all
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/IKittyMarketplace.sol
+> Compiling ./contracts/KittyContract.sol
+> Compiling ./contracts/KittyContractV2.sol
+> Compiling ./contracts/KittyMarketplace.sol
+> Compiling ./contracts/KittyMarketplaceV2.sol
+> Compiling ./contracts/Migrations.sol
+> Compiling @openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
+> Compiling @openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol
+> Compiling @openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol
+> Artifacts written to /Users/Mark/Documents/BlockChain/IvanOnTechAcademy/Bootcamp/KittyMasters/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.6+commit.11564f7e.Emscripten.clang
+
+MMB:KittyMasters Mark$ 
+
+
+
+
 8. OPTIONALLY: Check that tests scripts run as expected:
     $ truffle test
 
