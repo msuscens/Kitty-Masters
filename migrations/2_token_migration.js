@@ -7,7 +7,7 @@ let kittyInstance
 
 module.exports = async function (deployer, network, accounts) {
 
-  // Deploy the Logic contract and initialize (with associated proxy)
+  // Deploy the KittyContract (logic, admin, & proxy contracts) and initialize
   kittyInstance = await deployProxy(
     KittyContract, 
     [tokenName, tokenSymbol], 

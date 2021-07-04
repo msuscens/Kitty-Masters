@@ -1,9 +1,12 @@
 
+// Note: Add locally deployed 'TransparentUpgradeableProxy' address below
+// (ie. from 2_token_migration output the KittyContracts proxy address and 
+//      from 3_market_migration output the KittyMarketplace proxy address)
+const KITTY_CONTRACT_ADDRESS = "0xeC5712cCEFC64eBf00865fE3229dC3a7e7c17170"
+const MARKETPLACE_ADDRESS = "0x05F7B04E8ED850A6377Cfdc7Bc19aFAa7404437E"
+
 const web3 = new Web3(Web3.givenProvider)
 console.log("Web3 version: ", web3.version)
-
-const KITTY_CONTRACT_ADDRESS = "0xd25e3d27344284A6637EbC124831beE0fc86432b"
-const MARKETPLACE_ADDRESS = "0x33018792B8eb4022bD60650928c3CBd59cefA912"
 
 let Instance_Of_KittyContract
 let Instance_Of_Marketplace
