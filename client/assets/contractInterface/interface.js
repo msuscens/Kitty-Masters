@@ -136,12 +136,29 @@ async function getCatDetails(catId) {
 }
 
 
+async function createCat(dna){
+    try {
+        await Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}, function(err, txHash){
+            if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}': " + err
+            else {
+                console.log("Tx:",txHash)
+                return txHash
+            }
+        })
+
+    }
+    catch (error) {
+        console.log("In createCat(): " + error)
+    }        
+}
+
+
 async function breedCats(mumId, dadId){
     try {
         await Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}, function(err, txHash){
             if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}': " + err
             else {
-                console.log(txHash)
+                console.log("Tx:",txHash)
                 return txHash
             }
         })

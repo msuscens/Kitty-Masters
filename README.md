@@ -1065,6 +1065,9 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
         (the OZ ERC721 functions are inheritted but currently overriden by
         my own functions developed under my Cryto-Kitties project)
 
+32. Refactor website logic to remove remaining direct contract call
+    (to KittyContract's createKittyGen0(dna) function)
+
 
 
 ___________________________________________________________________________________________________

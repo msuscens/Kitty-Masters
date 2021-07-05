@@ -58,10 +58,7 @@ function getRandomKittie() {
 function createKittie(){
   try {
     const dna = getDna()
-    Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}, function(err, txHash){
-        if (err) console.log(err)
-        else console.log(txHash)
-    })
+    createCat(dna)
   }
   catch(error){
     console.log(`Error In createKittie: ${error}`)
