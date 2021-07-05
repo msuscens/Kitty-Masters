@@ -30,8 +30,9 @@ contract KittyContract is
     // Note: bytes4(keccak256('supportsInterface(bytes4) == 0x01ffc9a7'));
 
     uint256 private _gen0Limit;
-    uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
     uint256 private _gen0KittiesCount;
+    uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
+
     Kitty[] private _kitties;  
 
     event Birth(
@@ -72,8 +73,6 @@ contract KittyContract is
         )
     {
         super._beforeTokenTransfer(from, to, amount);
-
-
     }
 
 
@@ -106,20 +105,19 @@ contract KittyContract is
             ),
             "Must have access to father cat!"
         );
-
         // Determine new kitty's DNA
-        // (Alternative dna mixing functions commented out below)
+        uint256 newDna = _exactRandomMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
+        
+        // Alternative dna mixing functions below:
         // uint256 newDna = _basicMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
         // uint256 newDna = _mixDna(_kitties[mumId].genes, _kitties[dadId].genes);
         // uint256 newDna = _improvedMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
         // uint256 newDna = _completeMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
-        uint256 newDna = _exactRandomMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
 
         // Calculate new kitties Generation
         uint256 mumGen = _kitties[mumId].generation;
         uint256 dadGen = _kitties[dadId].generation;
         uint256 newGen = ((mumGen + dadGen) / 2) + 1;
-        // uint256 newGen = mumGen.add(dadGen).div(2).add(1);
 
         // Create the new kitty (with breeder becoming new kitties owner)
         uint256 newKittyId = _createKitty(
@@ -145,7 +143,6 @@ contract KittyContract is
         )
     {
         require(_exists(kittyId), "No such kitty id!");
-        
         return (
             _kitties[kittyId].genes, 
             _kitties[kittyId].birthTime,
@@ -171,7 +168,7 @@ contract KittyContract is
     }
 
 
-    // IERC165 function implementations
+    // IERC165 
     function supportsInterface(bytes4 interfaceId)
         public
         view
@@ -190,14 +187,7 @@ contract KittyContract is
     }
 
 
-    // IERC721 function implementations
-/*
-    function totalSupply() public view override returns (uint256) {
-        return _kitties.length;
-    }
-*/
-
-
+    // IERC721 
     function _checkERC721Support(
         address from,
         address to,
@@ -218,7 +208,6 @@ contract KittyContract is
         );
         return (response == _ERC721_RECEIVED);
     }
-
 
     function _isContract(address to) internal view returns (bool) {
         uint32 codeSize;
@@ -256,6 +245,26 @@ contract KittyContract is
         return newKittenId;
     }
 
+
+    // *** DNA Mixing Functions  - 5 versions ****
+    // Simplest to most sophisticated/complex they are:
+    //      _basicMixDna
+    //      _mixDna
+    //      _improvedMixDna
+    //      _completeMixDna
+    //      _exactRandomMixDna
+    //
+    function _basicMixDna(uint256 mumDna, uint256 dadDna)
+        internal
+        pure
+        returns (uint256)
+    {
+    // Create new dna from first half of mum's dna and second half of dad's dna      
+        uint256 firstEightDigits = mumDna / 100000000;
+        uint256 lastEightDigits = dadDna % 100000000;
+        uint256 newDna = (firstEightDigits * 100000000) + lastEightDigits;
+        return newDna;
+    }
 
 
     function _mixDna(uint256 mumDna, uint256 dadDna)
@@ -484,19 +493,6 @@ contract KittyContract is
         }
 
         return dnaSequence;
-    }
-
-
-    function _basicMixDna(uint256 mumDna, uint256 dadDna)
-        internal
-        pure
-        returns (uint256)
-    {
-    // Create new dna from first half of mum's dna and second half of dad's dna      
-        uint256 firstEightDigits = mumDna / 100000000;
-        uint256 lastEightDigits = dadDna % 100000000;
-        uint256 newDna = (firstEightDigits * 100000000) + lastEightDigits;
-        return newDna;
     }
 
 }
