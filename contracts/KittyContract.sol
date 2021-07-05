@@ -3,11 +3,17 @@ pragma solidity 0.8.6;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
 
-contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableUpgradeable {
+contract KittyContract is
+    OwnableUpgradeable,
+    ERC721Upgradeable,
+    ERC721EnumerableUpgradeable,
+    ERC721PausableUpgradeable
+{
 
     struct Kitty {
         uint256 genes;
@@ -66,7 +72,11 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
     function _beforeTokenTransfer(address from, address to, uint256 amount)
         internal
         virtual
-        override(ERC721Upgradeable, ERC721PausableUpgradeable) 
+        override(
+            ERC721Upgradeable,
+            ERC721EnumerableUpgradeable,
+            ERC721PausableUpgradeable
+        )
     {
         super._beforeTokenTransfer(from, to, amount);
     }
@@ -170,7 +180,10 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
         public
         view
         virtual
-        override
+        override(
+            ERC721Upgradeable,
+            ERC721EnumerableUpgradeable
+        )
         returns (bool)
     {
       return (
@@ -183,7 +196,7 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
 
     // IERC721 function implementations
 
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() public view override returns (uint256) {
         return _kitties.length;
     }
 

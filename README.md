@@ -1059,6 +1059,7 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
         and symbol()
     b. Update supportsInterface() to call parent ERC721Upgradeable's
     supportInterface() function
+    c. Add OZ ERC721EnumerableUpgradeable as inherrited contract
 
 
 
