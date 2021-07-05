@@ -1055,7 +1055,10 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
 31. Refactor KittyContract to use OZ ERC721Upgradeable contracts function where
     appropropirate (instead of overriding them all and defining my own functions
     as is the current case)
-    a. Refactor to use ERC721Upgradeable variables and functions for name() and symbol()
+    a. Refactor to use ERC721Upgradeable variables & functions for name()
+        and symbol()
+    b. Update supportsInterface() to call parent ERC721Upgradeable's
+    supportInterface() function
 
 
 

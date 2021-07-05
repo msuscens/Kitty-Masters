@@ -27,8 +27,6 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
     uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
 
     uint256 private _gen0KittiesCount;
-    // string private _name;
-    // string private _symbol;
 
     Kitty[] private _kitties;  
     mapping(uint256 => address) private _kittiesOwner;
@@ -59,8 +57,6 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
         OwnableUpgradeable.__Ownable_init();
         ERC721Upgradeable.__ERC721_init(tokenName, tokenSymbol);
         ERC721PausableUpgradeable.__ERC721Pausable_init();
-        // _name = tokenName;
-        // _symbol = tokenSymbol;
 
         _GEN0_LIMIT = 10;
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
@@ -170,17 +166,18 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
 
 
     // IERC165 function implementations
-    /*  *** DO I NEED THIS GIVEN DECLARAION IN ERC721Upgradeable ??? ****/
     function supportsInterface(bytes4 interfaceId)
         public
-        pure
+        view
+        virtual
         override
         returns (bool)
     {
-        return (
-            interfaceId == _INTERFACE_ID_ERC721 ||
-            interfaceId == _INTERFACE_ID_ERC165
-        );
+      return (
+        interfaceId == _INTERFACE_ID_ERC721 ||
+        interfaceId == _INTERFACE_ID_ERC165 ||
+        super.supportsInterface(interfaceId)
+      );
     }
 
 
@@ -222,16 +219,6 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
         require(_isInExistance(tokenId), "Token does not exist!");
         return _kittiesOwner[tokenId];
     }
-
-
-    // function name() public view override returns (string memory) {
-    //     return _name;
-    // }
-
-
-    // function symbol() public view override returns (string memory) {
-    //     return _symbol;
-    // }
 
 
     function approve(address approved, uint256 tokenId) public override {
