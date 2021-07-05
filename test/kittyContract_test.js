@@ -11,6 +11,7 @@ const KittyContractV2 = artifacts.require("KittyContractV2")
 
 const tokenName = "Mark-Crypto-Kitty"
 const tokenSymbol = "MCK"
+const gen0Limit = 10
 
 contract("KittyContract", async accounts => {
 
@@ -26,7 +27,7 @@ contract("KittyContract", async accounts => {
         // {initializer: '<function name>'} parameter.
         kittyContract = await deployProxy(
             KittyContract,
-            [tokenName, tokenSymbol],
+            [tokenName, tokenSymbol, gen0Limit],
             {initializer: 'init_KittyContract', from: accounts[0]}
         )
     })

@@ -1071,7 +1071,7 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
     to the interface.js
     b. Rename constants for proxy addreses (and delete redundant console output)
 
-
+33. Refactor KittyContract's gen0Limit to become initializer parameter
 
 
 

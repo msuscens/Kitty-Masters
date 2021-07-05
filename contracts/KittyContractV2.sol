@@ -7,14 +7,15 @@ contract KittyContractV2 is KittyContract {
 
     uint _version;    //ADDED new state variable
 
-    function initialize(
+    function init_KittyContractV2(
         string memory tokenName, 
-        string memory tokenSymbol
+        string memory tokenSymbol,
+        uint256 gen0Limit
     )
         public
         initializer
     {
-        KittyContract.init_KittyContract(tokenName, tokenSymbol);
+        KittyContract.init_KittyContract(tokenName, tokenSymbol, gen0Limit);
     }
 
     // ADDED Functionality

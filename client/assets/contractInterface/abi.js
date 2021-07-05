@@ -464,6 +464,20 @@ const abi = {
       "constant": true
     },
     {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -510,6 +524,11 @@ const abi = {
           "internalType": "string",
           "name": "tokenSymbol",
           "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "gen0Limit",
+          "type": "uint256"
         }
       ],
       "name": "init_KittyContract",
@@ -622,20 +641,6 @@ const abi = {
           "internalType": "bool",
           "name": "",
           "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "totalSupply",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "view",

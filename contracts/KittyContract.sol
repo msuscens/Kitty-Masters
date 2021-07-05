@@ -29,7 +29,7 @@ contract KittyContract is
     bytes4 private constant _INTERFACE_ID_ERC165 = 0x01ffc9a7;
     // Note: bytes4(keccak256('supportsInterface(bytes4) == 0x01ffc9a7'));
 
-    uint64 private _GEN0_LIMIT;
+    uint256 private _gen0Limit;
     uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
     uint256 private _gen0KittiesCount;
     Kitty[] private _kitties;  
@@ -47,7 +47,8 @@ contract KittyContract is
 
     function init_KittyContract(
         string memory tokenName, 
-        string memory tokenSymbol
+        string memory tokenSymbol,
+        uint256 gen0Limit
     )
         public
         initializer
@@ -56,7 +57,7 @@ contract KittyContract is
         ERC721Upgradeable.__ERC721_init(tokenName, tokenSymbol);
         ERC721PausableUpgradeable.__ERC721Pausable_init();
 
-        _GEN0_LIMIT = 10;
+        _gen0Limit = gen0Limit;
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
     }
 
@@ -80,7 +81,7 @@ contract KittyContract is
         external
         onlyOwner
     {
-        require(_gen0KittiesCount < _GEN0_LIMIT, "Hit Gen0 creation limit!");
+        require(_gen0KittiesCount < _gen0Limit, "Hit Gen0 creation limit!");
         _gen0KittiesCount++;
         _createKitty( 0, 0, 0, genes, msg.sender);
     }
