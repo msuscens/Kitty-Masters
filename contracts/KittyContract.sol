@@ -27,8 +27,8 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
     uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
 
     uint256 private _gen0KittiesCount;
-    string private _name;
-    string private _symbol;
+    // string private _name;
+    // string private _symbol;
 
     Kitty[] private _kitties;  
     mapping(uint256 => address) private _kittiesOwner;
@@ -59,8 +59,8 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
         OwnableUpgradeable.__Ownable_init();
         ERC721Upgradeable.__ERC721_init(tokenName, tokenSymbol);
         ERC721PausableUpgradeable.__ERC721Pausable_init();
-        _name = tokenName;
-        _symbol = tokenSymbol;
+        // _name = tokenName;
+        // _symbol = tokenSymbol;
 
         _GEN0_LIMIT = 10;
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
@@ -224,14 +224,14 @@ contract KittyContract is OwnableUpgradeable, ERC721Upgradeable, ERC721PausableU
     }
 
 
-    function name() public view override returns (string memory) {
-        return _name;
-    }
+    // function name() public view override returns (string memory) {
+    //     return _name;
+    // }
 
 
-    function symbol() public view override returns (string memory) {
-        return _symbol;
-    }
+    // function symbol() public view override returns (string memory) {
+    //     return _symbol;
+    // }
 
 
     function approve(address approved, uint256 tokenId) public override {

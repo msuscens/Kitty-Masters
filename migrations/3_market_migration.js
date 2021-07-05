@@ -15,6 +15,5 @@ module.exports = async function (deployer, network, accounts) {
     [kittyContract.address], 
     { deployer, initializer: 'init_KittyMarketplace', from: accounts[0]}
   )
-  console.log("***DEBUG:Done deployProxy")
 
 }
