@@ -35,12 +35,21 @@ contract KittyContract is
     uint256 private _gen0KittiesCount;
 
     Kitty[] private _kitties;  
-    mapping(uint256 => address) private _kittiesOwner;
-    mapping(address => uint256) private _ownersKittyCount;
-    mapping(address => uint256[]) private _ownersKittyIds;
+/*
+    mapping(uint256 => address) private _kittiesOwner;      // _owners == _kittiesOwner
+    mapping(address => uint256) private _ownersKittyCount;  // _balances == _ownersKittyCount
+    mapping(address => uint256[]) private _ownersKittyIds;  //_ownedTokens == _ownersKittyIds
+    mapping(uint256 => address) private _kittiesApprovedOperator;   // _tokenApprovals == _kittiesApprovedOperator
+    mapping(address => mapping(address => bool)) private _ownersApprovedOperators; // _operatorApprovals == _ownersApprovedOperators
+*/
 
-    mapping(uint256 => address) private _kittiesApprovedOperator;
-    mapping(address => mapping(address => bool)) private _ownersApprovedOperators;
+    mapping(uint256 => address) private _owners;      // _owners == _kittiesOwner
+    mapping(address => uint256) private _balances;  // _balances == _ownersKittyCount
+    mapping(address => uint256[]) private _ownedTokens;  //_ownedTokens == _ownersKittyIds
+
+    mapping(uint256 => address) private _tokenApprovals;   // _tokenApprovals == _kittiesApprovedOperator
+    mapping(address => mapping(address => bool)) private _operatorApprovals; // _operatorApprovals == _ownersApprovedOperators
+
 
     event Birth(
         address owner,
@@ -100,7 +109,7 @@ contract KittyContract is
         require(
             _isOwnerOrApproved(
                 msg.sender,
-                _kittiesOwner[mumId],
+                _owners[mumId],
                 msg.sender,
                 mumId
             ),
@@ -109,7 +118,7 @@ contract KittyContract is
         require(
             _isOwnerOrApproved(
                 msg.sender,
-                _kittiesOwner[dadId],
+                _owners[dadId],
                 msg.sender,
                 dadId
             ),
@@ -171,7 +180,7 @@ contract KittyContract is
         returns(uint256[] memory) 
     {
         // Set pointer to owners array of kitty Ids
-        return _ownersKittyIds[msg.sender];
+        return _ownedTokens[msg.sender];
     }
 
 
@@ -219,7 +228,7 @@ contract KittyContract is
         override
         returns (uint256)
     {
-        return _ownersKittyCount[owner];
+        return _balances[owner];    // _balances == _ownersKittyCount
     }
 
 
@@ -230,14 +239,14 @@ contract KittyContract is
         returns (address)
     {
         require(_isInExistance(tokenId), "Token does not exist!");
-        return _kittiesOwner[tokenId];
+        return _owners[tokenId];  // _owners == _kittiesOwner
     }
 
 
     function approve(address approved, uint256 tokenId) public override {
         require(
             _isOwner(msg.sender, tokenId) ||
-            _isOperator(_kittiesOwner[tokenId], msg.sender),
+            _isOperator(_owners[tokenId], msg.sender),
             "Not token owner, nor operator!"
         );
         require(_isNotZero(approved), "0 address can't be an approver!");   // Additional check
@@ -252,7 +261,7 @@ contract KittyContract is
         returns (address)
     {
         require(_isInExistance(tokenId), "Token does not exist!");
-        return _kittiesApprovedOperator[tokenId];
+        return _tokenApprovals[tokenId];   // _tokenApprovals == _kittiesApprovedOperator
     }
 
 
@@ -341,7 +350,7 @@ contract KittyContract is
 
         return (
             _isOwner(sender, tokenId) ||
-            _isOperator(_kittiesOwner[tokenId], sender) ||
+            _isOperator(_owners[tokenId], sender) ||
             _isApproved(sender, tokenId)
         );
     }
@@ -361,7 +370,7 @@ contract KittyContract is
         view
         returns (bool)
     {
-        return (_kittiesOwner[tokenId] == claimer);
+        return (_owners[tokenId] == claimer);
     }
 
 
@@ -370,7 +379,7 @@ contract KittyContract is
         view
         returns (bool)
     {
-        return _ownersApprovedOperators[owner][candidate];
+        return _operatorApprovals[owner][candidate];
     }
 
 
@@ -379,7 +388,7 @@ contract KittyContract is
         view
         returns (bool)
     {
-        return (candidate == _kittiesApprovedOperator[tokenId]);
+        return (candidate == _tokenApprovals[tokenId]);
     }
 
 
@@ -402,15 +411,15 @@ contract KittyContract is
     {
         if (_isNotZero(from)){
             // Remove kittie token from the sender
-            delete _kittiesApprovedOperator[tokenId];
-            _removeFrom(_ownersKittyIds[from], tokenId);
-            _ownersKittyCount[from]--;
+            delete _tokenApprovals[tokenId];
+            _removeFrom(_ownedTokens[from], tokenId);
+            _balances[from]--;
         }
 
         // Give token to the receiver
-        _ownersKittyIds[to].push(tokenId);
-        _ownersKittyCount[to]++;
-        _kittiesOwner[tokenId] = to;
+        _ownedTokens[to].push(tokenId);
+        _balances[to]++;
+        _owners[tokenId] = to;
 
         emit Transfer(from, to, tokenId);
     }
@@ -466,7 +475,7 @@ contract KittyContract is
     )
         internal
     {
-        _kittiesApprovedOperator[tokenId] = approved;
+        _tokenApprovals[tokenId] = approved;
         emit Approval(grantor, approved, tokenId);
     }
 
@@ -478,7 +487,7 @@ contract KittyContract is
     )
         internal
     {
-        _ownersApprovedOperators[owner][operator] = approved;
+        _operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
     }
 
