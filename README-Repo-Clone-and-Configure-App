@@ -88,7 +88,7 @@ HOW TO CLONE THE GITHUB REPO AND CONFIGURE TO RUN THE APPLICATION LOCALLY
 
 9. Start up a local server.  For example:
     Use VSCode to start up 'Live Server', 
-    or start a python server: $ python3 -m http.server
+    (or start a python server: $ python3 -m http.server)
 
 10. Open MetaMask and switch to Ganache-cli network
     (Assumes you have MetaMask browser plugin installed for Chrome or Firefox)

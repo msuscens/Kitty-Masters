@@ -1029,17 +1029,27 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
         label (above the proposal name) to view the transaction
     e.
 
-    Note: This can also be done from a script using defender upgrade plug-in
+    Note: This can also be done from a script using Defender upgrade plug-in
     (defender.proposeUpgrade(...) that uses Defender Admin API under the hood.
 
-29.  Call KittContractV2 setVersion() function from Defender Admin
-        TODO: Document in accordance with this: https://forum.openzeppelin.com/t/new-admin-action-error-could-not-validate-transaction-cannot-estimate-gas-transaction-may-fail-or-may-require-manual-gas-limit/10582/9
+29. From Defender call KittContractV2 setVersion() function
+        On how to do this (and issue I originally faced) refer to my posts here:
+        https://forum.openzeppelin.com/t/new-admin-action-error-could-not-validate-transaction-cannot-estimate-gas-transaction-may-fail-or-may-require-manual-gas-limit/10582/9
 
-30.  Upgrade compiler version to 0.8.6, that eliminates the v0.8.5 compiler's
-    bug of giving 'unreachable code' warnings.
+30. Upgrade compiler version to 0.8.6, that eliminates the v0.8.5 compiler's
+    bug of giving 'unreachable code' warnings.  Corrected a git/GitHub issue
+    that was causeing a git clone and subsequent migrate to fail - see issue
+    and solution detailed here: https://forum.openzeppelin.com/t/deployproxy-using-truffle-migrate-reset-errors-with-requested-contract-was-not-found/5349/6 
 
-_______________
-TO DO ....
+
+
+
+
+
+___________________________________________________________________________________________________
+**********************
+COULD DO NEXT .... BUT WON"T UNDER THIS PROJECT
+**********************
 
 xx. Add the Marketplace contract to Defender (verifying contract first)
 
@@ -1047,7 +1057,6 @@ xx. Add the Marketplace contract to Defender (verifying contract first)
         contract, following the guide:
         https://forum.openzeppelin.com/t/verify-smart-contract-inheriting-from-openzeppelin-contracts/4119
         
-
 
     b. From the Defender Admin dashboard, repeat the steps from 27b (above)
         but this time adding the KittyContract.
