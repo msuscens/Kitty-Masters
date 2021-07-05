@@ -4,7 +4,7 @@ PROJECT AIM:
 
 A conversion of my CryptoKitties-Clone project so that the contracts are
 upgradable and pausable.  Specific updates to my CryptoKitties-Clone 
-contract code will be to:
+contract code were:
 
 i) Convert contract code to Solidity v0.8.5
 
@@ -18,14 +18,14 @@ that the 'pausable' modifiers can be applied to functions as required
 iv) Add some basic Truffle test scripts to each contract (to support
 this development work)
 
-v) Stretch goal (if time permits): 
+v) Completed Stretch goals: 
     a) Deploy to a testnet
     b) Employ 'Gnosis Safe' to hold each (proxy contratcs) Admin contract
     c) Set up Defender to help manage the Dev/Sec Ops of the contracts
+    d) Refactor project code to use OZ inheritted ERC721 functions
 
-Once complete this project will then form a basis (base upgradeable/pausable
-contract) for the planned 'Dragon Masters' project (ie. a team project that 
-will follow on form this one).
+This project will then form a basis for the planned 'Dragon Masters'
+project (ie. a team project that will follow on form this one).
 
 Note: Kitty Masters will not add further user functionality (above that already 
 present in my CryptoKitties-Clone project) and will employ the same UI.
@@ -1060,7 +1060,10 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
     b. Update supportsInterface() to call parent ERC721Upgradeable's
     supportInterface() function
     c. Add OZ ERC721EnumerableUpgradeable as inherrited contract
-    d. Rename state variables (to be the same as OZ variable naming) 
+    d. Rename state variables (to be the same as OZ variable naming)
+    e. Remove ERC721 standard functions and instead use OZ ERC721 functions
+        (the OZ ERC721 functions are inheritted but currently overriden by
+        my own functions developed under my Cryto-Kitties project)
 
 
 

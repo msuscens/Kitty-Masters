@@ -31,25 +31,8 @@ contract KittyContract is
 
     uint64 private _GEN0_LIMIT;
     uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
-
     uint256 private _gen0KittiesCount;
-
     Kitty[] private _kitties;  
-/*
-    mapping(uint256 => address) private _kittiesOwner;      // _owners == _kittiesOwner
-    mapping(address => uint256) private _ownersKittyCount;  // _balances == _ownersKittyCount
-    mapping(address => uint256[]) private _ownersKittyIds;  //_ownedTokens == _ownersKittyIds
-    mapping(uint256 => address) private _kittiesApprovedOperator;   // _tokenApprovals == _kittiesApprovedOperator
-    mapping(address => mapping(address => bool)) private _ownersApprovedOperators; // _operatorApprovals == _ownersApprovedOperators
-*/
-
-    mapping(uint256 => address) private _owners;      // _owners == _kittiesOwner
-    mapping(address => uint256) private _balances;  // _balances == _ownersKittyCount
-    mapping(address => uint256[]) private _ownedTokens;  //_ownedTokens == _ownersKittyIds
-
-    mapping(uint256 => address) private _tokenApprovals;   // _tokenApprovals == _kittiesApprovedOperator
-    mapping(address => mapping(address => bool)) private _operatorApprovals; // _operatorApprovals == _ownersApprovedOperators
-
 
     event Birth(
         address owner,
@@ -88,6 +71,8 @@ contract KittyContract is
         )
     {
         super._beforeTokenTransfer(from, to, amount);
+
+
     }
 
 
@@ -107,18 +92,14 @@ contract KittyContract is
     {
         // Ensure that the breeder is owner or guardian of parent cats
         require(
-            _isOwnerOrApproved(
-                msg.sender,
-                _owners[mumId],
+            _isApprovedOrOwner(
                 msg.sender,
                 mumId
             ),
             "Must have access to mother cat!"
         );
         require(
-            _isOwnerOrApproved(
-                msg.sender,
-                _owners[dadId],
+            _isApprovedOrOwner(
                 msg.sender,
                 dadId
             ),
@@ -162,7 +143,7 @@ contract KittyContract is
             uint64 generation
         )
     {
-        require(_isInExistance(kittyId), "No such kitty id!");
+        require(_exists(kittyId), "No such kitty id!");
         
         return (
             _kitties[kittyId].genes, 
@@ -179,8 +160,13 @@ contract KittyContract is
         view 
         returns(uint256[] memory) 
     {
-        // Set pointer to owners array of kitty Ids
-        return _ownedTokens[msg.sender];
+        uint256 totalOwned = balanceOf(msg.sender);
+        uint256[] memory tokenIds = new uint[](totalOwned);
+
+        for (uint256 index=0; index < totalOwned; index++) {
+            tokenIds[index] = tokenOfOwnerByIndex(msg.sender, index);
+        }
+        return tokenIds;
     }
 
 
@@ -204,292 +190,11 @@ contract KittyContract is
 
 
     // IERC721 function implementations
-
+/*
     function totalSupply() public view override returns (uint256) {
         return _kitties.length;
     }
-
-/* *** TODO REFACTOR THIS CONTRACT - FUNCTIONS AND STATE VAIRABLES
-/* *** As it declares same functions and corresponding state variables
-        as in ERC721Upgradeable contract, e.g.
-        balanceOf(): with mapping _ownersKittyCount === _balances mapping
-        name(): with _name === _name (declared in ERC721Upgradeable)
-        symbol(): with _symbol === _symbol (declared in ERC721Upgradeable)
-        _name and _symbol
-
-        approve(address approved, uint256 tokenId) === approve(address to, uint256 tokenId)
-        etc,
-        etc...
-******/
-
-    function balanceOf(address owner)
-        public
-        view
-        override
-        returns (uint256)
-    {
-        return _balances[owner];    // _balances == _ownersKittyCount
-    }
-
-
-    function ownerOf(uint256 tokenId)
-        public
-        view
-        override
-        returns (address)
-    {
-        require(_isInExistance(tokenId), "Token does not exist!");
-        return _owners[tokenId];  // _owners == _kittiesOwner
-    }
-
-
-    function approve(address approved, uint256 tokenId) public override {
-        require(
-            _isOwner(msg.sender, tokenId) ||
-            _isOperator(_owners[tokenId], msg.sender),
-            "Not token owner, nor operator!"
-        );
-        require(_isNotZero(approved), "0 address can't be an approver!");   // Additional check
-        _approve(msg.sender, approved, tokenId);
-    }
-
-
-    function getApproved(uint256 tokenId)
-        public
-        view
-        override
-        returns (address)
-    {
-        require(_isInExistance(tokenId), "Token does not exist!");
-        return _tokenApprovals[tokenId];   // _tokenApprovals == _kittiesApprovedOperator
-    }
-
-
-    function setApprovalForAll(address operator, bool approved)
-        public
-        override
-    {
-        require(operator != msg.sender);
-        _setApprovalForAll(msg.sender, operator, approved);
-    }
-
-
-    function isApprovedForAll(address owner, address operator)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return _isOperator(owner, operator);
-    }
-
-
-    function transferFrom(address from, address to, uint256 tokenId)
-        public
-        override
-    {
-        require(
-            _isOwnerOrApproved(msg.sender, from, to, tokenId),
-            "No authority to transfer token!"
-        );
-        _transfer(from, to, tokenId);
-    }
-
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    )
-        public
-        override
-    {
-        _safeTransferFrom(msg.sender, from, to, tokenId, "");
-    }
-
-
-    function safeTransferFrom(
-        address from, 
-        address to, 
-        uint256 tokenId, 
-        bytes calldata data
-    )
-        public
-        override
-    {  
-        _safeTransferFrom(msg.sender, from, to, tokenId, data);
-    }
-
-
-    function transfer(address to, uint256 tokenId) external {
-        // Checks
-        require(_isNotZero(to), "Recipient's address is zero!");
-        require(to != address(this), "Recipient is contract address!");
-        require(_isOwner(msg.sender, tokenId), "Sender is not token owner!");
-
-        // Effects: Transfer token
-        _transfer(msg.sender, to, tokenId);
-    }
-
-
-// Internal & private functions
-
-    function _isOwnerOrApproved(
-        address sender,
-        address from,
-        address to,
-        uint256 tokenId
-    )
-        internal
-        view
-        returns (bool)
-    {
-        require(_isInExistance(tokenId), "Token doesn't exist!");
-        require(_isOwner(from, tokenId), "'from' doesn't own token!");
-        require(_isNotZero(to), "Recipient's address is zero!");
-
-        return (
-            _isOwner(sender, tokenId) ||
-            _isOperator(_owners[tokenId], sender) ||
-            _isApproved(sender, tokenId)
-        );
-    }
-
-
-    function _isNotZero(address candidate)
-        internal
-        pure
-        returns (bool)
-    {
-        return (candidate != address(0));
-    }
-
-
-    function _isOwner(address claimer, uint256 tokenId)
-        internal
-        view
-        returns (bool)
-    {
-        return (_owners[tokenId] == claimer);
-    }
-
-
-    function _isOperator(address owner, address candidate)
-        internal
-        view
-        returns (bool)
-    {
-        return _operatorApprovals[owner][candidate];
-    }
-
-
-    function _isApproved(address candidate, uint256 tokenId)
-        internal
-        view
-        returns (bool)
-    {
-        return (candidate == _tokenApprovals[tokenId]);
-    }
-
-
-    function _isInExistance(uint256 tokenId)
-        internal
-        view
-        returns (bool)
-    {
-        return (tokenId < _kitties.length);
-    }
-
-
-/* *** TODO - AS ABOVE REVIEW AND REFACTOR THESE FUNCTIONS AS THEY 
-                NOW OVERRIDE THOSE FUNCTIONS IN ERC721Upgradeable !!
-***  */
-
-    function _transfer(address from, address to, uint256 tokenId)
-        internal
-        override
-    {
-        if (_isNotZero(from)){
-            // Remove kittie token from the sender
-            delete _tokenApprovals[tokenId];
-            _removeFrom(_ownedTokens[from], tokenId);
-            _balances[from]--;
-        }
-
-        // Give token to the receiver
-        _ownedTokens[to].push(tokenId);
-        _balances[to]++;
-        _owners[tokenId] = to;
-
-        emit Transfer(from, to, tokenId);
-    }
-
-    function _removeFrom(uint256[] storage array, uint256 value) internal {
-    // Finds and removes given value from an array (NB. array order is not maintained) 
-        for (uint256 i = 0; i < array.length; i++){
-            if (array[i] == value){
-                array[i] = array[array.length-1];
-                array.pop();
-                break;
-            }
-        }
-    }
-
-
-    function _safeTransferFrom(
-        address sender, 
-        address from, 
-        address to, 
-        uint256 tokenId, 
-        bytes memory data
-    )
-        internal
-    {
-        require(
-            _isOwnerOrApproved(sender, from, to, tokenId),
-            "No authority to transfer token!"
-        );
-        
-        _safeTransfer(from, to, tokenId, data);
-    }
-
-
-    function _safeTransfer(
-        address from, 
-        address to, 
-        uint256 tokenId, 
-        bytes memory data
-    )
-        internal
-        override
-    {
-        _transfer(from, to, tokenId);
-        require(_checkERC721Support(from, to, tokenId, data));
-    }
-
-
-    function _approve(
-        address grantor,
-        address approved,
-        uint256 tokenId
-    )
-        internal
-    {
-        _tokenApprovals[tokenId] = approved;
-        emit Approval(grantor, approved, tokenId);
-    }
-
-
-    function _setApprovalForAll(
-        address owner,
-        address operator,
-        bool approved
-    )
-        internal
-    {
-        _operatorApprovals[owner][operator] = approved;
-        emit ApprovalForAll(owner, operator, approved);
-    }
+*/
 
 
     function _checkERC721Support(
@@ -504,8 +209,6 @@ contract KittyContract is
         if (!_isContract(to)) return true;
 
         // Call onERC721Received in the _to contract
-        
-        // bytes4 response = IERC721Receiver(to).onERC721Received(
         bytes4 response = IERC721ReceiverUpgradeable(to).onERC721Received(
             msg.sender,
             from,
@@ -548,7 +251,7 @@ contract KittyContract is
         uint256 newKittenId = _kitties.length - 1;
 
         emit Birth(owner, newKittenId, mumId, dadId, genes, generation);
-        _safeTransfer(address(0), owner, newKittenId, "");
+        _safeMint(owner, newKittenId);
         return newKittenId;
     }
 
