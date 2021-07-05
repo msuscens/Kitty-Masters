@@ -25,7 +25,6 @@ async function displayMarketplaceKitties(){
         putAllCatsOnPage(catsOnSale)
 
         marketplaceCatIds = catIds
-        // TODO : *** Also store full details ie. catsOnSale ??
 
         // Add buy button (to all cats in marketplace except users own)
         for (i = 0; i < catsOnSale.length; i++) {
@@ -50,24 +49,17 @@ function updateMarketPage(newTx){
     try {
         switch (newTx.TxType) {
             case "Create offer":
-                console.log("In updateMarketPage(newTx): 'Create offer'")
                 displayTransaction(newTx)
-
-                // *** TODO ***
-                // Indicate kitty that is now on sale by updating page with
-                // the new kitty for sale 
-                // *** TODO : Here! ***
                 break
             case "Buy":
-                console.log("In updateMarketPage(newTx): 'Buy'")    
                 displayTransaction(newTx)
+
                 // Indicate kitty that is now sold 
                 $(`#buyButton${newTx.tokenId}`).addClass("btn-danger");
                 $(`#buyButton${newTx.tokenId}`).removeClass("btn-success");
                 $(`#buyButton${newTx.tokenId}`).text("SOLD!")
                 break
             case "Remove offer":
-                console.log("In updateMarketPage(newTx): 'Remove offer'")
                 displayTransaction(newTx)
 
                 // Show kitty that has just been withdrawn from sale

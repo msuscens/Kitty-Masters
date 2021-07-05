@@ -45,25 +45,21 @@ function updateCatPenPage(newTx){
     try {
         switch (newTx.TxType) {
             case "Create offer":
-                console.log("In updateCatPenPage(newTx): 'Create offer'")
                 displayTransaction(newTx)
 
                 // Add price to kitty that is now on sale
                 setTimeout(()=>{location.reload(true)},1.5*1000)
                 break
             case "Buy":
-                console.log("In updateCatPenPage(newTx): 'Buy'")    
                 displayTransaction(newTx)
 
-                // (Possibly) indicate which kitty has been bought! ???
-                // *** TODO ???: Here! ***
+                // (Possibly) indicate which kitty has been bought here! ???
 
                 // Remove sold kitty from the pen
                 setTimeout(()=>{location.reload(true)},2*1000)
 
                 break
             case "Remove offer":
-                console.log("In updateCatPenPage(newTx): 'Remove offer'")
                 displayTransaction(newTx)
 
                 // Remove price from kitty that's been withdrawn from sale

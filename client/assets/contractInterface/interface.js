@@ -1,9 +1,10 @@
 
-// Note: Add locally deployed 'TransparentUpgradeableProxy' address below
-// (ie. from 2_token_migration output the KittyContracts proxy address and 
-//      from 3_market_migration output the KittyMarketplace proxy address)
-const KITTY_CONTRACT_ADDRESS = "0xeC5712cCEFC64eBf00865fE3229dC3a7e7c17170"
-const MARKETPLACE_ADDRESS = "0x05F7B04E8ED850A6377Cfdc7Bc19aFAa7404437E"
+// Note: Add locally deployed 'TransparentUpgradeableProxy' addresses below
+//      obtained from the console upon performing 'truffle migrate --reset'
+// (ie. from 2_token_migration output for KittyContract's proxy address and 
+//      from 3_market_migration output for KittyMarketplace's proxy address)
+const KITTY_TOKEN_PROXY = "0xeC5712cCEFC64eBf00865fE3229dC3a7e7c17170"
+const MARKETPLACE_PROXY = "0x05F7B04E8ED850A6377Cfdc7Bc19aFAa7404437E"
 
 const web3 = new Web3(Web3.givenProvider)
 console.log("Web3 version: ", web3.version)
@@ -15,8 +16,10 @@ let User
 async function initiateConnection(){
     try {
         let accounts = await web3.eth.getAccounts()
-        Instance_Of_KittyContract = new web3.eth.Contract(abi.kittyContract, KITTY_CONTRACT_ADDRESS, {from: accounts[0]})
-        Instance_Of_Marketplace = new web3.eth.Contract(abi.marketplace, MARKETPLACE_ADDRESS, {from: accounts[0]})
+        if (accounts.length == 0) throw "Unable to get accounts from MetaMask!"
+        
+        Instance_Of_KittyContract = new web3.eth.Contract(abi.kittyContract, KITTY_TOKEN_PROXY, {from: accounts[0]})
+        Instance_Of_Marketplace = new web3.eth.Contract(abi.marketplace, MARKETPLACE_PROXY, {from: accounts[0]})
         User = accounts[0]
 
         if (User.length > 0) {
@@ -51,9 +54,9 @@ function onBirthEvent(uiCallbackFunc) {
         uiCallbackFunc(event.returnValues)
     })
     .on('error', function(error, receipt) {
-        console.log("Birth Event Error")
-        console.log(error)
-        console.log(receipt)
+        console.log("Birth Event Error:")
+        console.log("error:", error)
+        console.log("receipt:", receipt)
     })
 }
 
@@ -141,11 +144,10 @@ async function createCat(dna){
         await Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}, function(err, txHash){
             if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}': " + err
             else {
-                console.log("Tx:",txHash)
+                console.log("createCats Tx:",txHash)
                 return txHash
             }
         })
-
     }
     catch (error) {
         console.log("In createCat(): " + error)
@@ -158,7 +160,7 @@ async function breedCats(mumId, dadId){
         await Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}, function(err, txHash){
             if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}': " + err
             else {
-                console.log("Tx:",txHash)
+                console.log("breedCats Tx:",txHash)
                 return txHash
             }
         })
@@ -177,9 +179,9 @@ function onMarketplaceEvent(uiCallbackFunc) {
         uiCallbackFunc(event.returnValues)
     })
     .on('error', function(error, receipt) {
-        console.log("Market Transaction Event Error")
-        console.log(error)
-        console.log(receipt)
+        console.log("Market Transaction Event Error:")
+        console.log("error:", error)
+        console.log("receipt:", receipt)
     })
 }
 
@@ -192,7 +194,6 @@ async function getAllCatIdsOnSale() {
         await Instance_Of_Marketplace.methods.getAllTokenOnSale().call({}, function(err, idsTokensOnSale){
             if (err) throw "Error from getAllTokenOnSale().call(): " + err
             catIdsOnSale = idsTokensOnSale
-            console.log("catIdsOnSale:", catIdsOnSale)
         })
         return catIdsOnSale
     }
@@ -269,12 +270,12 @@ async function getForSaleDetails(catId) {
 
 async function setMarketplaceApproval(){
     try {
-        const isMarketplaceAnOperator = await Instance_Of_KittyContract.methods.isApprovedForAll(User, MARKETPLACE_ADDRESS).call()
+        const isMarketplaceAnOperator = await Instance_Of_KittyContract.methods.isApprovedForAll(User, MARKETPLACE_PROXY).call()
 
         if (isMarketplaceAnOperator == false) {
-            await Instance_Of_KittyContract.methods.setApprovalForAll(MARKETPLACE_ADDRESS, true).send({}, function(err, txHash){
+            await Instance_Of_KittyContract.methods.setApprovalForAll(MARKETPLACE_PROXY, true).send({}, function(err, txHash){
                 if (err) console.log(err)
-                else console.log(txHash)
+                else console.log("setMarketplaceApproval Tx:",txHash)
             })
         }
     }
@@ -287,16 +288,12 @@ async function setMarketplaceApproval(){
 
 async function setForSale(catId, salePriceInWei) {
     try {
-        console.log("In setForSale")
-        console.log("catId: ", catId)
-        console.log("salePriceInWei: ", salePriceInWei)
-
         await Instance_Of_Marketplace.methods.setOffer(salePriceInWei, catId).send({}, function(err, txHash){
             if (err) {
                 throw(err)
             }
             else {
-                console.log(txHash)
+                console.log("setForSale Tx:",txHash)
             }
         })
     }
@@ -313,7 +310,7 @@ async function withdrawFromSale(catId) {
                 throw(err)
             }
             else {
-                console.log(txHash)
+                console.log("WithdrawFromSale Tx:",txHash)
             }
         })
     }
@@ -330,7 +327,7 @@ async function buyKitty(tokenId, priceInWei) {
                 throw(err)
             }
             else {
-                console.log(txHash)
+                console.log("BuyKitty Tx:", txHash)
             }
         })
     }
