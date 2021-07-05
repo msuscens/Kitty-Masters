@@ -32,8 +32,15 @@ present in my CryptoKitties-Clone project) and will employ the same UI.
 (https://github.com/msuscens/CryptoKitties-Clone)
 
 
+GIT CLONE AND APP SETUP
+To git clone this repository and configure the Kitty-Masters app to run on
+your local machine, please see the steps in: README-Repo-Clone-and-Configure-App
 
-RECORD OF IMPLEMENTAION STEPS
+______________________________________________________________________________
+********                                                             *********
+********  MY PERSONAL RECORD OF IMPLEMENTATION STEPS / LEARNING LOG  *********
+
+IMPLEMENTAION STEPS
 This will record the implementation steps taken to date on thethis project 
 and draw upon the steps that I worked out in my project to take make my
 MultiSigWallet contract project code and make it upgradeable/pausable:  
