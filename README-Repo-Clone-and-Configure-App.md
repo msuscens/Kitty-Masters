@@ -105,11 +105,9 @@ HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
     your browser.  MetaMask (assuming it's withed to the local Network:
     ganace-cli) should connect to the website site.
 
-    Troubleshhoting if MetaMask doesn't connect:
+    NOTE: Troubleshhoting if MetaMask doesn't connect:
     Open the browser console and check the output - if it hasn't
     connected to the (private) network, with contract addresses and
     User address output, then try entering the following into the
     browser console to see if it makes MM connect:
-    window.ethereum.enable().then(async function(accounts){consol.log(accounts)}
-
-
+    window.ethereum.enable().then(async function(accounts){console.log(accounts)})
