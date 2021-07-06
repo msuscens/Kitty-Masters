@@ -1,5 +1,5 @@
 
-HOW TO CLONE THE GITHUB REPO AND CONFIGURE TO RUN THE APPLICATION LOCALLY
+HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
 
 1. Created a new local directory for the application (e.g. Kitty-Masters)
 
@@ -77,25 +77,39 @@ HOW TO CLONE THE GITHUB REPO AND CONFIGURE TO RUN THE APPLICATION LOCALLY
 
 8. Add the contract proxy address (output to console from the truffle migrate)
     into the file: Kitty-Masters/client/assets/contractInterface/interface.js
-    ie. on lines 5 & 6:
+    ie. on lines 15 & 66:
 
-    const KITTY_CONTRACT_ADDRESS = "0x....................................."
-    const MARKETPLACE_ADDRESS = "0x....................................."
+    const LOCAL_KITTY_TOKEN_PROXY = "0x....................................."
+    const LOCAL_MARKETPLACE_PROXY = "0x....................................."
 
-    Note: These addresses should be for deployed 'TransparentUpgradeableProxy',
-        shown in the console output from 2_token_migration and 3_market_migration 
-        (but NOT the KittyContract & kittyMarketplace contract addresses)
+    NB: These contract addresses can be found in the console output from the 
+        migration.
+        i) The first contract address is under '2_token_migration',
+        under the sub-section: "Deploying 'TransparentUpgradeableProxy'"  
+        Copy & past this contract address to LOCAL_KITTY_TOKEN_PROXY.
+        ii) The second contract address is under '3_market_migration', again
+        under the sub-section: "Deploying 'TransparentUpgradeableProxy'".
+        Copy & past this contract address to LOCAL_MARKETPLACE_PROXY.
 
 9. Start up a local server.  For example:
-    Use VSCode to start up 'Live Server', 
-    (or start a python server: $ python3 -m http.server)
+    Use VSCode to start up 'Live Server' (by clicking 'Go Live'), 
+    (Alternatively start a python server: $ python3 -m http.server)
 
 10. Open MetaMask and switch to Ganache-cli network
-    (Assumes you have MetaMask browser plugin installed for Chrome or Firefox)
-    and it's configured for ganache-cli network that you've started in a
-    terminal window - under step 5 above).
+    (Thius assumes that you have MetaMask browser plugin installed for
+    Chrome or Firefox) and it's configured for ganache-cli network (that
+    you've started in a terminal window - under step 5 above).
 
 11. Invoke index.html file (e.g. in VSCode right click the file and select 
     'Open with LiveServer').  The homepage of the app should now open in
-    your browser.
+    your browser.  MetaMask (assuming it's withed to the local Network:
+    ganace-cli) should connect to the website site.
+
+    Troubleshhoting if MetaMask doesn't connect:
+    Open the browser console and check the output - if it hasn't
+    connected to the (private) network, with contract addresses and
+    User address output, then try entering the following into the
+    browser console to see if it makes MM connect:
+    window.ethereum.enable().then(async function(accounts){consol.log(accounts)}
+
 
