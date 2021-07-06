@@ -1077,6 +1077,11 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
 
 35. Make kitty token transfers pausable (incl. from breed and createKittyGen0)
 
+36. Add website support for multiple Ethereum networks, with automatic detection
+    (so that network is picked up from MetaMask).  Now supports local network,
+    ropsten, and rinkeby with proxy addreses for KittyContract and Marketplace
+    contract's setable for each of these networks.
+
 
 
 
