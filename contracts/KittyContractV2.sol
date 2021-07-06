@@ -28,13 +28,4 @@ contract KittyContractV2 is KittyContract {
         return _version;
     }
 
-
-    function pause() public onlyOwner whenNotPaused {
-        _pause();
-    }
-
-    function unpause() public onlyOwner whenPaused {
-        _unpause();
-    }
-
 }

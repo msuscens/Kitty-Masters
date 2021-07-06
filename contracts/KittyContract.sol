@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
-
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
@@ -14,7 +13,6 @@ contract KittyContract is
     ERC721EnumerableUpgradeable,
     ERC721PausableUpgradeable
 {
-
     struct Kitty {
         uint256 genes;
         uint64 birthTime;
@@ -32,7 +30,6 @@ contract KittyContract is
     uint256 private _gen0Limit;
     uint256 private _gen0KittiesCount;
     uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
-
     Kitty[] private _kitties;  
 
     event Birth(
@@ -57,7 +54,6 @@ contract KittyContract is
         OwnableUpgradeable.__Ownable_init();
         ERC721Upgradeable.__ERC721_init(tokenName, tokenSymbol);
         ERC721PausableUpgradeable.__ERC721Pausable_init();
-
         _gen0Limit = gen0Limit;
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
     }
@@ -71,8 +67,20 @@ contract KittyContract is
             ERC721EnumerableUpgradeable,
             ERC721PausableUpgradeable
         )
+        whenNotPaused   // make _transfer() pausible
     {
         super._beforeTokenTransfer(from, to, amount);
+    }
+
+
+    // Functions to pause or unpause all functions that have
+    // the whenNotPaused or whenPaused modify applied on them
+    function pause() public onlyOwner whenNotPaused {
+        _pause();
+    }
+
+    function unpause() public onlyOwner whenPaused {
+        _unpause();
     }
 
 
@@ -186,8 +194,8 @@ contract KittyContract is
       );
     }
 
+// Internal  functions
 
-    // IERC721 
     function _checkERC721Support(
         address from,
         address to,
@@ -218,6 +226,8 @@ contract KittyContract is
     }
 
 
+// Private functions
+
     function _createKitty(
         uint256 mumId,
         uint256 dadId,
@@ -239,7 +249,6 @@ contract KittyContract is
         );
         _kitties.push(newKitty);
         uint256 newKittenId = _kitties.length - 1;
-
         emit Birth(owner, newKittenId, mumId, dadId, genes, generation);
         _safeMint(owner, newKittenId);
         return newKittenId;
@@ -298,7 +307,6 @@ contract KittyContract is
             dnaSequence += newGenes[i];  
             if (i != 7) dnaSequence *= 100;
         }
-
         return dnaSequence;
     }
 
@@ -342,7 +350,6 @@ contract KittyContract is
             dnaSequence += newGenes[i];  
             if (i != 7) dnaSequence *= 100;
         }
-
         return dnaSequence;
     }    
     
@@ -397,7 +404,6 @@ contract KittyContract is
             dnaSequence += newGenes[i]; // i==0 is most-sig gene digit
             if (i != 15) dnaSequence *= 10;
         }
-
         return dnaSequence;
     }
     
@@ -462,7 +468,6 @@ contract KittyContract is
         assert(index == 0);            // processed all 16 dna digits
         assert(newGenes.length == 16); // correct number of new dna digits
         
-        
         // Randomise one 'target' gene - as specified by last gene (single digit)
         uint256 targetGene = newGenes[15];
         
@@ -491,7 +496,6 @@ contract KittyContract is
             dnaSequence += newGenes[i];  // i==0 is most-sig gene digit
             if (i != 15) dnaSequence *= 10;
         }
-
         return dnaSequence;
     }
 

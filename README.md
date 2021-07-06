@@ -1073,7 +1073,11 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
 
 33. Refactor KittyContract's gen0Limit to become initializer parameter
 
-34. Tidy up code
+34. Tidy up code.
+
+35. Make kitty token transfers pausable (incl. from breed and createKittyGen0)
+
+
 
 
 
