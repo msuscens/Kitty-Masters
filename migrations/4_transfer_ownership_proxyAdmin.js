@@ -1,4 +1,6 @@
-// migrations/4_transfer_ownership_proxyAdmin.js
+// Transfer ownship of Proxies Admin contract to GnosisSafe 
+// multiSig wallet only if deploying to Rinkeby network.
+
 const { admin } = require('@openzeppelin/truffle-upgrades')
  
 module.exports = async function (deployer, network) {
