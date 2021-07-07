@@ -110,7 +110,10 @@ HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
     connected to the (private) network, with contract addresses and
     User address output, then try entering the following into the
     browser console (to see if it makes MM connect):
+
     window.ethereum.enable().then(async function(accounts){console.log(accounts)})
+    OR:
+    web3.eth.requestAccounts().then(console.log)
     
     MM will hopefully then respond by asking you for confirmation of
     connection/access and then connect to the website.
