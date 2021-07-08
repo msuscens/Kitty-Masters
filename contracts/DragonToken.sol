@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721Pausab
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
 
-contract KittyContract is
+contract DragonToken is
     OwnableUpgradeable,
     ERC721Upgradeable,
     ERC721EnumerableUpgradeable,
