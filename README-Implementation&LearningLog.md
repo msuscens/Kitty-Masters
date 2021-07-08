@@ -1054,6 +1054,9 @@ REDEPLOY LATEST VERSION OF CONTRACTS TO ROPSTEN AND RINKEBY
     to a new version.)
     b. Redeploy to the Ropsten network, using truffle console (alla step 18):
      
+    ON TUES 6th July PM and WED 7th July AM :  Ran migrate several times with
+    numerous fails at different stages (for unknown reasons). Until the truffle
+    migrate below completed - but only new proxies deployed!???
 
         MMB:KittyMasters Mark$ truffle console --network ropsten
         truffle(ropsten)> truffle migrate --reset
@@ -1194,6 +1197,172 @@ REDEPLOY LATEST VERSION OF CONTRACTS TO ROPSTEN AND RINKEBY
         - Saving migration to chain.
 
         truffle(ropsten)> 
+
+    Thurs 8th July PM - Tried to migrate again but his time added the new proxy 
+    addresses into client/assests/contractInterface/interface.js file
+    (Note from output below that only KittyContract and proxies were migrated,
+    but not a new Admin contract or the Marketplace contract)
+
+    MMB:KittyMasters Mark$ truffle console --network ropsten
+    truffle(ropsten)> migrate --reset
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'ropsten'
+> Network id:      3
+> Block gas limit: 7984386 (0x79d502)
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0xe247c0cff884af31f234d86c94afd68a3e4e9e78f469468c0b9c53640bcf44f8
+   > Blocks: 0            Seconds: 12
+   > contract address:    0xe1A4e2A0e503eD9Fdb6aF82d2C9E92E2d27a7EbF
+   > block number:        10597162
+   > block timestamp:     1625771702
+   > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+   > balance:             0.969456440871467525
+   > gas used:            250154 (0x3d12a)
+   > gas price:           3 gwei
+   > value sent:          0 ETH
+   > total cost:          0.000750462 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 10597163)
+   > confirmation number: 2 (block: 10597164)
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:         0.000750462 ETH
+
+
+2_token_migration.js
+====================
+
+   Deploying 'KittyContract'
+   -------------------------
+   > transaction hash:    0x2305999b855df407c8dbb84191cd38d408d23b1a85e019990eeb175eef2671b4
+   > Blocks: 0            Seconds: 8
+   > contract address:    0x274CF6aFE54477096d3f64c00515e9466C9497f6
+   > block number:        10597168
+   > block timestamp:     1625771788
+   > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+   > balance:             0.956956906175667525
+   > gas used:            4827960 (0x49ab38)
+   > gas price:           2.5646 gwei
+   > value sent:          0 ETH
+   > total cost:          0.012381786216 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 10597170)
+
+   Deploying 'TransparentUpgradeableProxy'
+   ---------------------------------------
+   > transaction hash:    0x0c1c3fe606fdb2fff1a6e1a0ed451f18e2d03c76d307d7868598f3ad88e68ae3
+   > Blocks: 0            Seconds: 16
+   > contract address:    0x702D6DB6630737CCFf48c69b55b70C6a39be51b1
+   > block number:        10597172
+   > block timestamp:     1625771847
+   > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+   > balance:             0.954479446154467525
+   > gas used:            966022 (0xebd86)
+   > gas price:           2.5646 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0024774600212 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 10597173)
+   > confirmation number: 2 (block: 10597174)
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.0148592462372 ETH
+
+
+3_market_migration.js
+=====================
+
+   Deploying 'TransparentUpgradeableProxy'
+   ---------------------------------------
+   > transaction hash:    0x15f42bc576163ea34815a82455bb2654b9718c7ab663eb8a7a2b39c425225f30
+   > Blocks: 1            Seconds: 16
+   > contract address:    0x04e07e85B7FC67D61338446f66F56f470E60cBB0
+   > block number:        10597178
+   > block timestamp:     1625771931
+   > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+   > balance:             0.952694779483467525
+   > gas used:            667072 (0xa2dc0)
+   > gas price:           2.5646 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0017107728512 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 10597179)
+   > confirmation number: 2 (block: 10597180)
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.0017107728512 ETH
+
+
+4_transfer_ownership_proxyAdmin.js
+==================================
+
+   > Saving migration to chain.
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+5_prepare_upgrade_kittyContractV2.js
+====================================
+
+   > Saving migration to chain.
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+6_prepare_upgrade_kittyMarketplaceV2.js
+=======================================
+
+   > Saving migration to chain.
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   4
+> Final cost:          0.0173204810884 ETH
+
+
+- Blocks: 0            Seconds: 0
+- Saving migration to chain.
+- Blocks: 0            Seconds: 0
+- Blocks: 0            Seconds: 0
+- Saving migration to chain.
+- Blocks: 0            Seconds: 0
+- Saving migration to chain.
+- Saving migration to chain.
+- Saving migration to chain.
+- Saving migration to chain.
+
+truffle(ropsten)>
 
 
 
