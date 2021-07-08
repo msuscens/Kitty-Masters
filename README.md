@@ -1,41 +1,62 @@
-KITTY MASTERS
+KITTY-MASTERS : Developed solely by Mark Suscens (as my final project in the
+                'Blockchain Develper Bootcamp' (IvanOnTech Blockchain Academy)
+                Kitty-Masters was developed with the aim of creating a solid
+                basis/structure for Dragon-Masters (a future project planned 
+                to follow and that as a team we aim to commercially launched).
 
-PROJECT AIM:
+Install, migrate and run Kitty-Masters DAPP : Please  follow the steps in the
+accompanying file: “README-Repo-Clone-and-Configure-App”
 
-A conversion of my CryptoKitties-Clone project so that the contracts are
-upgradable and pausable.  Specific updates to my CryptoKitties-Clone 
-contract code were:
+Project Scope and Key Features (of Kitty-Masters):
+* Based upon/replicates functionality of “CryptoKitties-Clone” (ie. my 2nd Bootcamp
+ project, that I git cloned at the start of my Kitty-Masters project)
 
-i) Convert contract code to Solidity v0.8.5
+* Truffle Tests added (to support development/integration)
 
-ii) Convert each contract to make them 'upgradeable' by employing the 
-OpenZeppelein 'transaparent proxy' pattern and associated openeZeppelin
-upgradable contract library
+*  Refactored to Solidity version 0.8.6, with code layout following official
+Solidity coding style.  (“CryptoKitties-Clone" was written in Solidity v0.5.4)
 
-iii) Add the (OpenZeppelin) 'pausable' capability to each contract, so
-that the 'pausable' modifiers can be applied to functions as required
+* Refactored to use OpenZeppelin’s ‘upgradeable’ contract library (v4.1) 
+making contracts:
+	- Upgradeable (employing OZ ‘Transparent Upgradeable Proxy’ pattern)
+	- Plausable 
 
-iv) Add some basic Truffle test scripts to each contract (to support
-this development work)
+* “CryptoKitties-Clone” contracts refactored to use OZ ERC721 inherrited
+functions rather than the same ERC&21 standard functions that I wrote
+(as part of my previous “CryptoKitties-Clone” project):
+	- KittyContract.sol file substantially reduced in size, down to 255 lines
+        plus the dnaMix function code. [Note: There are 5 versions of dnaMix
+        function, of varrying degrees of sophistication/complexity!  But only 
+        one dnaMix function is needed/used.]
+	- Marketplace.sol file is 200 lines
 
-v) Completed Stretch goals: 
-    a) Deploy to a testnet
-    b) Employ 'Gnosis Safe' to hold each (proxy contratcs) Admin contract
-    c) Set up Defender to help manage the Dev/Sec Ops of the contracts
-    d) Refactor project code to use OZ inheritted ERC721 functions
+* Refactored the frontend's contract's Interface (abstraction) layer that
+    decouples (website) front-end from (otherwise) having to make  direct
+    web3/contract calls.
 
-This project will then form a basis for the planned 'Dragon Masters'
-project (ie. a team project that will follow on form this one).
+* Kitty-Masters DAP proven with Testnet deployments
+    * Contract Migration scripts and truffle-config.js support local,
+    ropsten, rinkeby deployments
+    * Front-end (contract) interface code detects current MetaMask network to
+    automatically connect to either: local, rospten, or rinkeby network.
+    [See initiationConnection() in client/assets/contractInterface/interface.js]
+    * Kitty-Masters DAP hosted on Ropsten - access here:
+        https://reverent-mirzakhani-acd298.netlify.app/index.html
 
-Note: Kitty Masters will not add further user functionality (above that already 
-present in my CryptoKitties-Clone project) and will employ the same UI.
-(https://github.com/msuscens/CryptoKitties-Clone)
+* Upgradeable/pausible contracts proven to work with Defender and GnosisSafe
+    * Transfered proxyAdmin contract ownership to my GnosisSafe (on Rinkeby)
+    [See migration script 4_transfer_ownership_proxyAdmin.js]
+    * KittyContract upgrade perfomed (to KittyContractV2) via Defender.
+    [Note: Defender could therefore readily employed to support Dev/Sec Ops
+    for the future Dragon-Master's project.]
+    * KittyContractV2 pausible function (with pausible modify) paused and
+    unpaused via Defender.
 
-
-GIT CLONE AND APP SETUP
-To git clone this repository and configure the Kitty-Masters app to run on
-your local machine, please see the steps in: README-Repo-Clone-and-Configure-App
-
+Note: Kitty-Masters does not add any new website functionality, it has the 
+same DAP user functionality as in my CryptoKitties-Clone project. This
+Kitty-Masters project, whilst it has made very significant enhancements to 
+my previous (CryptoKitties-Clone) project, these changes are not visible
+from the website but are rather all under-the-hood. 
 
 
 
@@ -328,7 +349,7 @@ HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
     1 ETH into Account 1 from Account 13, since Account 1 will be used
     (by default) for the deployment(from which gas will need to be paid)
 
-18. Deploy to the Ropsten network, using truffle consile, ie.
+truffle18. Deploy to the Ropsten network, using truffle console, ie.
     $ truffle console --network ropsten
     truffle(ropsten)> migrate
 
@@ -524,8 +545,8 @@ HOST WEBSITE AND DEPLOY CONTRACTS TO ROPSTEN TESTNET
         const MARKETPLACE_ADDRESS = "0x33018792B8eb4022bD60650928c3CBd59cefA912"
 
     b. Commit all changes to git and gitHub (for steps 14-19 above).  Upon GitHub
-    commit () this should trigger an (automatic) update to our website code
-    (hosted by netify). And we should now be able to use our Kitty Masters website:
+    commit this should trigger an (automatic) update to our website code
+    (hosted by netlify). And we should now be able to use our Kitty Masters website:
     https://reverent-mirzakhani-acd298.netlify.app
     With our deployed contracts (on Ropsten network) and our MetaMask (Ropsten)
     wallet.
@@ -1083,8 +1104,203 @@ https://forum.openzeppelin.com/t/workshop-recap-managing-smart-contract-upgrades
     contract's setable for each of these networks.
 
 
+REDEPLOY LATEST VERSION OF CONTRACTS TO ROPSTEN AND RINKEBY 
+
+37. Redeploy latest contract code to Ropsten network:
+    a. Comment out the contents of the migration files:
+        5_prepare_upgrade_KittyContractV2.js
+        6_prepare_upgrade_KittyMarketplaceV2
+    (Since for now we don't want to upgrade either of the contracts
+    to a new version.)
+    b. Redeploy to the Ropsten network, using truffle console (alla step 18):
+     
+
+        MMB:KittyMasters Mark$ truffle console --network ropsten
+        truffle(ropsten)> truffle migrate --reset
+
+        Compiling your contracts...
+        ===========================
+        > Everything is up to date, there is nothing to compile.
+
+        Starting migrations...
+        ======================
+        > Network name:    'ropsten'
+        > Network id:      3
+        > Block gas limit: 8000000 (0x7a1200)
 
 
+        1_initial_migration.js
+        ======================
+
+        Deploying 'Migrations'
+        ----------------------
+        > transaction hash:    0x85d007f44f1c353553478c8560d2cf3bacd48ce70036f79fca6958085b0c8cad
+        > Blocks: 1            Seconds: 16
+        > contract address:    0x43db5ae9Ed0f68306181F6cb01C250287284c214
+        > block number:        10588092
+        > block timestamp:     1625653345
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.973121265826475159
+        > gas used:            250154 (0x3d12a)
+        > gas price:           1.598600033 gwei
+        > value sent:          0 ETH
+        > total cost:          0.000399896192655082 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10588093)
+        > confirmation number: 2 (block: 10588094)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:     0.000399896192655082 ETH
+
+
+        2_token_migration.js
+        ====================
+
+        Deploying 'TransparentUpgradeableProxy'
+        ---------------------------------------
+        > transaction hash:    0x1af85dc67a17ded8e39673b2154f237ffa3c7cd3ef53f631a4193bb0b58776a5
+        > Blocks: 0            Seconds: 4
+        > contract address:    0x91B03C609B33A8D194AD5f9FaB4Aa0ed377D49c0
+        > block number:        10588096
+        > block timestamp:     1625653481
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.971503586504059261
+        > gas used:            966022 (0xebd86)
+        > gas price:           1.598600031 gwei
+        > value sent:          0 ETH
+        > total cost:          0.001544282799146682 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10588098)
+        > confirmation number: 2 (block: 10588099)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:     0.001544282799146682 ETH
+
+
+        3_market_migration.js
+        =====================
+
+        Deploying 'TransparentUpgradeableProxy'
+        ---------------------------------------
+        > transaction hash:    0xe461c4cc94a79962f98945bfc107a0b58ed095ca9e0b05291ba4f4cf8d88b53e
+        > Blocks: 3            Seconds: 80
+        > contract address:    0x5E2236412f02c5C0E4EDA8faCa9D6eD987E03F25
+        > block number:        10588104
+        > block timestamp:     1625653724
+        > account:             0x55ebCd51fb6ca806889d9632b03c6d8b6738742f
+        > balance:             0.970391144722211524
+        > gas used:            667072 (0xa2dc0)
+        > gas price:           1.59860003 gwei
+        > value sent:          0 ETH
+        > total cost:          0.00106638131921216 ETH
+
+        Pausing for 2 confirmations...
+        ------------------------------
+        > confirmation number: 1 (block: 10588105)
+        > confirmation number: 2 (block: 10588106)
+
+        > Saving migration to chain.
+        > Saving artifacts
+        -------------------------------------
+        > Total cost:     0.00106638131921216 ETH
+
+
+        4_transfer_ownership_proxyAdmin.js
+        ==================================
+
+        > Saving migration to chain.
+        -------------------------------------
+        > Total cost:                   0 ETH
+
+
+        5_prepare_upgrade_kittyContractV2.js
+        ====================================
+
+        > Saving migration to chain.
+        -------------------------------------
+        > Total cost:                   0 ETH
+
+
+        6_prepare_upgrade_kittyMarketplaceV2.js
+        =======================================
+
+        > Saving migration to chain.
+        -------------------------------------
+        > Total cost:                   0 ETH
+
+
+        Summary
+        =======
+        > Total deployments:   3
+        > Final cost:          0.003010560311013924 ETH
+
+
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+        - Blocks: 0            Seconds: 0
+        - Saving migration to chain.
+        - Saving migration to chain.
+        - Saving migration to chain.
+        - Saving migration to chain.
+
+        truffle(ropsten)> 
+
+
+
+__________________________________________________________________________________________________
+
+TODO NEXT
+
+38. Connect website (front-end) to the contracts on the Ropsten Testnet
+    a. Copy our 'TransparentUpgradeableProxy' contract addresses for our
+    KittyContract and the KittyMarketplace contract and paste these
+    addresses into the address constants in:
+    client/assets/contractInterface/interface.js file, ie.
+
+        const LOCAL_KITTY_TOKEN_PROXY = "xxxxxxxxx"
+        const LOCAL_MARKETPLACE_PROXY = "xxxxxxxxx"
+
+    b. Commit to git/gitHub.  Which should trigger an (automatic) update to our
+    website code (hosted by netlify). And we should now be able to use our
+    Kitty-Masters website: https://reverent-mirzakhani-acd298.netlify.app
+    With our (Ropsten) deployed contracts and our MetaMask (Ropsten) wallet.
+
+    [   Note The Truffle accounts[]0 will be the contract owner (and will have
+        the access to the Kitty-Factory to create new Gen0 kitties). From
+        truffle console we can find the accounts that are available:
+            truffle(ropsten)> accounts
+            [
+            '0x55ebCd51fb6ca806889d9632b03c6d8b6738742f',
+            '0x6323e230aA62d473B7ebBE987F547D2305A7d062',
+            '0x1CB34ecE74DE387dF91706e2F2A59F6fF85E4e49',
+            '0x65f6c9DDbC3BEae63C8967c5ED40dD26d0944467',
+            '0x4afA3515D1453177a5662DAE2dF75919620D8C0d',
+            '0x9d8E58BAe55126480Bc1cbd561190267c39C4C2a',
+            '0x637867dfDDDFD61aEE4C64BE0E67c51dF214206B',
+            '0x6Ad1F76Fa4d261E1615e010C2f1AcfeB0DAf38eB',
+            '0xAA1f34c4C24bFb2D8447E57C4E4B5931752Ab151',
+            '0x5a095175bcde85b66A5447a6CBC5D616D0AF412a'
+            ]
+            truffle(ropsten)> 
+
+        To change the accounts[0] default address that truffle uses for
+        deployment, add the alternative default address to truffle-config.js
+        file (within the Ropsten network configuration object),
+        ie. Add: from: "ADDRESS"
+        with ADDRESS being the address to be used as the default account
+        (ie. one of the truffle accounts listed above).  (See commented-out
+        line added to truffle-config.js)
+    ]
 
 ___________________________________________________________________________________________________
 **********************
