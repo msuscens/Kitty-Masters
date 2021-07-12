@@ -177,7 +177,7 @@ async function getDetailsAllCats(tokenIds) {
 async function getCatDetails(tokenId) {
     try {
         const dragon = {
-            id: tokenId,    // Note for Kenneth - was previously catId
+            id: tokenId,
             genes: undefined,
             gen: undefined,
             mumId: undefined,

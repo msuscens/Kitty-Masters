@@ -1,29 +1,3 @@
-/*
-function getKittyDna(genes){
-    try {
-        if (genes.length != 16) throw `genes string ('${genes}') should be 16 characters (not ${genes.length})`
-
-        const kittyDna = {
-            "headColor" : genes.substring(0, 2),
-            "mouthColor" : genes.substring(2, 4),
-            "eyesColor" : genes.substring(4, 6),
-            "earsColor" : genes.substring(6, 8),
-            "eyesShape" : parseInt( genes.substring(8, 9) ),
-            "decorationPattern" : parseInt( genes.substring(9, 10) ),
-            "decorationMidColor" : genes.substring(10, 12),
-            "decorationSidesColor" : genes.substring(12, 14),
-            "animation" : parseInt( genes.substring(14, 15) ),
-            "lastNum" : parseInt( genes.substring(15, 16) )
-        }
-        return(kittyDna)
-    }
-    catch(error) {
-        console.log("Error from getKittyDna(genes): " + error)
-    }
-}
-*/
-
-
 function getHtmlForKitty(id){
     try {
         let html = `
