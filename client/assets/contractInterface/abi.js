@@ -1,5 +1,5 @@
 const abi = {
-  kittyContract:[
+  dragonToken:[
     {
       "anonymous": false,
       "inputs": [
@@ -62,7 +62,7 @@ const abi = {
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "kittenId",
+          "name": "babyDragonId",
           "type": "uint256"
         },
         {
@@ -531,7 +531,7 @@ const abi = {
           "type": "uint256"
         }
       ],
-      "name": "init_KittyContract",
+      "name": "init_DragonToken",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -558,7 +558,7 @@ const abi = {
           "type": "uint256"
         }
       ],
-      "name": "createKittyGen0",
+      "name": "createDragonGen0",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -591,11 +591,11 @@ const abi = {
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "kittyId",
+          "name": "dragonId",
           "type": "uint256"
         }
       ],
-      "name": "getKitty",
+      "name": "getDragon",
       "outputs": [
         {
           "internalType": "uint256",
@@ -629,7 +629,7 @@ const abi = {
     },
     {
       "inputs": [],
-      "name": "getAllYourKittyIds",
+      "name": "getAllYourDragonIds",
       "outputs": [
         {
           "internalType": "uint256[]",
@@ -785,11 +785,11 @@ const abi = {
       "inputs": [
         {
           "internalType": "address",
-          "name": "kittyContractAddress",
+          "name": "dragonTokenAddress",
           "type": "address"
         }
       ],
-      "name": "init_KittyMarketplace",
+      "name": "init_Marketplace",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -798,22 +798,22 @@ const abi = {
       "inputs": [
         {
           "internalType": "address",
-          "name": "kittyContractAddress",
+          "name": "dragonTokenAddress",
           "type": "address"
         }
       ],
-      "name": "setKittyContract",
+      "name": "setDragonToken",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "getKittyContract",
+      "name": "getDragonToken",
       "outputs": [
         {
           "internalType": "address",
-          "name": "kittyContract",
+          "name": "dragonToken",
           "type": "address"
         }
       ],
@@ -914,7 +914,7 @@ const abi = {
           "type": "uint256"
         }
       ],
-      "name": "buyKitty",
+      "name": "buyDragon",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function",

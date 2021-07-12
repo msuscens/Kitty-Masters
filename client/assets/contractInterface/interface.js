@@ -1,36 +1,37 @@
-// Contract Proxy Addresses for the KittyContract and Marketplace contracts
+// Contract Proxy Addresses for the DragonToken and Marketplace contracts
 // Set each contract's proxy addresses below, ie.
 //      Obtain proxy addresses from console upon performing :
 //          truffle migrate --reset' --network <network type>
 //      Eg. For local development network:
 //          truffle migrate --reset' --network development
 //
-//      KittyContract's proxy contract address: Copy & paste from console output
-//      under: '2_token_migration' and then under 'TransparentUpgradeableProxy'
+//      DragonToken's proxy contract address: Copy & paste from console output
+//      under: '2_dragon_token_migration' and then under the subsection:
+//      'TransparentUpgradeableProxy'
 //
-//      KittyMarketplace's proxy contract address: Copy & paste from console 
-//      under '3_market_migration' and then under 'TransparentUpgradeableProxy'
+//      Marketplace's proxy contract address: Copy & paste from console 
+//      under '3_marketplace_migration' and then under the subsection:
+//      'TransparentUpgradeableProxy'
 //
 // Local Network (e.g. ganace-cli)
-const LOCAL_KITTY_TOKEN_PROXY = "0xeC5712cCEFC64eBf00865fE3229dC3a7e7c17170"
+const LOCAL_DRAGON_TOKEN_PROXY = "0xeC5712cCEFC64eBf00865fE3229dC3a7e7c17170"
 const LOCAL_MARKETPLACE_PROXY = "0x05F7B04E8ED850A6377Cfdc7Bc19aFAa7404437E"
 
-// Ropsten Network: ONLY UPDATE AFTER RE-DEPLOY TO ROPSTEN
-const ROPSTEN_KITTY_TOKEN_PROXY = "0x702D6DB6630737CCFf48c69b55b70C6a39be51b1"
-const ROPSTEN_MARKETPLACE_PROXY = "0x04e07e85B7FC67D61338446f66F56f470E60cBB0"
-// const ROPSTEN_KITTY_TOKEN_PROXY = "0xd25e3d27344284A6637EbC124831beE0fc86432b"
-// const ROPSTEN_MARKETPLACE_PROXY = "0x33018792B8eb4022bD60650928c3CBd59cefA912"
+// Ropsten Network: ONLY UPDATE AFTER DEPLOY/RE-DEPLOY TO ROPSTEN
+const ROPSTEN_DRAGON_TOKEN_PROXY = ""
+const ROPSTEN_MARKETPLACE_PROXY = ""
 
-// Rinkeby Network: ONLY UPDATE AFTER RE-DEPLOY TO RINKEBY
-const RINKEBY_KITTY_TOKEN_PROXY = "0xE52b75B7201C8AcDa96407f92Ba27ab2ce252ae1"
-const RINKEBY_MARKETPLACE_PROXY = "0x823c8b731B3e07A9310853de418F54FeE22f76b1" 
+
+// Rinkeby Network: ONLY UPDATE AFTER DEPLOY/RE-DEPLOY TO RINKEBY
+const RINKEBY_DRAGON_TOKEN_PROXY = ""
+const RINKEBY_MARKETPLACE_PROXY = "" 
 
 const web3 = new Web3(Web3.givenProvider)
 console.log("Web3 version: ", web3.version)
 
-let Token_Proxy_Address
+let DragonToken_Proxy_Address
 let Maketplace_Proxy_Address
-let Instance_Of_KittyContract
+let Instance_Of_DragonToken
 let Instance_Of_Marketplace
 let User
 
@@ -40,7 +41,7 @@ async function initiateConnection(){
         const networkType = await web3.eth.net.getNetworkType()
         console.log(`Network detected: ${networkType}`)
         const proxies = getProxyAddresses(networkType)
-        Token_Proxy_Address = proxies.tokenProxy
+        DragonToken_Proxy_Address = proxies.dragonTokenProxy
         Maketplace_Proxy_Address = proxies.marketplaceProxy
 
         // Get accounts from MetaMask
@@ -49,12 +50,12 @@ async function initiateConnection(){
         User = accounts[0]
 
         // Connect to the (proxy) contracts
-        Instance_Of_KittyContract = new web3.eth.Contract(abi.kittyContract, Token_Proxy_Address, {from: accounts[0]})
-        if (Instance_Of_KittyContract.options.address == null) throw "Unable to connect to KittyContract proxy"
+        Instance_Of_DragonToken = new web3.eth.Contract(abi.dragonToken, DragonToken_Proxy_Address, {from: accounts[0]})
+        if (Instance_Of_DragonToken.options.address == null) throw "Unable to connect to DragonToken proxy"
         Instance_Of_Marketplace = new web3.eth.Contract(abi.marketplace, Maketplace_Proxy_Address, {from: accounts[0]})
         if (Instance_Of_Marketplace.options.address == null) throw "Unable to connect to Marketplace proxy"
 
-        console.log("Connected to KittyContract Proxy address:", Instance_Of_KittyContract.options.address)
+        console.log("Connected to DragonToken Proxy address:", Instance_Of_DragonToken.options.address)
         console.log("Connected to Marketplace Proxy address:", Instance_Of_Marketplace.options.address)
         console.log("Connected with user account:" + User)
 
@@ -68,20 +69,20 @@ async function initiateConnection(){
 
 function getProxyAddresses(network) {
     try {
-        let tokenProxy
+        let dragonTokenProxy
         let marketplaceProxy
 
         switch (network) {
             case "private":  // Local network
-                tokenProxy = LOCAL_KITTY_TOKEN_PROXY
+                dragonTokenProxy = LOCAL_DRAGON_TOKEN_PROXY
                 marketplaceProxy = LOCAL_MARKETPLACE_PROXY
                 break
             case "rinkeby":
-                tokenProxy = RINKEBY_KITTY_TOKEN_PROXY
+                dragonTokenProxy = RINKEBY_DRAGON_TOKEN_PROXY
                 marketplaceProxy = RINKEBY_MARKETPLACE_PROXY
                 break
             case "ropsten":
-                tokenProxy = ROPSTEN_KITTY_TOKEN_PROXY
+                dragonTokenProxy = ROPSTEN_DRAGON_TOKEN_PROXY
                 marketplaceProxy = ROPSTEN_MARKETPLACE_PROXY
                 break
             case "main":
@@ -89,7 +90,7 @@ function getProxyAddresses(network) {
             default:
                 throw `Unknown Ethereum network type: ${networkType}!`
         }
-        return {tokenProxy, marketplaceProxy}
+        return {dragonTokenProxy, marketplaceProxy}
     }
     catch (err) {
         console.log("Error from getProxyAddresses: " + err)
@@ -108,10 +109,10 @@ function isUser(address) {
 }
 
 
-// KittyContract Events
+// DragonToken Events
 
 function onBirthEvent(uiCallbackFunc) {
-    Instance_Of_KittyContract.events.Birth().on('data', function(event){
+    Instance_Of_DragonToken.events.Birth().on('data', function(event){
         uiCallbackFunc(event.returnValues)
     })
     .on('error', function(error, receipt) {
@@ -122,31 +123,33 @@ function onBirthEvent(uiCallbackFunc) {
 }
 
 
-// KittyContract Interface functions
+// DragonToken Contract Interface functions
 
+// Kenneth rename isOwnerOfKittyContract() to isOwnerOfDragonTokenContract() ??
 async function isOwnerOfKittyContract() {
     try {
         let isOwner; 
-        await Instance_Of_KittyContract.methods.owner().call({}, function(err, contractOwner){
+        await Instance_Of_DragonToken.methods.owner().call({}, function(err, contractOwner){
             if (err) throw "Error from owner().call(): " + err
             isOwner = String(contractOwner).toLowerCase() === String(User).toLowerCase()
         })
         return isOwner
     }
     catch (error) {
-        console.log("In isOwnerOfKittyContract(): " + error)
+        console.log("In isOwnerOfDragonToken(): " + error)
     }
 }
 
 
+// Kenneth rename getAllYourCatIds(): getAllYourDragonIds()!?
 async function getAllYourCatIds() {
     try {
-        let catIds = []
-        await Instance_Of_KittyContract.methods.getAllYourKittyIds().call({}, function(err, idsTokens){
-            if (err) throw "Error from getAllYourKittyIds().call(): " + err
-            catIds = idsTokens
+        let dragonIds = []
+        await Instance_Of_DragonToken.methods.getAllYourDragonIds().call({}, function(err, idsTokens){
+            if (err) throw "Error from getAllYourDragonIds().call(): " + err
+            dragonIds = idsTokens
         })
-        return catIds
+        return dragonIds
     }
     catch (error) {
         console.log("In getAllYourCatIds(): " + error)
@@ -154,25 +157,27 @@ async function getAllYourCatIds() {
 }
 
 
-async function getDetailsAllCats(catIds) { 
+// Kenneth rename getDetailsAllCats(catIds): getDetailsAllDragons(tokenIds)!?
+async function getDetailsAllCats(tokenIds) { 
     try {
-        let allCats = []
-        for (let i = 0; i < catIds.length; i++) {
-            const cat = await getCatDetails(catIds[i])
-            allCats.push(cat)
+        let allDragons = []
+        for (let i = 0; i < tokenIds.length; i++) {
+            const dragon = await getCatDetails(tokenIds[i])
+            allDragons.push(dragon)
         }
-        return allCats
+        return allDragons
     }
     catch (error) {
-        console.log("Error from getDetailsAllCats(catIds): " + error)
+        console.log("Error from getDetailsAllCats(tokenIds): " + error)
     }
 }
 
 
-async function getCatDetails(catId) {
+// Kenneth rename getCatDetails(catId): getDragonDetails(tokenId)!?
+async function getCatDetails(tokenId) {
     try {
-        const cat = {
-            id: catId,
+        const dragon = {
+            id: tokenId,    // Note for Kenneth - was previously catId
             genes: undefined,
             gen: undefined,
             mumId: undefined,
@@ -181,29 +186,56 @@ async function getCatDetails(catId) {
             dna: undefined  // added dna object (required by front-end)
         }
 
-        await Instance_Of_KittyContract.methods.getKitty(catId).call({}, function(errMsg, kitty){
-            if (errMsg) throw "Error from getKitty(catId).call(): " + errMsg
-            cat.genes = kitty.genes
-            cat.birthTime = kitty.birthTime
-            cat.mumId = kitty.mumId
-            cat.dadId = kitty.dadId
-            cat.gen = kitty.generation
+        await Instance_Of_DragonToken.methods.getDragon(tokenId).call({}, function(errMsg, drgn){
+            if (errMsg) throw "Error from getDragon(tokenId).call(): " + errMsg
+            dragon.genes = drgn.genes
+            dragon.birthTime = drgn.birthTime
+            dragon.mumId = drgn.mumId
+            dragon.dadId = drgn.dadId
+            dragon.gen = drgn.generation
         })
         // Add further info as required by UI
-        cat.dna = getKittyDna(cat.genes)
-
-        return cat
+        dragon.dna = getDragonDna(dragon.genes)   // Kenneth: originally getKittyDna(cat.genes) 
+                                                  // [in: client/assests/frontend/sharedLogic.js]
+                                                  // Now renamed to getDragonDna(genes) and moved
+                                                  // into this file (from shardLogic.js)
+        return dragon
     }
     catch (error) {
-        console.log("Error from getCatDetails(catId): " + error)
+        console.log("Error from getCatDetails(tokenId): " + error)
     }
 }
 
 
+function getDragonDna(genes){
+    try {
+        if (genes.length != 16) throw `genes string ('${genes}') should be 16 characters (not ${genes.length})`
+
+        const dna = {
+            "headColor" : genes.substring(0, 2),
+            "mouthColor" : genes.substring(2, 4),
+            "eyesColor" : genes.substring(4, 6),
+            "earsColor" : genes.substring(6, 8),
+            "eyesShape" : parseInt( genes.substring(8, 9) ),
+            "decorationPattern" : parseInt( genes.substring(9, 10) ),
+            "decorationMidColor" : genes.substring(10, 12),
+            "decorationSidesColor" : genes.substring(12, 14),
+            "animation" : parseInt( genes.substring(14, 15) ),
+            "lastNum" : parseInt( genes.substring(15, 16) )
+        }
+        return(dna)
+    }
+    catch(error) {
+        console.log("Error from getDragonDna(genes): " + error)
+    }
+}
+
+
+// Kenneth rename createCat(dna): createDragon(dna)!?
 async function createCat(dna){
     try {
-        await Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}, function(err, txHash){
-            if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.createKittyGen0(dna).send({}': " + err
+        await Instance_Of_DragonToken.methods.createDragonGen0(dna).send({}, function(err, txHash){
+            if (err) throw "Error returned from 'Instance_Of_DragonToken.methods.createDragonGen0(dna).send({}': " + err
             else {
                 console.log("createCats Tx:",txHash)
                 return txHash
@@ -211,17 +243,18 @@ async function createCat(dna){
         })
     }
     catch (error) {
-        console.log("In createCat(): " + error)
+        console.log("In createCat(dna): " + error)
     }        
 }
 
 
+// Kenneth rename breedCats(mumId, dadId): breedDragons(mumId, dadId)!?
 async function breedCats(mumId, dadId){
     try {
-        await Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}, function(err, txHash){
-            if (err) throw "Error returned from 'Instance_Of_KittyContract.methods.breed(mumId, dadId).send({}': " + err
+        await Instance_Of_DragonToken.methods.breed(mumId, dadId).send({}, function(err, txHash){
+            if (err) throw "Error returned from 'Instance_Of_DragonToken.methods.breed(mumId, dadId).send({}': " + err
             else {
-                console.log("breedCats Tx:",txHash)
+                console.log("breed Tx:",txHash)
                 return txHash
             }
         })
@@ -249,14 +282,15 @@ function onMarketplaceEvent(uiCallbackFunc) {
 
 // Marketplace Contract Interface functions
 
+// Kenenth rename getAllCatIdsOnSale(): getAllDragonIdsOnSale())!?
 async function getAllCatIdsOnSale() {
     try {
-        let catIdsOnSale = []
+        let dragonIdsOnSale = []
         await Instance_Of_Marketplace.methods.getAllTokenOnSale().call({}, function(err, idsTokensOnSale){
             if (err) throw "Error from getAllTokenOnSale().call(): " + err
-            catIdsOnSale = idsTokensOnSale
+            dragonIdsOnSale = idsTokensOnSale
         })
-        return catIdsOnSale
+        return dragonIdsOnSale
     }
     catch (error) {
         console.log("In getAllCatIdsOnSale(): " + error)
@@ -264,42 +298,44 @@ async function getAllCatIdsOnSale() {
 }
 
 
-async function getDetailsOfAllCatsForSale(catIds) {
+// Kenneth rename getDetailsOfAllCatsForSale(catIds): getDetailsOfAllDragonsForSale(tokenIds))!?
+async function getDetailsOfAllCatsForSale(tokenIds) {
     try {
-        let allCatsForSale = []
+        let allDragonsForSale = []
 
-        for (let i = 0; i < catIds.length; i++) {
-            const cat = await getCatDetails(catIds[i])
-            const forSale = await getForSaleDetails(catIds[i])
-            const catForSale = {...cat, ...forSale}
-            allCatsForSale.push(catForSale)
+        for (let i = 0; i < tokenIds.length; i++) {
+            const dragon = await getCatDetails(tokenIds[i])
+            const forSale = await getForSaleDetails(tokenIds[i])
+            const dragonForSale = {...dragon, ...forSale}
+            allDragonsForSale.push(dragonForSale)
         }
-        return allCatsForSale
+        return allDragonsForSale
     }
     catch (error) {
-        console.log("Error from getDetailsOfAllCatsForSale(catIds): " + error)
+        console.log("Error from getDetailsOfAllCatsForSale(tokenIds): " + error)
     }
 }
 
-
-async function isCatOnSale(catId) {
+// Kenneth rename isCatOnSale(catId): isDragonOnSale(tokenId))!?
+async function isCatOnSale(tokenId) {
     try {
         let isOnSale
-        await Instance_Of_Marketplace.methods.isTokenOnSale(catId).call({}, function(errMsg, onSale){
+        await Instance_Of_Marketplace.methods.isTokenOnSale(tokenId).call({}, function(errMsg, onSale){
             if (errMsg) throw new Error(errMsg)
             isOnSale = onSale
         })
         return isOnSale
     }
     catch (error) {
-        console.log("Error from isCatOnSale(catId): " + error)
+        console.log("Error from isCatOnSale(tokenId): " + error)
         console.log("Defaulting to returning false ... continuing")
         return false
     }
 }
 
 
-async function getForSaleDetails(catId) {
+// Kenneth rename getDragonForSaleDetails(tokenId)!?
+async function getForSaleDetails(tokenId) {
     try {
         const forSaleDetails = {
             id: undefined,
@@ -309,9 +345,9 @@ async function getForSaleDetails(catId) {
             price: undefined
         }
 
-        await Instance_Of_Marketplace.methods.getOffer(catId).call({}, function(errMsg, offer){
+        await Instance_Of_Marketplace.methods.getOffer(tokenId).call({}, function(errMsg, offer){
                 if (errMsg) throw new Error(errMsg)
-                if (catId != offer.tokenId ) throw new Error(`Internal error - tokenId (${offer.tokenId}) returned by getOffer(catId) doesn't match catId (${catId})!?`)
+                if (tokenId != offer.tokenId ) throw new Error(`Internal error - tokenId (${offer.tokenId}) returned by getOffer(tokenId) doesn't match tokenId (${tokenId})!?`)
 
                 forSaleDetails.id = offer.tokenId
                 forSaleDetails.sellerAddress = offer.seller
@@ -324,17 +360,18 @@ async function getForSaleDetails(catId) {
         return forSaleDetails
     }
     catch (error) {
-        console.log("Error from getForSaleDetails(catId): " + error)    
+        console.log("Error from getForSaleDetails(tokenId): " + error)    
     }
 }
 
 
+// Kenneth rename setMarketplaceApprovalForAllDragons()!?
 async function setMarketplaceApproval(){
     try {
-        const isMarketplaceAnOperator = await Instance_Of_KittyContract.methods.isApprovedForAll(User, Maketplace_Proxy_Address).call()
+        const isMarketplaceAnOperator = await Instance_Of_DragonToken.methods.isApprovedForAll(User, Maketplace_Proxy_Address).call()
 
         if (isMarketplaceAnOperator == false) {
-            await Instance_Of_KittyContract.methods.setApprovalForAll(Maketplace_Proxy_Address, true).send({}, function(err, txHash){
+            await Instance_Of_DragonToken.methods.setApprovalForAll(Maketplace_Proxy_Address, true).send({}, function(err, txHash){
                 if (err) console.log(err)
                 else console.log("setMarketplaceApproval Tx:",txHash)
             })
@@ -347,9 +384,10 @@ async function setMarketplaceApproval(){
 }
 
 
-async function setForSale(catId, salePriceInWei) {
+// Kenneth rename to setDragonForSale(tokenId, salePriceInWei)!?
+async function setForSale(tokenId, salePriceInWei) {
     try {
-        await Instance_Of_Marketplace.methods.setOffer(salePriceInWei, catId).send({}, function(err, txHash){
+        await Instance_Of_Marketplace.methods.setOffer(salePriceInWei, tokenId).send({}, function(err, txHash){
             if (err) {
                 throw(err)
             }
@@ -359,14 +397,14 @@ async function setForSale(catId, salePriceInWei) {
         })
     }
     catch (err) {
-        console.log("Error from setForSale(catId, salePriceInWei): " + err)
+        console.log("Error from setForSale(tokenId, salePriceInWei): " + err)
     }
 }
 
-
-async function withdrawFromSale(catId) {
+// Kenneth rename to withdrawDragonFromSale(tokenId)!?
+async function withdrawFromSale(tokenId) {
     try {
-        await Instance_Of_Marketplace.methods.removeOffer(catId).send({}, function(err, txHash){
+        await Instance_Of_Marketplace.methods.removeOffer(tokenId).send({}, function(err, txHash){
             if (err) {
                 throw(err)
             }
@@ -376,19 +414,19 @@ async function withdrawFromSale(catId) {
         })
     }
     catch (err) {
-        console.log("Error from withdrawFromSale(catId): " + err)
+        console.log("Error from withdrawFromSale(tokenId): " + err)
     }
 }
 
-
+// Kenneth rename buyKitty(tokenId, priceInWei): buyDragon(tokenId, priceInWei)!?
 async function buyKitty(tokenId, priceInWei) {
     try {
-        await Instance_Of_Marketplace.methods.buyKitty(tokenId).send({value: priceInWei}, function(err, txHash){
+        await Instance_Of_Marketplace.methods.buyDragon(tokenId).send({value: priceInWei}, function(err, txHash){
             if (err) {
                 throw(err)
             }
             else {
-                console.log("BuyKitty Tx:", txHash)
+                console.log("BuyDragon Tx:", txHash)
             }
         })
     }

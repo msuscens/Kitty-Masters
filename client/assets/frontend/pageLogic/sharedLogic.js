@@ -1,3 +1,4 @@
+/*
 function getKittyDna(genes){
     try {
         if (genes.length != 16) throw `genes string ('${genes}') should be 16 characters (not ${genes.length})`
@@ -20,6 +21,7 @@ function getKittyDna(genes){
         console.log("Error from getKittyDna(genes): " + error)
     }
 }
+*/
 
 
 function getHtmlForKitty(id){
