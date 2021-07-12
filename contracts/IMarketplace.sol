@@ -2,12 +2,13 @@
 pragma solidity 0.8.6;
 
 /*
- * Market place to trade kitties (should **in theory** be used for any ERC721 token)
- * It needs an existing Kitty contract to interact with
- * Note: it does not inherit from the kitty contracts
- * Note: The contract needs to be an operator for everyone who is selling through this contract.
+ * Marketplace to trade dragon tokens. It needs an existing DragonToken
+ * contract with which to interact.
+ * Note: It does not inherit from the DragonToken contract
+ * Note: The contract needs to be an operator for everyone who is selling
+ * through this contract.
  */
-interface IKittyMarketplace {
+interface IMarketplace {
 
     event MarketTransaction(string TxType, address owner, uint256 tokenId);
 
@@ -55,7 +56,7 @@ interface IKittyMarketplace {
     * Requirement: The msg.value needs to equal the price of _tokenId
     * Requirement: There must be an active offer for _tokenId
      */
-    function buyKitty(uint256 _tokenId) external payable;
+    function buyDragon(uint256 _tokenId) external payable;
 
     /*
     ** Checks if given tokenId is on sale or not; returning true if it is, false if not.

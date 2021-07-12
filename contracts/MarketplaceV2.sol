@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
-import "./KittyMarketplace.sol"; 
+import "./Marketplace.sol"; 
 
-contract KittyMarketplaceV2 is KittyMarketplace {
+contract MarketplaceV2 is Marketplace {
 
     uint _version;    //ADDED new state variable
 
@@ -11,7 +11,7 @@ contract KittyMarketplaceV2 is KittyMarketplace {
         public
         initializer
     {
-        KittyMarketplace.init_KittyMarketplace(dragonTokenAddress);
+        Marketplace.init_Marketplace(dragonTokenAddress);
     }
 
     // ADDED Functionality

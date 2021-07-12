@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
-import "./IKittyMarketplace.sol";
+import "./IMarketplace.sol";
 import "./DragonToken.sol"; 
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
-contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMarketplace {
+contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
 
     DragonToken private _dragonToken;
 
@@ -25,7 +25,7 @@ contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMark
 
 // Public & external functions
 
-    function init_KittyMarketplace(address dragonTokenAddress)
+    function init_Marketplace(address dragonTokenAddress)
         public
         initializer
     {
@@ -136,7 +136,7 @@ contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMark
     }
 
     
-    function buyKitty(uint256 tokenId) override external payable {
+    function buyDragon(uint256 tokenId) override external payable {
         Offer memory tokenOffer = _tokenIdToOffer[tokenId];
         require(_isOnOffer(tokenId) == true, "Active offer doesn't exist!");
         require(msg.value >= tokenOffer.price, "Token purchase price not sent!");
