@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 
-import "./KittyContract.sol"; 
+import "./DragonToken.sol"; 
 
-contract KittyContractV2 is KittyContract {
+contract DragonTokenV2 is DragonToken {
 
     uint _version;    //ADDED new state variable
 
-    function init_KittyContractV2(
+    function init_DragonTokenV2(
         string memory tokenName, 
         string memory tokenSymbol,
         uint256 gen0Limit
@@ -15,7 +15,7 @@ contract KittyContractV2 is KittyContract {
         public
         initializer
     {
-        KittyContract.init_KittyContract(tokenName, tokenSymbol, gen0Limit);
+        DragonToken.init_DragonToken(tokenName, tokenSymbol, gen0Limit);
     }
 
     // ADDED Functionality

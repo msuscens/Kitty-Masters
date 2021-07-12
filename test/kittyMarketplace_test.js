@@ -6,8 +6,8 @@
 const truffleAssert = require("truffle-assertions")
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 
-const KittyContract = artifacts.require("KittyContract")
-const KittyContractV2 = artifacts.require("KittyContractV2")
+const DragonToken = artifacts.require("DragonToken")
+const DragonTokenV2 = artifacts.require("DragonTokenV2")
 
 const KittyMarketplace = artifacts.require("KittyMarketplace")
 const KittyMarketplaceV2 = artifacts.require("KittyMarketplaceV2")
@@ -17,17 +17,17 @@ contract("KittyMarketplace", async accounts => {
 
     "use strict"
 
-    let kittyContract
+    let dragonToken
     let kittyMarketplace
 
     before(async function() {
 
-        kittyContract = await KittyContract.deployed()
+        dragonToken = await DragonToken.deployed()
 
         // Deploy upgradeable kittyMarketplace 'logic'' contract (with a proxy) 
         kittyMarketplace = await deployProxy(
             KittyMarketplace,
-            [kittyContract.address],
+            [dragonToken.address],
             {initializer: 'init_KittyMarketplace', from: accounts[0]}
         )
     })
@@ -44,16 +44,16 @@ contract("KittyMarketplace", async accounts => {
             assert.deepStrictEqual(owner, accounts[0])
         })
 
-        it("should be associated with correct KittyContract", async () => {
+        it("should be associated with correct DragonToken", async () => {
 
-            let linkedKittyContract
+            let linkedDragonToken
             await truffleAssert.passes(
-                linkedKittyContract = await kittyMarketplace.getKittyContract(),
-                "Unable to get KittyContract's address!"
+                linkedDragonToken = await kittyMarketplace.getDragonToken(),
+                "Unable to get DragonToken's address!"
             )
             assert.deepStrictEqual(
-                linkedKittyContract,
-                kittyContract.address
+                linkedDragonToken,
+                dragonToken.address
             )
         })
 
@@ -168,7 +168,7 @@ contract("KittyMarketplace", async accounts => {
     describe('Upgraded to KittyMarketplace Version 2', () => {
 
         let ownerV1 
-        let linkedKittyContractV1
+        let linkedDragonTokenV1
         let kittiesForSaleV1
 
         let kittyMarketplaceV2
@@ -176,7 +176,7 @@ contract("KittyMarketplace", async accounts => {
         before(async function() {
             // Get contract's state (before upgrade)
             ownerV1 = await kittyMarketplace.owner()
-            linkedKittyContractV1 = await kittyMarketplace.getKittyContract()
+            linkedDragonTokenV1 = await kittyMarketplace.getDragonToken()
             kittiesForSaleV1 = await kittyMarketplace.getAllTokenOnSale()
 
             // Upgrade to new version of KittyMarketplace (V2)
@@ -196,13 +196,13 @@ contract("KittyMarketplace", async accounts => {
                 )
             })
 
-            it('should have the same KittyContract address', async () => {
+            it('should have the same DragonToken address', async () => {
 
-                const linkedKittyContractV2 = await kittyMarketplaceV2.getKittyContract()
+                const linkedDragonTokenV2 = await kittyMarketplaceV2.getDragonToken()
                 assert.deepStrictEqual(
-                    linkedKittyContractV2, 
-                    linkedKittyContractV1, 
-                    "Associated KittyContract has changed!"
+                    linkedDragonTokenV2, 
+                    linkedDragonTokenV1, 
+                    "Associated DragonToken has changed!"
                 )
             })
 
@@ -282,25 +282,25 @@ contract("KittyMarketplace", async accounts => {
     })
 
 
-    describe("Upgraded KittyContract (used by KittyMarketplace)", () => {
+    describe("Upgraded DragonToken (used by KittyMarketplace)", () => {
 
-        it("(the KittyMarketplace) continues to reference correct KittyContract (when it is upgraded)", async () => {
+        it("(the KittyMarketplace) continues to reference correct DragonToken (when it is upgraded)", async () => {
 
-            // Get KittyMarketplace's current KittyContract (proxy) address
-            let proxyKittyContract
+            // Get KittyMarketplace's current DragonToken (proxy) address
+            let proxyDragonToken
             await truffleAssert.passes(
-                proxyKittyContract = await kittyMarketplace.getKittyContract(),
-                "Failed to get KittyNarketplace's current KittyContract address"
+                proxyDragonToken = await kittyMarketplace.getDragonToken(),
+                "Failed to get KittyMarketplace's current DragonToken address"
             )
 
-            // Upgraded (proxy) to use new KittyContract logic contract (KittyContractV2)
-            let kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
+            // Upgraded (proxy) to use new DragonToken logic contract (DragonTokenV2)
+            let dragonTokenV2 = await upgradeProxy(dragonToken.address, DragonTokenV2)
 
-            // Check updgraded KittyContract (proxy) is at the same address
+            // Check updgraded DragonToken (proxy) is at the same address
             assert.deepStrictEqual(
-                proxyKittyContract, 
-                kittyContractV2.address, 
-                "KittyContract and KittyContractV2 have different proxy addresses!"
+                proxyDragonToken, 
+                dragonTokenV2.address, 
+                "DragonToken and DragonTokenV2 have different proxy addresses!"
             )
         })
     })

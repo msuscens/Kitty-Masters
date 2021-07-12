@@ -1,3 +1,8 @@
+Branch of Kitty-Masters project (see below) to rename contracts, functions and
+variables ready for the Dragon Masters (team) project.
+
+_______________________________________________________________________________
+
 KITTY-MASTERS : Developed solely by Mark Suscens (as my final project in the
                 'Blockchain Develper Bootcamp' (IvanOnTech Blockchain Academy)
                 Kitty-Masters was developed with the aim of creating a solid

@@ -7,11 +7,11 @@ contract KittyMarketplaceV2 is KittyMarketplace {
 
     uint _version;    //ADDED new state variable
 
-    function initialize(address kityContractAddress)
+    function initialize(address dragonTokenAddress)
         public
         initializer
     {
-        KittyMarketplace.init_KittyMarketplace(kityContractAddress);
+        KittyMarketplace.init_KittyMarketplace(dragonTokenAddress);
     }
 
     // ADDED Functionality

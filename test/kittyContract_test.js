@@ -1,4 +1,4 @@
-// Tests for upgrading the KittyContract contract.  
+// Tests for upgrading the DragonToken contract.  
 // Employing the deployProxy an upgradeProxy functions
 // (from open zeppelin's truffle-upgrades library).
 // See: https://docs.openzeppelin.com/upgrades-plugins/1.x/truffle-upgrades
@@ -6,29 +6,29 @@
 const truffleAssert = require("truffle-assertions")
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 
-const KittyContract = artifacts.require("KittyContract")
-const KittyContractV2 = artifacts.require("KittyContractV2")
+const DragonToken = artifacts.require("DragonToken")
+const DragonTokenV2 = artifacts.require("DragonTokenV2")
 
 const tokenName = "Mark-Crypto-Kitty"
 const tokenSymbol = "MCK"
 const gen0Limit = 10
 
-contract("KittyContract", async accounts => {
+contract("DragonToken", async accounts => {
 
     "use strict"
 
-    let kittyContract
+    let dragonToken
     before(async function() {
 
-        // Deploys KittyContract 'logic'' contract (together with a proxy)
+        // Deploys DragonToken 'logic'' contract (together with a proxy)
         // NB 'deployProxy' automatically calls the contract's initialize(...)
         // function with the given arguments. If function is not named
         // 'initialize' it's actual name can be specified with the optional
         // {initializer: '<function name>'} parameter.
-        kittyContract = await deployProxy(
-            KittyContract,
+        dragonToken = await deployProxy(
+            DragonToken,
             [tokenName, tokenSymbol, gen0Limit],
-            {initializer: 'init_KittyContract', from: accounts[0]}
+            {initializer: 'init_DragonToken', from: accounts[0]}
         )
     })
 
@@ -38,7 +38,7 @@ contract("KittyContract", async accounts => {
         it ("should have the expected owner", async () => {
             let owner
             await truffleAssert.passes(
-                owner = await kittyContract.owner(),
+                owner = await dragonToken.owner(),
                 "Unable to get owner!"
             )
             assert.deepStrictEqual(owner, accounts[0])
@@ -47,7 +47,7 @@ contract("KittyContract", async accounts => {
         it ("should have the expected token name", async () => {
             let name
             await truffleAssert.passes(
-                name = await kittyContract.name(),
+                name = await dragonToken.name(),
                 "Unable to get token name!"
             )
             assert.deepStrictEqual(name, tokenName)
@@ -56,7 +56,7 @@ contract("KittyContract", async accounts => {
         it ("should have the expected token symbol", async () => {
             let symbol
             await truffleAssert.passes(
-                symbol = await kittyContract.symbol(),
+                symbol = await dragonToken.symbol(),
                 "Unable to get token symbol!"
             )
             assert.deepStrictEqual(symbol, tokenSymbol)
@@ -65,7 +65,7 @@ contract("KittyContract", async accounts => {
         it ("should have an initial total supply of 0 tokens", async () => {
             let total
             await truffleAssert.passes(
-                total = await kittyContract.totalSupply(),
+                total = await dragonToken.totalSupply(),
                 "Unable to get token's total supply"
             )
             assert.deepStrictEqual(
@@ -178,7 +178,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe.skip("KittyContract has ERC165 supportsInterface()", () => {
+    describe.skip("DragonToken has ERC165 supportsInterface()", () => {
 
         it("should indicate that an unimplemented interface standard is NOT supported", async () => {
 
@@ -209,7 +209,7 @@ contract("KittyContract", async accounts => {
     })
 
 
-    describe('Upgraded to KittyContract Version 2', () => {
+    describe('Upgraded to DragonToken Version 2', () => {
 
         let ownerV1 
         let nameV1
@@ -218,20 +218,20 @@ contract("KittyContract", async accounts => {
         let balanceAccount0V1
         let balanceAccount1V1
 
-        let kittyContractV2
+        let dragonTokenV2
 
         before(async function() {
             // Get contract's state (before upgrade)
-            ownerV1 = await kittyContract.owner()
-            nameV1 = await kittyContract.name()
-            symbolV1 = await kittyContract.symbol()
-            totalSupplyV1 = await kittyContract.totalSupply()
-            balanceAccount0V1 = await kittyContract.balanceOf( accounts[0])
-            balanceAccount1V1 = await kittyContract.balanceOf( accounts[1])
+            ownerV1 = await dragonToken.owner()
+            nameV1 = await dragonToken.name()
+            symbolV1 = await dragonToken.symbol()
+            totalSupplyV1 = await dragonToken.totalSupply()
+            balanceAccount0V1 = await dragonToken.balanceOf( accounts[0])
+            balanceAccount1V1 = await dragonToken.balanceOf( accounts[1])
 
-            // Upgrade to new version of KittyContract (V2)
+            // Upgrade to new version of DragonToken (V2)
             // [Note: upgradeProxy() returns the proxy contract]
-            kittyContractV2 = await upgradeProxy(kittyContract.address, KittyContractV2)
+            dragonTokenV2 = await upgradeProxy(dragonToken.address, DragonTokenV2)
         })
 
 
@@ -239,7 +239,7 @@ contract("KittyContract", async accounts => {
 
             it('should have the same contract owner', async () => {
 
-                const ownerV2 = await kittyContractV2.owner()
+                const ownerV2 = await dragonTokenV2.owner()
                 assert.deepStrictEqual(
                     ownerV2,
                     ownerV1,
@@ -249,7 +249,7 @@ contract("KittyContract", async accounts => {
 
             it('should have the same token name', async () => {
 
-                const nameV2 = await kittyContractV2.name()
+                const nameV2 = await dragonTokenV2.name()
                 assert.deepStrictEqual(
                     nameV2, 
                     nameV1, 
@@ -259,7 +259,7 @@ contract("KittyContract", async accounts => {
 
             it('should have the same token symbol', async () => {
 
-                const symbolV2 = await kittyContractV2.symbol()
+                const symbolV2 = await dragonTokenV2.symbol()
                 assert.deepStrictEqual(
                     symbolV2, 
                     symbolV1, 
@@ -269,7 +269,7 @@ contract("KittyContract", async accounts => {
 
             it('should have the same total supply', async () => {
 
-                const totalSupplyV2 = await kittyContractV2.totalSupply()
+                const totalSupplyV2 = await dragonTokenV2.totalSupply()
                 assert.deepStrictEqual(
                     totalSupplyV2, 
                     totalSupplyV1, 
@@ -279,14 +279,14 @@ contract("KittyContract", async accounts => {
 
             it('should have the same owner\'s token balance', async () => {
 
-                const balanceAccount0V2 = await kittyContractV2.balanceOf(accounts[0])
+                const balanceAccount0V2 = await dragonTokenV2.balanceOf(accounts[0])
                 assert.deepStrictEqual(
                     balanceAccount0V2, 
                     balanceAccount0V1, 
                     "Owner account[0] token balance has changed!"
                 )
 
-                const balanceAccount1V2 = await kittyContractV2.balanceOf(accounts[1])
+                const balanceAccount1V2 = await dragonTokenV2.balanceOf(accounts[1])
                 assert.deepStrictEqual(
                     balanceAccount1V2, 
                     balanceAccount1V1, 
@@ -301,22 +301,22 @@ contract("KittyContract", async accounts => {
             it('should allow (only) the owner to set the contract version number', async () => {
                 
                 await truffleAssert.reverts(
-                    kittyContractV2.setVersion(2, {from: accounts[4]}),
+                    dragonTokenV2.setVersion(2, {from: accounts[4]}),
                 )
 
                 await truffleAssert.passes(
-                    kittyContractV2.setVersion(2),
+                    dragonTokenV2.setVersion(2),
                     "Owner was unable to set the wallet's version number"
                 )
             })
 
             it('should be able to get the contract version number', async () => {
 
-                let version = await kittyContractV2.getVersion()
+                let version = await dragonTokenV2.getVersion()
                 assert.deepStrictEqual(
                     Number(version), 
                     2, 
-                    "KittyContract version is incorrect!"
+                    "dragonTokenV2 version is incorrect!"
                 )
             })
 
@@ -324,40 +324,40 @@ contract("KittyContract", async accounts => {
 
                 // Put contract into paused state
                 await truffleAssert.passes(
-                    kittyContractV2.pause(),
+                    dragonTokenV2.pause(),
                     "Failed to put contract into 'paused' state!"
                 )
                 let paused
                 await truffleAssert.passes(
-                    paused = kittyContractV2.paused(),
+                    paused = dragonTokenV2.paused(),
                     "Failed to get contract's paused state!"
                 )
                 assert.deepStrictEqual(
                     Boolean(paused), 
                     true, 
-                    "kittyContractV2 is NOT in expected 'paused' state!"
+                    "dragonTokenV2 is NOT in expected 'paused' state!"
                 )
 
                 // Check function modified with 'whenNotPaused' doesn't run
                 await truffleAssert.reverts(
-                    kittyContractV2.getVersion()
+                    dragonTokenV2.getVersion()
                 )
             })
 
             it('should allow unpaused getVersion() function to be exectuted', async () => {
 
                 await truffleAssert.passes(
-                    kittyContractV2.unpause(),
+                    dragonTokenV2.unpause(),
                     "Failed to 'unpause' contract state!"
                 )
-                let paused = await kittyContractV2.paused()
+                let paused = await dragonTokenV2.paused()
                 assert.deepStrictEqual(
                     Boolean(paused), 
                     false, 
-                    "kittyContractV2 is NOT in expected 'unpaused' state!"
+                    "dragonTokenV2 is NOT in expected 'unpaused' state!"
                 )
                 await truffleAssert.passes(
-                    kittyContractV2.getVersion(),
+                    dragonTokenV2.getVersion(),
                     "Failed to execute unpaused getVersion() function!"
                 )
             })

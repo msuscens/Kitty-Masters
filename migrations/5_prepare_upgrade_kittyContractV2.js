@@ -1,15 +1,15 @@
-const KittyContract = artifacts.require('KittyContract')
-const KittyContractV2 = artifacts.require('KittyContractV2')
+const DragonToken = artifacts.require('DragonToken')
+const DragonTokenV2 = artifacts.require('DragonTokenV2')
  
 const { prepareUpgrade } = require('@openzeppelin/truffle-upgrades')
  
 module.exports = async function (deployer) {
 
   // COMMENTED OUT FOR NOW SO WE DON'T ACCIDENTIALLY 
-  // UPGRADE KittyContract TO KittyContractV2 
+  // UPGRADE DragonToken TO DragonTokenV2 
   /*
-  const kittyInstance = await KittyContract.deployed()
-  await prepareUpgrade(kittyInstance.address, KittyContractV2, { deployer })
+  const kittyInstance = await DragonToken.deployed()
+  await prepareUpgrade(kittyInstance.address, DragonTokenV2, { deployer })
   */
 }
 

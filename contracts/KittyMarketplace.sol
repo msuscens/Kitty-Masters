@@ -2,14 +2,14 @@
 pragma solidity 0.8.6;
 
 import "./IKittyMarketplace.sol";
-import "./KittyContract.sol"; 
+import "./DragonToken.sol"; 
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
 contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMarketplace {
 
-    KittyContract private _kittyContract;
+    DragonToken private _dragonToken;
 
     struct Offer {
         address seller;
@@ -25,31 +25,31 @@ contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMark
 
 // Public & external functions
 
-    function init_KittyMarketplace(address kittyContractAddress)
+    function init_KittyMarketplace(address dragonTokenAddress)
         public
         initializer
     {
         OwnableUpgradeable.__Ownable_init();
-        setKittyContract(kittyContractAddress);
+        setDragonToken(dragonTokenAddress);
     }
 
 
-    function setKittyContract(address kittyContractAddress)
+    function setDragonToken(address dragonTokenAddress)
         override
         public
         onlyOwner
     {
-        _kittyContract = KittyContract(kittyContractAddress);
+        _dragonToken = DragonToken(dragonTokenAddress);
     }
 
 
-    function getKittyContract()
+    function getDragonToken()
         override
         external
         view
-        returns(address kittyContract)
+        returns(address dragonToken)
     {
-        return(address(_kittyContract));
+        return(address(_dragonToken));
     }
 
 
@@ -103,7 +103,7 @@ contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMark
         require(_isKittyOwner(msg.sender, tokenId), "Only owner can offer for sale!");
         require(_isOnOffer(tokenId) == false, "Already on offer for sale!");
         require(
-            _kittyContract.isApprovedForAll(msg.sender, address(this)),
+            _dragonToken.isApprovedForAll(msg.sender, address(this)),
             "Contract must be sales operator!"
         );
 
@@ -152,7 +152,7 @@ contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMark
             (bool success, ) = payable(tokenOffer.seller).call{value: msg.value}("");
             require(success, "Payment to seller failed!");
         }
-        _kittyContract.safeTransferFrom(tokenOffer.seller, msg.sender, tokenId);
+        _dragonToken.safeTransferFrom(tokenOffer.seller, msg.sender, tokenId);
 
         emit MarketTransaction("Buy", tokenOffer.seller, tokenId);
     }
@@ -170,7 +170,7 @@ contract KittyMarketplace is OwnableUpgradeable, PausableUpgradeable, IKittyMark
         view
         returns (bool)
     {
-        return(_kittyContract.ownerOf(tokenId) == claimant);
+        return(_dragonToken.ownerOf(tokenId) == claimant);
     }
 
 

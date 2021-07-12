@@ -12,15 +12,15 @@ interface IKittyMarketplace {
     event MarketTransaction(string TxType, address owner, uint256 tokenId);
 
     /**
-    * Set the current KittyContract address and initialize the instance of Kittycontract.
+    * Set the current DragonToken address and initialize the instance of DragonToken.
     * Requirement: Only the contract owner can call.
      */
-    function setKittyContract(address _kittyContractAddress) external;
+    function setDragonToken(address _dragonTokenAddress) external;
 
     /**
-    * Get the current KittyContract address held by the Marketplace contract.
+    * Get the current DragonToken address held by the Marketplace contract.
      */
-    function getKittyContract() external view returns(address kittyContractAddress);
+    function getDragonToken() external view returns(address dragonTokenAddress);
 
     /**
     * Get the details about a offer for _tokenId. Throws an error if there is no active offer for _tokenId.
@@ -50,7 +50,7 @@ interface IKittyMarketplace {
 
     /**
     * Executes the purchase of _tokenId.
-    * Sends the funds to the seller and transfers the token using transferFrom in Kittycontract.
+    * Sends the funds to the seller and transfers the token using transferFrom in DragonToken.
     * Emits the MarketTransaction event with txType "Buy".
     * Requirement: The msg.value needs to equal the price of _tokenId
     * Requirement: There must be an active offer for _tokenId

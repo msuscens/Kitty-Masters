@@ -43,7 +43,7 @@ contract DragonToken is
 
 // Public & external functions
 
-    function init_KittyContract(
+    function init_DragonToken(
         string memory tokenName, 
         string memory tokenSymbol,
         uint256 gen0Limit
