@@ -100,7 +100,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
     
     function setOffer(uint256 price, uint256 tokenId) override external {
 
-        require(_isKittyOwner(msg.sender, tokenId), "Only owner can offer for sale!");
+        require(_isDragonOwner(msg.sender, tokenId), "Only owner can offer for sale!");
         require(_isOnOffer(tokenId) == false, "Already on offer for sale!");
         require(
             _dragonToken.isApprovedForAll(msg.sender, address(this)),
@@ -165,7 +165,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
 
 // Internal & private functions
 
-    function _isKittyOwner(address claimant,uint256 tokenId)
+    function _isDragonOwner(address claimant,uint256 tokenId)
         internal
         view
         returns (bool)

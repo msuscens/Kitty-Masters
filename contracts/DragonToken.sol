@@ -13,7 +13,7 @@ contract DragonToken is
     ERC721EnumerableUpgradeable,
     ERC721PausableUpgradeable
 {
-    struct Kitty {
+    struct Dragon {
         uint256 genes;
         uint64 birthTime;
         uint64 mumId;
@@ -28,13 +28,13 @@ contract DragonToken is
     // Note: bytes4(keccak256('supportsInterface(bytes4) == 0x01ffc9a7'));
 
     uint256 private _gen0Limit;
-    uint256 private _gen0KittiesCount;
+    uint256 private _gen0DragonCount;
     uint256[] private _dnaFormat;   //Used by _exactRandomMixDna()
-    Kitty[] private _kitties;  
+    Dragon[] private _dragons;  
 
     event Birth(
         address owner,
-        uint256 kittenId,
+        uint256 babyDragonId,
         uint256 mumId,
         uint256 dadId,
         uint256 genes,
@@ -84,13 +84,13 @@ contract DragonToken is
     }
 
 
-    function createKittyGen0(uint256 genes)
+    function createDragonGen0(uint256 genes)
         external
         onlyOwner
     {
-        require(_gen0KittiesCount < _gen0Limit, "Hit Gen0 creation limit!");
-        _gen0KittiesCount++;
-        _createKitty( 0, 0, 0, genes, msg.sender);
+        require(_gen0DragonCount < _gen0Limit, "Hit Gen0 creation limit!");
+        _gen0DragonCount++;
+        _createDragon( 0, 0, 0, genes, msg.sender);
     }
 
 
@@ -98,48 +98,48 @@ contract DragonToken is
         external
         returns (uint256)
     {
-        // Ensure that the breeder is owner or guardian of parent cats
+        // Ensure that the breeder is owner or guardian of parent dragons
         require(
             _isApprovedOrOwner(
                 msg.sender,
                 mumId
             ),
-            "Must have access to mother cat!"
+            "Must have access to mother dragon!"
         );
         require(
             _isApprovedOrOwner(
                 msg.sender,
                 dadId
             ),
-            "Must have access to father cat!"
+            "Must have access to father dragon!"
         );
-        // Determine new kitty's DNA
-        uint256 newDna = _exactRandomMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
+        // Determine new Dragon's DNA
+        uint256 newDna = _exactRandomMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
         
         // Alternative dna mixing functions below:
-        // uint256 newDna = _basicMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
-        // uint256 newDna = _mixDna(_kitties[mumId].genes, _kitties[dadId].genes);
-        // uint256 newDna = _improvedMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
-        // uint256 newDna = _completeMixDna(_kitties[mumId].genes, _kitties[dadId].genes);
+        // uint256 newDna = _basicMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
+        // uint256 newDna = _mixDna(_dragons[mumId].genes, _dragons[dadId].genes);
+        // uint256 newDna = _improvedMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
+        // uint256 newDna = _completeMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
 
-        // Calculate new kitties Generation
-        uint256 mumGen = _kitties[mumId].generation;
-        uint256 dadGen = _kitties[dadId].generation;
+        // Calculate new dragon's Generation
+        uint256 mumGen = _dragons[mumId].generation;
+        uint256 dadGen = _dragons[dadId].generation;
         uint256 newGen = ((mumGen + dadGen) / 2) + 1;
 
-        // Create the new kitty (with breeder becoming new kitties owner)
-        uint256 newKittyId = _createKitty(
+        // Create the new dragon (with breeder becoming the owner)
+        uint256 newDragonId = _createDragon(
             mumId,
             dadId,
             newGen,
             newDna,
             msg.sender
         );
-        return newKittyId;
+        return newDragonId;
     }
 
 
-    function getKitty(uint256 kittyId)
+    function getDragon(uint256 dragonId)
         external
         view
         returns (
@@ -150,18 +150,18 @@ contract DragonToken is
             uint64 generation
         )
     {
-        require(_exists(kittyId), "No such kitty id!");
+        require(_exists(dragonId), "No such dragon id!");
         return (
-            _kitties[kittyId].genes, 
-            _kitties[kittyId].birthTime,
-            _kitties[kittyId].mumId, 
-            _kitties[kittyId].dadId, 
-            _kitties[kittyId].generation
+            _dragons[dragonId].genes, 
+            _dragons[dragonId].birthTime,
+            _dragons[dragonId].mumId, 
+            _dragons[dragonId].dadId, 
+            _dragons[dragonId].generation
         );
     }
 
 
-    function getAllYourKittyIds() 
+    function getAllYourDragonIds() 
         external 
         view 
         returns(uint256[] memory) 
@@ -228,7 +228,7 @@ contract DragonToken is
 
 // Private functions
 
-    function _createKitty(
+    function _createDragon(
         uint256 mumId,
         uint256 dadId,
         uint256 generation,
@@ -238,7 +238,7 @@ contract DragonToken is
         private
         returns (uint256)
     {
-        Kitty memory newKitty = Kitty(
+        Dragon memory babyDragon = Dragon(
             {
                 genes: genes,
                 birthTime: uint64(block.timestamp),
@@ -247,11 +247,11 @@ contract DragonToken is
                 generation: uint64(generation)
             }
         );
-        _kitties.push(newKitty);
-        uint256 newKittenId = _kitties.length - 1;
-        emit Birth(owner, newKittenId, mumId, dadId, genes, generation);
-        _safeMint(owner, newKittenId);
-        return newKittenId;
+        _dragons.push(babyDragon);
+        uint256 babyDragonId = _dragons.length - 1;
+        emit Birth(owner, babyDragonId, mumId, dadId, genes, generation);
+        _safeMint(owner, babyDragonId);
+        return babyDragonId;
     }
 
 
