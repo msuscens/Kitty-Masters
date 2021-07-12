@@ -62,7 +62,7 @@ contract("Marketplace", async accounts => {
 
     describe.skip("Marketplace 'for sale' offers", () => {
 
-        it("should allow token owner to offer their kitty 'for sale'", async () => {
+        it("should allow token owner to offer their dragon 'for sale'", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -71,7 +71,7 @@ contract("Marketplace", async accounts => {
             )
         })
 
-        it("should allow an approved operator to put up the kitty 'for sale'", async () => {
+        it("should allow an approved operator to put up the dragon 'for sale'", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -80,7 +80,7 @@ contract("Marketplace", async accounts => {
             )
         })
 
-        it("should NOT allow non-owner/non-operator to put up a kitty 'for sale'", async () => {
+        it("should NOT allow non-owner/non-operator to put up a dragon 'for sale'", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -89,7 +89,7 @@ contract("Marketplace", async accounts => {
             )
         })
 
-        it("should allow (only) owner/operator to withdraw a kitty from sale", async () => {
+        it("should allow (only) owner/operator to withdraw a dragon from sale", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -103,7 +103,7 @@ contract("Marketplace", async accounts => {
 
     describe.skip("Browsing the marketplace (to see whats for sale)", () => {
 
-        it("should be able to get which kitties (token Ids) are for sale", async () => {
+        it("should be able to get which dragons (token Ids) are for sale", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -112,7 +112,7 @@ contract("Marketplace", async accounts => {
             )
         })
 
-        it("should be able to get a kitty's 'for sale' price", async () => {
+        it("should be able to get a dragon's 'for sale' price", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -121,7 +121,7 @@ contract("Marketplace", async accounts => {
             )
         })
 
-        it("should be able to get a 'for sale' kitty's personal details (dna, mum, dad, generation)", async () => {
+        it("should be able to get a 'for sale' dragon's personal details (dna, mum, dad, generation)", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -133,18 +133,9 @@ contract("Marketplace", async accounts => {
     })
 
 
-    describe.skip("Buying a Kitty (from the marketplace) ", () => {
+    describe.skip("Buying a Dragon (from the marketplace) ", () => {
 
-        it("should not be possible to buy your own kitty", async () => {
-
-            // *** TODO ***
-            assert.deepStrictEqual(
-                false,
-                true
-            )
-        })
-
-        it("should allow kitty to be bought providing that the buyer pays for it", async () => {
+        it("should not be possible to buy your own dragon", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -153,7 +144,16 @@ contract("Marketplace", async accounts => {
             )
         })
 
-        it("should immediately remove any sold kitty from the marketplace", async () => {
+        it("should allow dragon to be bought providing that the buyer pays for it", async () => {
+
+            // *** TODO ***
+            assert.deepStrictEqual(
+                false,
+                true
+            )
+        })
+
+        it("should immediately remove any sold dragon from the marketplace", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -169,7 +169,7 @@ contract("Marketplace", async accounts => {
 
         let ownerV1 
         let linkedDragonTokenV1
-        let kittiesForSaleV1
+        let dragonsForSaleV1
 
         let marketplaceV2
 
@@ -177,7 +177,7 @@ contract("Marketplace", async accounts => {
             // Get contract's state (before upgrade)
             ownerV1 = await marketplace.owner()
             linkedDragonTokenV1 = await marketplace.getDragonToken()
-            kittiesForSaleV1 = await marketplace.getAllTokenOnSale()
+            dragonsForSaleV1 = await marketplace.getAllTokenOnSale()
 
             // Upgrade to new version of Marketplace (V2)
             marketplaceV2 = await upgradeProxy(marketplace.address, MarketplaceV2)
@@ -206,13 +206,13 @@ contract("Marketplace", async accounts => {
                 )
             })
 
-            it('should have the same Kitty\'s for sale', async () => {
+            it('should have the same dragon\'s for sale', async () => {
 
-                const kittiesForSaleV2 = await marketplace.getAllTokenOnSale()
+                const dragonsForSaleV2 = await marketplace.getAllTokenOnSale()
                 assert.deepStrictEqual(
-                    kittiesForSaleV2, 
-                    kittiesForSaleV1, 
-                    "Kitty tokens that are 'for sale' have changed!"
+                    dragonsForSaleV2, 
+                    dragonsForSaleV1, 
+                    "Dragon tokens that are 'for sale' have changed!"
                 )
             })
 

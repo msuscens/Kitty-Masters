@@ -8,8 +8,8 @@ module.exports = async function (deployer) {
   // COMMENTED OUT FOR NOW SO WE DON'T ACCIDENTIALLY 
   // UPGRADE DragonToken TO DragonTokenV2 
   /*
-  const kittyInstance = await DragonToken.deployed()
-  await prepareUpgrade(kittyInstance.address, DragonTokenV2, { deployer })
+  const dragonToken = await DragonToken.deployed()
+  await prepareUpgrade(dragonToken.address, DragonTokenV2, { deployer })
   */
 }
 

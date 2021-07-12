@@ -9,8 +9,8 @@ const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades')
 const DragonToken = artifacts.require("DragonToken")
 const DragonTokenV2 = artifacts.require("DragonTokenV2")
 
-const tokenName = "Mark-Crypto-Kitty"
-const tokenSymbol = "MCK"
+const tokenName = "Dragon Masters Token"
+const tokenSymbol = "DRAGON"
 const gen0Limit = 10
 
 contract("DragonToken", async accounts => {
@@ -77,31 +77,9 @@ contract("DragonToken", async accounts => {
     })
 
 
-    describe.skip("Generation 0 Kitties", () => {
+    describe.skip("Generation 0 Dragons", () => {
 
-        it("should only allow contract owner to create a Gen0 kitty", async () => {
-
-            // *** TODO ***
-            assert.deepStrictEqual(
-                false,
-                true
-            )
-        })
-    })
-
-
-    describe.skip("Breed Kitties", () => {
-
-        it("should be able to breed two kitties to create a newborn kitty", async () => {
-
-            // *** TODO ***
-            assert.deepStrictEqual(
-                false,
-                true
-            )
-        })
-
-        it("should be maintain kitty's details (eg. mum, dad, generation)", async () => {
+        it("should only allow contract owner to create a Gen0 dragon", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -112,18 +90,9 @@ contract("DragonToken", async accounts => {
     })
 
 
-    describe.skip("Transfer Kitties ", () => {
+    describe.skip("Breed Dragons", () => {
 
-        it("should be able to transfer ownership of a kitty to a new owner", async () => {
-
-            // *** TODO ***
-            assert.deepStrictEqual(
-                false,
-                true
-            )
-        })
-
-        it("should keep track of who owns each kitty", async () => {
+        it("should be able to breed two dragons to create a newborn dragon", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -132,7 +101,38 @@ contract("DragonToken", async accounts => {
             )
         })
 
-        it("should maintain number of kitties each address owns", async () => {
+        it("should be maintain dragon's details (eg. mum, dad, generation)", async () => {
+
+            // *** TODO ***
+            assert.deepStrictEqual(
+                false,
+                true
+            )
+        })
+    })
+
+
+    describe.skip("Transfer Dragons ", () => {
+
+        it("should be able to transfer ownership of a dragon to a new owner", async () => {
+
+            // *** TODO ***
+            assert.deepStrictEqual(
+                false,
+                true
+            )
+        })
+
+        it("should keep track of who owns each dragon", async () => {
+
+            // *** TODO ***
+            assert.deepStrictEqual(
+                false,
+                true
+            )
+        })
+
+        it("should maintain number of dragons each address owns", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -145,7 +145,7 @@ contract("DragonToken", async accounts => {
 
     describe.skip("Owner grants 'Operator Approval'", () => {
 
-        it("should be able to grant 'operator approval' on a single kitty", async () => {
+        it("should be able to grant 'operator approval' on a single dragon", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -154,7 +154,7 @@ contract("DragonToken", async accounts => {
             )
         })
 
-        it("should be able to grant 'operator approval' on all of their kitties", async () => {
+        it("should be able to grant 'operator approval' on all of their dragons", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -167,7 +167,7 @@ contract("DragonToken", async accounts => {
 
     describe.skip("Approved Operator", () => {
 
-        it("should be able to transfer the kitty to another owner", async () => {
+        it("should be able to transfer the dragon to another owner", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
