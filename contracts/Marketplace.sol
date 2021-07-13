@@ -25,10 +25,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
 
 // Public functions
 
-    /*
-    * Initializer for the upgradeable contract that can only be executed 
-    * once (which should be upon contract deployment)
-    */
+    // Initializer for the upgradeable contract (instead of constructor)
+    // that can only be executed once (that must be done upon deployment)
     function init_Marketplace(address dragonTokenAddress)
         public
         initializer
@@ -44,20 +42,13 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
         _dragonToken = DragonToken(dragonTokenAddress);
     }
 
-    /*
-    * Puts Marketplace contract into 'paused' state that means any of the 
-    * contract's functions with the 'whenNotPaused' modififer will revert
-    * if called. Only the contract owner may execute the pause() function.
-    */
+    
+    // Functions to pause or unpause all functions that have
+    // the whenNotPaused or whenPaused modify applied on them
     function pause() public onlyOwner whenNotPaused {
         _pause();
     }
 
-    /*
-    * Puts Marketplace contract into 'unpaused' state that means any of the
-    * contract's functions with the 'whenPaused' modififer will revert 
-    * if called. Only the contract owner may execute unpause().
-    */
     function unpause() public onlyOwner whenPaused {
         _unpause();
     }
@@ -122,7 +113,10 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
     
     function setOffer(uint256 price, uint256 tokenId) override external {
 
-        require(_isDragonOwner(msg.sender, tokenId), "Only owner can offer for sale!");
+        require(
+            _dragonToken.ownerOf(tokenId) == msg.sender,
+            "Only owner can offer for sale!"
+        );
         require(_isOnOffer(tokenId) == false, "Already on offer for sale!");
         require(
             _dragonToken.isApprovedForAll(msg.sender, address(this)),
@@ -165,12 +159,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
 
         _removeOffer(tokenId);
 
-    // *** Make this logic pull instead of push (see consensus best practice guide for smart contract security)
-    // *** Ie. Replace transfer() and instead use call()
         if (msg.value > 0) {
-            // tokenOffer.seller.transfer(tokenOffer.price);
-
-            // This forwards all available gas. Be sure to check the return value!
+            // Call forwards all available gas, so be sure to check the return value!
             (bool success, ) = payable(tokenOffer.seller).call{value: msg.value}("");
             require(success, "Payment to seller failed!");
         }
@@ -186,15 +176,6 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
 
 
 // Internal & private functions
-
-    function _isDragonOwner(address claimant,uint256 tokenId)
-        internal
-        view
-        returns (bool)
-    {
-        return(_dragonToken.ownerOf(tokenId) == claimant);
-    }
-
 
     function _isOnOffer(uint256 tokenId)
         internal

@@ -41,8 +41,10 @@ contract DragonToken is
         uint256 generation
     );
 
-// Public & external functions
 
+// Public functions
+    // Initializer for the upgradeable contract (instead of constructor) 
+    // that can only be executed once (that must be done upon deployment)
     function init_DragonToken(
         string memory tokenName, 
         string memory tokenSymbol,
@@ -58,21 +60,6 @@ contract DragonToken is
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
     }
 
-
-    function _beforeTokenTransfer(address from, address to, uint256 amount)
-        internal
-        virtual
-        override(
-            ERC721Upgradeable,
-            ERC721EnumerableUpgradeable,
-            ERC721PausableUpgradeable
-        )
-        whenNotPaused   // make _transfer() pausible
-    {
-        super._beforeTokenTransfer(from, to, amount);
-    }
-
-
     // Functions to pause or unpause all functions that have
     // the whenNotPaused or whenPaused modify applied on them
     function pause() public onlyOwner whenNotPaused {
@@ -83,6 +70,27 @@ contract DragonToken is
         _unpause();
     }
 
+
+    // IERC165 
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(
+            ERC721Upgradeable,
+            ERC721EnumerableUpgradeable
+        )
+        returns (bool)
+    {
+      return (
+        interfaceId == _INTERFACE_ID_ERC721 ||
+        interfaceId == _INTERFACE_ID_ERC165 ||
+        super.supportsInterface(interfaceId)
+      );
+    }
+
+
+// External functions
 
     function createDragonGen0(uint256 genes)
         external
@@ -115,12 +123,6 @@ contract DragonToken is
         );
         // Determine new Dragon's DNA
         uint256 newDna = _exactRandomMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
-        
-        // Alternative dna mixing functions below:
-        // uint256 newDna = _basicMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
-        // uint256 newDna = _mixDna(_dragons[mumId].genes, _dragons[dadId].genes);
-        // uint256 newDna = _improvedMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
-        // uint256 newDna = _completeMixDna(_dragons[mumId].genes, _dragons[dadId].genes);
 
         // Calculate new dragon's Generation
         uint256 mumGen = _dragons[mumId].generation;
@@ -176,24 +178,6 @@ contract DragonToken is
     }
 
 
-    // IERC165 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(
-            ERC721Upgradeable,
-            ERC721EnumerableUpgradeable
-        )
-        returns (bool)
-    {
-      return (
-        interfaceId == _INTERFACE_ID_ERC721 ||
-        interfaceId == _INTERFACE_ID_ERC165 ||
-        super.supportsInterface(interfaceId)
-      );
-    }
-
 // Internal  functions
 
     function _checkERC721Support(
@@ -226,6 +210,20 @@ contract DragonToken is
     }
 
 
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+        internal
+        virtual
+        override(
+            ERC721Upgradeable,
+            ERC721EnumerableUpgradeable,
+            ERC721PausableUpgradeable
+        )
+        whenNotPaused   // make _transfer() pausible
+    {
+        super._beforeTokenTransfer(from, to, amount);
+    }
+
+
 // Private functions
 
     function _createDragon(
@@ -255,164 +253,6 @@ contract DragonToken is
     }
 
 
-    // *** DNA Mixing Functions  - 5 versions ****
-    // Simplest to most sophisticated/complex they are:
-    //      _basicMixDna
-    //      _mixDna
-    //      _improvedMixDna
-    //      _completeMixDna
-    //      _exactRandomMixDna
-    //
-    function _basicMixDna(uint256 mumDna, uint256 dadDna)
-        internal
-        pure
-        returns (uint256)
-    {
-    // Create new dna from first half of mum's dna and second half of dad's dna      
-        uint256 firstEightDigits = mumDna / 100000000;
-        uint256 lastEightDigits = dadDna % 100000000;
-        uint256 newDna = (firstEightDigits * 100000000) + lastEightDigits;
-        return newDna;
-    }
-
-
-    function _mixDna(uint256 mumDna, uint256 dadDna)
-        internal
-        view
-        returns (uint256)
-    {
-        uint256[8] memory newGenes;
-        uint8 random = uint8(block.timestamp % 256);
-        uint256 index = 8; // counter for 8 x 2-digit pairs (that make up dna)
-
-        // Create gene array (for each 2-digit pair of the 16-digit dna)
-        uint256 i;
-        for (i = 1; i <= 128; i *= 2) {
-            index--; // move back one 2-digit pair
-            // DNA 16 digits
-            if (random & i != 0) {
-                newGenes[index] = uint8(mumDna % 100);  // get last 2 digits
-            } else {
-                newGenes[index] = uint8(dadDna % 100);  
-            }
-            // remove last two digits of the dna
-            mumDna /= 100;
-            dadDna /= 100;
-        } 
-        assert(index == 0);            // processed all 8 dna digit-pairs
-        assert(newGenes.length == 8);  // correct number of new dna digit-pairs
-
-        uint256 dnaSequence;
-        for (i = 0; i < 8; i++) {   // i==0 gives the 2 most-sig gene digits
-            dnaSequence += newGenes[i];  
-            if (i != 7) dnaSequence *= 100;
-        }
-        return dnaSequence;
-    }
-
-
-    function _improvedMixDna(uint256 mumDna, uint256 dadDna)
-        internal
-        view
-        returns (uint256)
-    {
-    // Mix 16 digits of parent's dna, 2-digits at a time, to make new dna.
-    // Note: This doesn't cause any gene mutation, each gene value will always 
-    // come from either the mum or dad.  However, single-digit adjacent genes
-    // (ie. genes 5&6 and 9&10) will always come from only one parent.
-        uint256[8] memory newGenes;
-        
-        // Get 8-digit pseudo-random integer (assumes 1+ secs since last get)
-        uint256 value = _getHashAsInteger(block.timestamp); 
-        uint8 random = uint8(value % 256);  //8 least-sig digits (2^8 = 256)
-        
-        uint256 index = 8; // counter for 8 x 2-digit pairs (that make up dna)
-
-        // Create gene array (for each 2-digit pair of the 16-digit dna)
-        uint256 i;
-        for (i = 1; i <= 128; i *= 2) {
-            index--;  // move back one 2-digit pair
-            if (random & i != 0) {
-                newGenes[index] = uint8(mumDna % 100);  // Take last 2 digits
-            } else {
-                newGenes[index] = uint8(dadDna % 100);  
-            }
-            // remove last two digits of the dna
-            mumDna /= 100;
-            dadDna /= 100;
-        } 
-        assert(index == 0);            // processed all 8 dna digit-pairs
-        assert(newGenes.length == 8);  // correct number of new dna digit-pairs
-
-        // Construct the new (16-digit) dna number (from 8 x 2-digit genes)
-        uint256 dnaSequence;
-        for (i = 0; i < 8; i++) {   // i==0 gives the 2 most-sig gene digits
-            dnaSequence += newGenes[i];  
-            if (i != 7) dnaSequence *= 100;
-        }
-        return dnaSequence;
-    }    
-    
-
-    function _getHashAsInteger(uint value) internal pure returns (uint256) {
-        bytes32 hash = keccak256(abi.encodePacked(value));
-        return uint256(hash);
-    }
-
-
-    function _completeMixDna(uint256 mumDna, uint256 dadDna)
-        internal
-        view
-        returns (uint256)
-    {
-    // Mixes all 16 digit dna, digit-by-digit (irrespective of gene size).
-    // Note: For two-digit gene values (eg. colour) there's a 50% chance of
-    // inheritance from either mother or father and 50% chance of a mutated 
-    // 2-digit value. This mutated 2-digit value is composed of the most-sig 
-    // digit from the one parent's 2-digit gene, and the least-sig digit from
-    // the other parent's 2-digit gene - eg. mum 52, dad 93 may give 53 or 92).
-        uint256[16] memory newGenes;
-
-        // Get 16-digit pseudo-random number (assumes 1+ secs since last get)
-        uint256 value = _getHashAsInteger(block.timestamp);
-        uint16 random = uint16(value % 65536); //Last 16 digits (2^&16==65536)
-        
-        uint256 index = 16; // counter for 16 digit dna digits
-
-        // Determine which genes comes from each parent (for each of 16-digits)
-        // Note: most-sig digit's value of 16-digit binary num = 2^15 = 32,768
-        //      (most-sign digit's value of 8-digit binary number = 2^7 = 128)
-        uint256 i;
-        for (i = 1; i <= 32768; i *= 2) {
-            index--;
-            if (random & i != 0) {                   // Select mum's dna digit
-                newGenes[index] = uint16(mumDna % 10); 
-            } else {                                 // Select dad's dna digit
-                newGenes[index] = uint16(dadDna % 10); 
-            }
-            
-            // Remove the processed least-sig digit
-            mumDna /= 10;
-            dadDna /= 10;
-        } 
-        assert(index == 0);            // processed all 16 dna digits
-        assert(newGenes.length == 16); // correct number of new dna digits
-
-        // Construct the (16-digit) dna number (from gene digits)
-        uint256 dnaSequence;
-        for (i = 0; i < 16; i++) {
-            dnaSequence += newGenes[i]; // i==0 is most-sig gene digit
-            if (i != 15) dnaSequence *= 10;
-        }
-        return dnaSequence;
-    }
-    
-
-    function _exactRandomMixDna(uint256 mumDna, uint256 dadDna)
-        internal
-        view
-        returns (uint256)
-    {
     // Randomy mix parent dna, gene-by-gene, with a one random gene value.
     // This accounts for two-digit gene values (eg. head colour).
     // After creating new DNA, a single 'target' gene value is randomised.
@@ -420,7 +260,11 @@ contract DragonToken is
     // Eg. If last dna digit==0, randomise most-sig digits 1&2 (2-digit gene);
     // If last digit is 4, randomise digit 9 (as it's a 1-digit gene); and
     // If last digit is 9, randomise last (least-sig) digit (also 1-digit gene).
-
+    function _exactRandomMixDna(uint256 mumDna, uint256 dadDna)
+        private
+        view
+        returns (uint256)
+    {
         uint256[16] memory newGenes;
 
         // Get pseudo-random 16-digit number 
@@ -499,4 +343,9 @@ contract DragonToken is
         return dnaSequence;
     }
 
+
+    function _getHashAsInteger(uint value) internal pure returns (uint256) {
+        bytes32 hash = keccak256(abi.encodePacked(value));
+        return uint256(hash);
+    }
 }
