@@ -11,5 +11,6 @@ module.exports = async function (deployer) {
   const dragonToken = await DragonToken.deployed()
   await prepareUpgrade(dragonToken.address, DragonTokenV2, { deployer })
   */
+ console.log("Skipping upgrade (currently commented out)")
 }
 

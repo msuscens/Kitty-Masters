@@ -6,7 +6,7 @@ let marketplace
 
 module.exports = async function (deployer, network, accounts) {
 
-  // Get KiityContract proxy (previously deployed)
+  // Get DragonTroken proxy contract (previously deployed)
   const dragonToken = await DragonToken.deployed()
 
   // Deploy the Marketplace (logic & proxy) and initialize

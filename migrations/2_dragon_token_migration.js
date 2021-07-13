@@ -1,4 +1,3 @@
-
 const TOKEN_NAME = "Dragon Masters Token"
 const TOKEN_SYMBOL = "DRAGON"
 const GEN0_LIMIT = 10
@@ -10,7 +9,7 @@ let dragonToken
 
 module.exports = async function (deployer, network, accounts) {
 
-  // Deploy the DragonToken (logic, admin, & proxy contracts) and initialize
+  // Deploy the DragonToken proxy (together with logic & admin contracts)
   dragonToken = await deployProxy(
     DragonToken, 
     [TOKEN_NAME, TOKEN_SYMBOL, GEN0_LIMIT], 

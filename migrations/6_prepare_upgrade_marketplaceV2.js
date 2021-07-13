@@ -11,4 +11,5 @@ module.exports = async function (deployer) {
   const marketplace = await Marketplace.deployed()
   await prepareUpgrade(marketplace.address, MarketplaceV2, { deployer })
   */
+ console.log("Skipping upgrade (currently commented out)")
 }
