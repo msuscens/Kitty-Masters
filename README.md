@@ -7,6 +7,7 @@ The contracts now have the pause() and unpause() functions (moved across
 from the V2 contracts) and migration scripts for transfer ownership of the
 proxyAdmin and to upgrade the contracts to V2 have internals commented out
 (since we are not ready to perform these actions with Dragon-Masters yet).
+Additionally, some further Truffle tests added (others to be completed).
 
 _______________________________________________________________________________
 
