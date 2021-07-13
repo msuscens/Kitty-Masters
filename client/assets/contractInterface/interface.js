@@ -372,13 +372,32 @@ async function setMarketplaceApproval(){
 
         if (isMarketplaceAnOperator == false) {
             await Instance_Of_DragonToken.methods.setApprovalForAll(Maketplace_Proxy_Address, true).send({}, function(err, txHash){
-                if (err) console.log(err)
+                if (err) throw(err)
                 else console.log("setMarketplaceApproval Tx:",txHash)
             })
         }
     }
     catch (err) {
          console.log("Error from setMarketplaceApproval(): " + err)
+         return false
+    }
+}
+
+// Kenneth: NEW FUNCTION FOR YOU - Not used by my UI (so needs to be tested!!)
+async function setMarketplaceApprovalForDragon(tokenId){
+    try {
+        const approvedOperator = await Instance_Of_DragonToken.methods.getApproved(tokenId).call() 
+
+        if (approvedOperator != User) {
+            await Instance_Of_DragonToken.methods.approve(Maketplace_Proxy_Address, tokenId).send({}, function(err, txHash){
+                if (err) throw(err)
+                else console.log(`setMarketplaceApprovalForDragon(tokenId:${tokenId}) Tx:`, txHash)
+            })
+        }
+        else console.log(`Marketplace is already approved for tokenid ${tokenId}`)
+    }
+    catch (err) {
+         console.log("Error from setMarketplaceApprovalForDragon(tokenId): " + err)
          return false
     }
 }
