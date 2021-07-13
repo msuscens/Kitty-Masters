@@ -38,7 +38,7 @@ contract("Marketplace", async accounts => {
         it ("should have the expected owner", async () => {
             let owner
             await truffleAssert.passes(
-                owner = await Marketplace.owner(),
+                owner = await marketplace.owner(),
                 "Unable to get owner!"
             )
             assert.deepStrictEqual(owner, accounts[0])
