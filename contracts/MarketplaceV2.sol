@@ -24,11 +24,4 @@ contract MarketplaceV2 is Marketplace {
         return _version;
     }
 
-    function pause() public onlyOwner whenNotPaused {
-        _pause();
-    }
-
-    function unpause() public onlyOwner whenPaused {
-        _unpause();
-    }
 }

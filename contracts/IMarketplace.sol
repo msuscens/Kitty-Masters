@@ -16,10 +16,10 @@ interface IMarketplace {
     * Set the current DragonToken address and initialize the instance of DragonToken.
     * Requirement: Only the contract owner can call.
      */
-    function setDragonToken(address _dragonTokenAddress) external;
+    // function setDragonToken(address _dragonTokenAddress) external;
 
     /**
-    * Get the current DragonToken address held by the Marketplace contract.
+    * Get the current DragonToken contract address held by the Marketplace contract.
      */
     function getDragonToken() external view returns(address dragonTokenAddress);
 

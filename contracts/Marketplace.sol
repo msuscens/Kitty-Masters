@@ -23,8 +23,12 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
     mapping(uint256 => Offer) private _tokenIdToOffer;
     
 
-// Public & external functions
+// Public functions
 
+    /*
+    * Initializer for the upgradeable contract that can only be executed 
+    * once (which should be upon contract deployment)
+    */
     function init_Marketplace(address dragonTokenAddress)
         public
         initializer
@@ -33,15 +37,33 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
         setDragonToken(dragonTokenAddress);
     }
 
-
     function setDragonToken(address dragonTokenAddress)
-        override
         public
         onlyOwner
     {
         _dragonToken = DragonToken(dragonTokenAddress);
     }
 
+    /*
+    * Puts Marketplace contract into 'paused' state that means any of the 
+    * contract's functions with the 'whenNotPaused' modififer will revert
+    * if called. Only the contract owner may execute the pause() function.
+    */
+    function pause() public onlyOwner whenNotPaused {
+        _pause();
+    }
+
+    /*
+    * Puts Marketplace contract into 'unpaused' state that means any of the
+    * contract's functions with the 'whenPaused' modififer will revert 
+    * if called. Only the contract owner may execute unpause().
+    */
+    function unpause() public onlyOwner whenPaused {
+        _unpause();
+    }
+
+
+// External functions
 
     function getDragonToken()
         override
