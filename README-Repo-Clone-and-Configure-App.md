@@ -1,12 +1,12 @@
 
 HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
 
-1. Created a new local directory for the application (e.g. Kitty-Masters)
+1. Created a new local directory for the application (e.g. Dragon-Masters)
 
 2. Open terminal and enter:
-    $ cd <your Kitty-Masters directory>
-    $ git clone https://github.com/msuscens/Kitty-Masters
-    $ cd Kitty-Masters
+    $ cd <your Dragon-Masters directory>
+    $ git clone https://github.com/msuscens/Kitty-Masters/tree/dragons
+    $ cd Dragon-Masters
     $ npm i
     $ npm install @truffle/hdwallet-provider --save
 
@@ -14,18 +14,16 @@ HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
         Warnings about depreciated packages and reported vulnerabilities.
         Ignore these warnings and carry on to the next step.
 
-3. OPTIONALLY Load into VsCode: Open the VS code workspace file in .../Test-Repo-Pull/Kitty-Masters
+3. OPTIONALLY Load into VSCode (i.e. open the DragonMasters.code-workspace file)
 
-4. Create a file: 'secrets.json', containing:
-    {
-        "projectId": "a78925685d7246ef89300dd57aee7c14",
-        "mnemonic": "<Insert your MetaMask seed phrase here>"
-    }
+4. Open a new terminal window and start up ganache-cli, with the
+    seed phrase of your choice.  It's reccomended that we all use the same 
+    ganache-cli seed phrase (see below) so that we each generate the same
+    account numbers and upon first migrate the same contract addresses.
+    This means that we don't each have to update interface.js PROXY address
+    constants (see step 7 below) each time we pull down the interface.js file.
 
-5. Open a new terminal window and start up ganache-cli, with the
-    seed phrase of your choise.  E.g:
-
-    $ ganache-cli -h 127.0.0.1 -p 8545 -m "<your choosen mneumonic seed phrase>"
+    $ ganache-cli -h 127.0.0.1 -p 8545 -m "quick brown fox jumped over the lazy dog"
 
     You should get:
 
@@ -33,76 +31,74 @@ HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
 
         Available Accounts
         ==================
-        (0) 0x........................................ (100 ETH)
-        (1) 0x........................................ (100 ETH)
-        (2) 0x........................................ (100 ETH)
-        (3) 0x........................................ (100 ETH)
-        etc (address will be specific to your mneumonic seed phrase)
+        (0) 0xfC1d4eA100c57A6D975eD8182FaAcFD17871a1e4 (100 ETH)
+        (1) 0x68F8F71A19b06d425edD180A6Bd9a741CA3C485C (100 ETH)
+        (2) 0xd9B822DA7B6f936f85114A5d2D1584741751cb22 (100 ETH)
+        etc (address will be specific to ganache-cli mneumonicseed phrase used)
 
         Private Keys
         ==================
-        (0) 0x................................................................
-        (1) 0x................................................................
-        (2) 0x................................................................
-        (3) 0x................................................................
-        etc (private keys will be specific to your mneumonic seed phrase)
+        (0) 0xc7ae89b0f36d2298fe70667153838092abd2fb77d0aa83e97852f45e982db0d7
+        (1) 0x0db70481234d0630777bfda324208170712ffca56db40024d26c6e4354500827
+        (2) 0xaab894296c415ce2327c59a57e2835bb9465a7614ec5a264dfebe26d453ff881
+        etc (private keys will be specific to ganache mneumonic seed phrase)
 
         etc, etc.
 
         Listening on 127.0.0.1:8545
 
-    Note: You may use whatever mneumonic seed phrase that you desire for ganache-cli initiation.
-    But if you haven't previously used this seed phrase and imported the first/some of the
-    ganachie-cli accounts (private key) into your MetaMask as a new account (MM to be set to 
-    Ganache-cli network) then you'll need to:
-        i) import the generated private key from account[0] into your MetaMask (set to use the
-        Ganchie-cli network).   Note gamache-cli's account[0] is the owner account for the contracts
-        and when accessing the DAPP/website with this account the Kitty-Factory will be available to
-        the user.  If MM is set to use a different account then the Kitty-Factory tab will not appear
-        on the website)
-        ii) Import a second ganache-cli generated account (private key) into another new MM account
-        (note gamache-cli's account[0] will be the owner account)
+    Note: If you haven't previously used this seed phrase and imported at least
+     one of the ganachie-cli accounts (private key) into your MetaMask as a new
+     account then you'll need to:
+        i) import the generated private key from account[0] into your MetaMask
+        (set to use the Ganchie-cli network).
+        Note ganache-cli's account[0] is the owner account for the contracts
+        and when accessing DAPP/website with this account the "Kitty-Factory"
+        (on legacy UI) will be available to the user.  If MM is set to use a
+        different account then the "Kitty-Factory" tab will not appear on UI).
+        ii) Import a second ganache-cli generated account (private key) into
+        another MM account.  Useful for testing UI as a user that is not the
+        contract owner.
 
+5. Migrate the contracts
+    $ truffle migrate --reset
 
-6. Migrate the contracts
-    $ truffle migrate --reset --network development
-
-7. OPTIONALLY: Check that tests scripts run as expected:
+6. Check that tests scripts run as expected:
     $ truffle test
 
     Note: These test will check that the contracts are upgradable.
-    The tests of the contract's functionality are currently skipped
-    (and hence are reported as pending). All other tests should pass,
-    ie. there should be no reported fails.
+    Some tests of the contract's functionality are currently skipped
+    as they are unimplemented (and hence are reported as pending).
+    All other tests should pass, ie. no reported test fails.
 
-8. Add the contract proxy address (output to console from the truffle migrate)
-    into the file: Kitty-Masters/client/assets/contractInterface/interface.js
+7. Add the contract proxy address (output to console from the truffle migrate)
+    into the file: DragonMasters/client/assets/contractInterface/interface.js
     ie. on lines 15 & 66:
 
-    const LOCAL_KITTY_TOKEN_PROXY = "0x....................................."
+    const LOCAL_DRAGON_TOKEN_PROXY = "0x....................................."
     const LOCAL_MARKETPLACE_PROXY = "0x....................................."
 
     NB: These contract addresses can be found in the console output from the 
         migration.
-        i) The first contract address is under '2_token_migration',
+        i) The first contract address is under '2_dragon_token_migration',
         under the sub-section: "Deploying 'TransparentUpgradeableProxy'"  
-        Copy & past this contract address to LOCAL_KITTY_TOKEN_PROXY.
-        ii) The second contract address is under '3_market_migration', again
-        under the sub-section: "Deploying 'TransparentUpgradeableProxy'".
+        Copy & past this contract address to LOCAL_DRAGON_TOKEN_PROXY.
+        ii) The second contract address is under '3_marketplace_migration',
+        again under sub-section: "Deploying 'TransparentUpgradeableProxy'.
         Copy & past this contract address to LOCAL_MARKETPLACE_PROXY.
 
-9. Start up a local server.  For example:
+8. Start up a local server.  For example:
     Use VSCode to start up 'Live Server' (by clicking 'Go Live'), 
     (Alternatively start a python server: $ python3 -m http.server)
 
-10. Open MetaMask and switch to Ganache-cli network
-    (Thius assumes that you have MetaMask browser plugin installed for
-    Chrome or Firefox) and it's configured for ganache-cli network (that
-    you've started in a terminal window - under step 5 above).
+9. Open MetaMask and switch to Ganache-cli network
+    (This assumes that you have MetaMask browser plugin installed for
+    Chrome or Firefox) and it's configured for local ganache-cli network 
+    (that you've started in a terminal window - under step 4 above).
 
-11. Invoke index.html file (e.g. in VSCode right click the file and select 
+10. Invoke index.html file (e.g. in VSCode right click the file and select 
     'Open with LiveServer').  The homepage of the app should now open in
-    your browser.  MetaMask (assuming it's withed to the local Network:
+    your browser.  MetaMask (assuming it's set to the local network:
     ganace-cli) should connect to the website site.
 
     NOTE: Troubleshoting if MetaMask doesn't connect:
