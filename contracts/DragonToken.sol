@@ -42,7 +42,7 @@ contract DragonToken is
     );
 
 
-// Public functions
+// Constructor
     // Initializer for the upgradeable contract (instead of constructor) 
     // that can only be executed once (that must be done upon deployment)
     function init_DragonToken(
@@ -58,35 +58,6 @@ contract DragonToken is
         ERC721PausableUpgradeable.__ERC721Pausable_init();
         _gen0Limit = gen0Limit;
         _dnaFormat = [2,2,2,2,1,1,2,2,1,1];   //Used by _exactRandomMixDna()
-    }
-
-    // Functions to pause or unpause all functions that have
-    // the whenNotPaused or whenPaused modify applied on them
-    function pause() public onlyOwner whenNotPaused {
-        _pause();
-    }
-
-    function unpause() public onlyOwner whenPaused {
-        _unpause();
-    }
-
-
-    // IERC165 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(
-            ERC721Upgradeable,
-            ERC721EnumerableUpgradeable
-        )
-        returns (bool)
-    {
-      return (
-        interfaceId == _INTERFACE_ID_ERC721 ||
-        interfaceId == _INTERFACE_ID_ERC165 ||
-        super.supportsInterface(interfaceId)
-      );
     }
 
 
@@ -178,7 +149,53 @@ contract DragonToken is
     }
 
 
+// Public functions
+
+    // Functions to pause or unpause all functions that have
+    // the whenNotPaused or whenPaused modify applied on them
+    function pause() public onlyOwner whenNotPaused {
+        _pause();
+    }
+
+    function unpause() public onlyOwner whenPaused {
+        _unpause();
+    }
+
+
+    // IERC165 
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(
+            ERC721Upgradeable,
+            ERC721EnumerableUpgradeable
+        )
+        returns (bool)
+    {
+      return (
+        interfaceId == _INTERFACE_ID_ERC721 ||
+        interfaceId == _INTERFACE_ID_ERC165 ||
+        super.supportsInterface(interfaceId)
+      );
+    }
+
+
 // Internal  functions
+
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+        internal
+        virtual
+        override(
+            ERC721Upgradeable,
+            ERC721EnumerableUpgradeable,
+            ERC721PausableUpgradeable
+        )
+        whenNotPaused   // make _transfer() pausible
+    {
+        super._beforeTokenTransfer(from, to, amount);
+    }
+
 
     function _checkERC721Support(
         address from,
@@ -201,26 +218,13 @@ contract DragonToken is
         return (response == _ERC721_RECEIVED);
     }
 
+
     function _isContract(address to) internal view returns (bool) {
         uint32 codeSize;
         assembly{
             codeSize := extcodesize(to)
         }
         return (codeSize > 0);
-    }
-
-
-    function _beforeTokenTransfer(address from, address to, uint256 amount)
-        internal
-        virtual
-        override(
-            ERC721Upgradeable,
-            ERC721EnumerableUpgradeable,
-            ERC721PausableUpgradeable
-        )
-        whenNotPaused   // make _transfer() pausible
-    {
-        super._beforeTokenTransfer(from, to, amount);
     }
 
 

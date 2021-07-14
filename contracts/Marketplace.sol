@@ -23,8 +23,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
     mapping(uint256 => Offer) private _tokenIdToOffer;
     
 
-// Public functions
-
+// Constructor
     // Initializer for the upgradeable contract (instead of constructor)
     // that can only be executed once (that must be done upon deployment)
     function init_Marketplace(address dragonTokenAddress)
@@ -35,82 +34,9 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
         setDragonToken(dragonTokenAddress);
     }
 
-    function setDragonToken(address dragonTokenAddress)
-        public
-        onlyOwner
-    {
-        _dragonToken = DragonToken(dragonTokenAddress);
-    }
-
-    
-    // Functions to pause or unpause all functions that have
-    // the whenNotPaused or whenPaused modify applied on them
-    function pause() public onlyOwner whenNotPaused {
-        _pause();
-    }
-
-    function unpause() public onlyOwner whenPaused {
-        _unpause();
-    }
-
 
 // External functions
 
-    function getDragonToken()
-        override
-        external
-        view
-        returns(address dragonToken)
-    {
-        return(address(_dragonToken));
-    }
-
-
-    function getOffer(uint256 idOfToken)
-        override
-        external
-        view
-        returns(address seller, uint256 price, uint256 index, uint256 tokenId, bool active)
-    {
-        require(_tokenIdToOffer[idOfToken].seller != address(0), "Token not on offer!");
-
-        seller = _tokenIdToOffer[idOfToken].seller;
-        price = _tokenIdToOffer[idOfToken].price;
-        index = _tokenIdToOffer[idOfToken].index;
-        tokenId = _tokenIdToOffer[idOfToken].tokenId;
-        active = _tokenIdToOffer[idOfToken].active;
-    }
-
-
-    function getAllTokenOnSale() 
-        override
-        external
-        view
-        returns(uint256[] memory)
-    {
-        uint256 totalOffers = _offers.length;
-        uint256[] memory allOfferIds = new uint256[](totalOffers);
-
-        uint256 i;
-        uint256 activeOffers = 0;
-        for (i = 0; i < totalOffers; i++){
-            if (_offers[i].active == true) {
-                allOfferIds[activeOffers] = _offers[i].tokenId;
-                activeOffers++;
-            }
-        }
-
-        if (activeOffers == totalOffers) return allOfferIds;
-
-        // Create correctly sized smaller array (as some offers weren't active)
-        uint256[] memory activeOfferIds = new uint256[](activeOffers);
-        for (i = 0; i < activeOffers; i++) {
-            activeOfferIds[i] = allOfferIds[i];
-        }
-        return activeOfferIds;
-    }
-
-    
     function setOffer(uint256 price, uint256 tokenId) override external {
 
         require(
@@ -170,21 +96,87 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
     }
 
 
+    function getDragonToken()
+        override
+        external
+        view
+        returns(address dragonToken)
+    {
+        return(address(_dragonToken));
+    }
+
+
+    function getOffer(uint256 idOfToken)
+        override
+        external
+        view
+        returns(address seller, uint256 price, uint256 index, uint256 tokenId, bool active)
+    {
+        require(_tokenIdToOffer[idOfToken].seller != address(0), "Token not on offer!");
+
+        seller = _tokenIdToOffer[idOfToken].seller;
+        price = _tokenIdToOffer[idOfToken].price;
+        index = _tokenIdToOffer[idOfToken].index;
+        tokenId = _tokenIdToOffer[idOfToken].tokenId;
+        active = _tokenIdToOffer[idOfToken].active;
+    }
+
+
+    function getAllTokenOnSale() 
+        override
+        external
+        view
+        returns(uint256[] memory)
+    {
+        uint256 totalOffers = _offers.length;
+        uint256[] memory allOfferIds = new uint256[](totalOffers);
+
+        uint256 i;
+        uint256 activeOffers = 0;
+        for (i = 0; i < totalOffers; i++){
+            if (_offers[i].active == true) {
+                allOfferIds[activeOffers] = _offers[i].tokenId;
+                activeOffers++;
+            }
+        }
+
+        if (activeOffers == totalOffers) return allOfferIds;
+
+        // Create correctly sized smaller array (as some offers weren't active)
+        uint256[] memory activeOfferIds = new uint256[](activeOffers);
+        for (i = 0; i < activeOffers; i++) {
+            activeOfferIds[i] = allOfferIds[i];
+        }
+        return activeOfferIds;
+    }
+
+
     function isTokenOnSale(uint256 tokenId) override external view returns (bool) {
         return (_isOnOffer(tokenId));
     }
 
 
-// Internal & private functions
+// Public functions
 
-    function _isOnOffer(uint256 tokenId)
-        internal
-        view
-        returns (bool)
+    function setDragonToken(address dragonTokenAddress)
+        public
+        onlyOwner
     {
-        return(_tokenIdToOffer[tokenId].active == true);
+        _dragonToken = DragonToken(dragonTokenAddress);
     }
 
+    // Functions to pause or unpause all functions that have
+    // the whenNotPaused or whenPaused modify applied on them
+    function pause() public onlyOwner whenNotPaused {
+        _pause();
+    }
+
+    function unpause() public onlyOwner whenPaused {
+        _unpause();
+    }
+
+
+// Internal functions
 
     function _removeOffer(uint256 tokenId) internal {
         Offer memory toBeRemoved = _tokenIdToOffer[tokenId];
@@ -201,4 +193,12 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
         delete _tokenIdToOffer[toBeRemoved.tokenId];   
     }
 
+
+    function _isOnOffer(uint256 tokenId)
+        internal
+        view
+        returns (bool)
+    {
+        return(_tokenIdToOffer[tokenId].active == true);
+    }
 }
