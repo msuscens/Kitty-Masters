@@ -32,6 +32,8 @@ contract("DragonToken: Functionality", async accounts => {
 
     describe("Generation 0 Dragons", () => {
 
+
+
         it("should only allow contract owner to create a Gen0 dragons", async () => {
 
             // Non-owner account
@@ -117,6 +119,25 @@ contract("DragonToken: Functionality", async accounts => {
                 `There are ${totalDragons} Dragon tokens but expected 2!`
             )
         })
+
+        it("should prevent creation a Gen0 dragons when contract is in 'paused' state", async () => {
+
+            // Put contract into paused state
+            await truffleAssert.passes(
+                dragonToken.pause(),
+                "Failed to put dragonToken contract into 'paused' state!"
+            )
+
+            await truffleAssert.reverts(
+                dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+            )
+
+            // Put contract back into unpaused state
+            await truffleAssert.passes(
+                dragonToken.unpause(),
+                "Failed to put dragonToken contract into 'unpaused' state!"
+            )
+        })
     })
 
 
@@ -181,12 +202,30 @@ contract("DragonToken: Functionality", async accounts => {
                 `Baby dragon has a birthtime (${babyBirthTime}) before its parent's birthtime (${mumsBirthTime} and ${dadsBirthTime})!`
             )
         })
+
+        it("should prevent dragon breeding when contract is in 'paused' state", async () => {
+
+            await truffleAssert.passes(
+                dragonToken.pause(),
+                "Failed to put dragonToken contract into 'paused' state!"
+            )
+
+            await truffleAssert.reverts(
+                dragonToken.breed(0, 1, {from: accounts[0]})
+            )
+
+            await truffleAssert.passes(
+                dragonToken.unpause(),
+                "Failed to put dragonToken contract into 'unpaused' state!"
+            )
+        })
     })
 
 
     describe.skip("Transfer Dragons ", () => {
 
         it("should be able to transfer ownership of a dragon to a new owner", async () => {
+
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -197,6 +236,11 @@ contract("DragonToken: Functionality", async accounts => {
 
         it("should keep track of who owns each dragon", async () => {
 
+            // function getAllYourDragonIds() 
+            // external 
+            // view 
+            // returns(uint256[] memory) 
+            
             // *** TODO ***
             assert.deepStrictEqual(
                 false,
