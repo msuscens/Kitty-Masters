@@ -9,11 +9,18 @@ const tokenName = "Dragon Masters Token"
 const tokenSymbol = "DRAGON"
 const gen0Limit = 10
 
+const DNA = Number(1011223345667789)
+
+
 contract("DragonToken: Functionality", async accounts => {
 
     "use strict"
 
     let dragonToken
+    let dragon1     // mum to be
+    let dragon2     // father to be
+    let dragon3     // baby to be (of daragon1 and dragon2)
+
     before(async function() {
 
         dragonToken = await deployProxy(
@@ -25,9 +32,7 @@ contract("DragonToken: Functionality", async accounts => {
 
     describe("Generation 0 Dragons", () => {
 
-        const DNA = Number(11223344567789)
-
-        it("should only allow contract owner to create a Gen0 dragon", async () => {
+        it("should only allow contract owner to create a Gen0 dragons", async () => {
 
             // Non-owner account
             await truffleAssert.reverts(
@@ -41,8 +46,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        let dragon1
-        it("should have a birth time, expected genes, generation, and with no mother & father)", async () => {
+        it("should have a birth time, given genes, be gen 0, and have no mother and no father)", async () => {
 
             await truffleAssert.passes(
                 dragon1 = await dragonToken.getDragon(0),
@@ -81,7 +85,6 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        let dragon2
         it("should have birthtime no earlier than previous hatched dragon before them", async () => {
 
             // Create another (2nd) dragon
@@ -101,7 +104,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should once hatched be added to the total supply", async () => {
+        it("should update the total supply when a dragon is hatched", async () => {
 
             let totalDragons
             await truffleAssert.passes(
@@ -117,25 +120,65 @@ contract("DragonToken: Functionality", async accounts => {
     })
 
 
-    describe.skip("Breed Dragons", () => {
+    describe("Breed Dragons", () => {
 
-        it("should allow owner to breed two of their dragons (to create a newborn dragon)", async () => {
+        it("should allow an owner to breed two of their dragons (to create a baby dragon)", async () => {
 
-            // function breed(uint256 mumId, uint256 dadId) 
-
-            // *** TODO ***
-            assert.deepStrictEqual(
-                false,
-                true
+            await truffleAssert.passes(
+                dragonToken.breed(0, 1, {from: accounts[0]}),
+                "Dragon owner was unable to breed their two dragons"
+            )
+            await truffleAssert.passes(
+                dragon3 = await dragonToken.getDragon(2),
+                "Unable to get baby dragon details (tokenId 2)"
             )
         })
 
-        it("should be maintain dragon's details (eg. mum, dad, generation)", async () => {
+        it("(baby dragon) should know it's parents", async () => {
 
-            // *** TODO ***
             assert.deepStrictEqual(
-                false,
-                true
+                Number(dragon3.mumId),
+                0,
+                `Dragon should have a mumId == 0, but has mumId == ${dragon3.mumId}!`
+            )
+            assert.deepStrictEqual(
+                Number(dragon3.dadId),
+                1,
+                `Dragon should have a dadId == 1, but has dadId == ${dragon3.dadId}!`
+            )
+        })
+
+        it("(baby dragon) should be of the next generation to it's gen 0 parents", async () => {
+
+            assert.deepStrictEqual(
+                Number(dragon3.generation),
+                1,
+                `Dragon should be generation 1, but is generation ${dragon3.generation}!`
+            )
+        })
+
+        it("(baby dragon) should inherit from it's parents dna", async () => {
+
+            const genesBaby = Number(dragon3.genes)
+
+            // Compare all but the last gene/digit (as both parent's dna
+            // was the same, and only last gene will be randomised)
+            assert.deepStrictEqual(
+                Math.floor(genesBaby/10),
+                Math.floor(DNA/10),
+                `Baby dragon's genes don't match parent's dna, expected ${Math.floor(DNA/10)} but got ${Math.floor(genesBaby/10)}!`
+            )
+        })
+
+        it("(baby dragon) should be born after its mother and father", async () => {
+
+            const babyBirthTime = Number(dragon3.birthTime)
+            const mumsBirthTime = Number(dragon1.birthTime)
+            const dadsBirthTime = Number(dragon2.birthTime)
+            assert.deepStrictEqual(
+                (babyBirthTime > mumsBirthTime) && (babyBirthTime > dadsBirthTime),
+                true,
+                `Baby dragon has a birthtime (${babyBirthTime}) before its parent's birthtime (${mumsBirthTime} and ${dadsBirthTime})!`
             )
         })
     })
