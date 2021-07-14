@@ -31,9 +31,7 @@ contract("DragonToken: Functionality", async accounts => {
     })
 
     describe("Generation 0 Dragons", () => {
-
-
-
+        
         it("should only allow contract owner to create a Gen0 dragons", async () => {
 
             // Non-owner account
