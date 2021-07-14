@@ -30,7 +30,7 @@ contract("DragonToken: Functionality", async accounts => {
         )
     })
 
-    describe("Generation 0 Dragons", () => {
+    describe("Create Generation 0 Dragons", () => {
 
         it("should only allow contract owner to create a Gen0 dragons", async () => {
 
@@ -136,6 +136,33 @@ contract("DragonToken: Functionality", async accounts => {
                 "Failed to put dragonToken contract into 'unpaused' state!"
             )
         })
+
+        it("should be able to create Gen0 dragons only up to maximum number limit", async () => {
+
+            for(let num = 2; num < gen0Limit; num++){
+                await truffleAssert.passes(
+                    dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+                    `Owner was unable to create Gen0 dragon number ${num} (tokenId: ${num-1})`
+                )
+            }
+
+            let totalDragons
+            await truffleAssert.passes(
+                totalDragons = await dragonToken.totalSupply(),
+                "Unable to get dragon token's total supply"
+            )
+            assert.deepStrictEqual(
+                Number(totalDragons),
+                gen0Limit,
+                `There are ${totalDragons} Dragon tokens but expected ${gen0Limit}!`
+            )
+
+            //Check that we can't create gen0 dragons beyond limit
+            await truffleAssert.reverts(
+                dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+            )
+            
+        })
     })
 
 
@@ -148,7 +175,7 @@ contract("DragonToken: Functionality", async accounts => {
                 "Dragon owner was unable to breed their two dragons"
             )
             await truffleAssert.passes(
-                dragon3 = await dragonToken.getDragon(2),
+                dragon3 = await dragonToken.getDragon(10),
                 "Unable to get baby dragon details (tokenId 2)"
             )
         })
