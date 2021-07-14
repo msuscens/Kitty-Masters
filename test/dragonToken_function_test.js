@@ -31,7 +31,7 @@ contract("DragonToken: Functionality", async accounts => {
     })
 
     describe("Generation 0 Dragons", () => {
-        
+
         it("should only allow contract owner to create a Gen0 dragons", async () => {
 
             // Non-owner account
@@ -189,13 +189,13 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("(baby dragon) should be born after its mother and father", async () => {
+        it("(baby dragon) should not be born before it's parents", async () => {
 
             const babyBirthTime = Number(dragon3.birthTime)
             const mumsBirthTime = Number(dragon1.birthTime)
             const dadsBirthTime = Number(dragon2.birthTime)
             assert.deepStrictEqual(
-                (babyBirthTime > mumsBirthTime) && (babyBirthTime > dadsBirthTime),
+                (babyBirthTime >= mumsBirthTime) && (babyBirthTime >= dadsBirthTime),
                 true,
                 `Baby dragon has a birthtime (${babyBirthTime}) before its parent's birthtime (${mumsBirthTime} and ${dadsBirthTime})!`
             )
