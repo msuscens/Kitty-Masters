@@ -1,7 +1,8 @@
-Branch of Kitty-Masters project (see below) to rename contracts, functions and
-variables ready for the Dragon-Masters (team) project.  There is also some 
-minor refactoring and tidying-up to remove unused functions, comment out
-testnet config (truffle-config.js), and add a new UI interface function 
+Dragons
+A branch of Kitty-Masters project (see below) to rename contracts, functions 
+and variables ready for the Dragon-Masters (team) project.  There is also 
+some minor refactoring and tidying-up to remove unused functions, comment
+out testnet config (truffle-config.js), and add a new UI interface function 
 (interface.js) for setting Marketplace approval for a single dragon token.
 The contracts now have the pause() and unpause() functions (moved across
 from the V2 contracts) and migration scripts for transfer ownership of the
