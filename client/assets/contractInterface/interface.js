@@ -21,7 +21,6 @@ const LOCAL_MARKETPLACE_PROXY = "0x05F7B04E8ED850A6377Cfdc7Bc19aFAa7404437E"
 const ROPSTEN_DRAGON_TOKEN_PROXY = ""
 const ROPSTEN_MARKETPLACE_PROXY = ""
 
-
 // Rinkeby Network: ONLY UPDATE AFTER DEPLOY/RE-DEPLOY TO RINKEBY
 const RINKEBY_DRAGON_TOKEN_PROXY = ""
 const RINKEBY_MARKETPLACE_PROXY = "" 
@@ -125,7 +124,6 @@ function onBirthEvent(uiCallbackFunc) {
 
 // DragonToken Contract Interface functions
 
-// Kenneth rename isOwnerOfKittyContract() to isOwnerOfDragonTokenContract() ??
 async function isOwnerOfKittyContract() {
     try {
         let isOwner; 
@@ -141,7 +139,6 @@ async function isOwnerOfKittyContract() {
 }
 
 
-// Kenneth rename getAllYourCatIds(): getAllYourDragonIds()!?
 async function getAllYourCatIds() {
     try {
         let dragonIds = []
@@ -157,7 +154,6 @@ async function getAllYourCatIds() {
 }
 
 
-// Kenneth rename getDetailsAllCats(catIds): getDetailsAllDragons(tokenIds)!?
 async function getDetailsAllCats(tokenIds) { 
     try {
         let allDragons = []
@@ -173,7 +169,6 @@ async function getDetailsAllCats(tokenIds) {
 }
 
 
-// Kenneth rename getCatDetails(catId): getDragonDetails(tokenId)!?
 async function getCatDetails(tokenId) {
     try {
         const dragon = {
@@ -231,7 +226,6 @@ function getDragonDna(genes){
 }
 
 
-// Kenneth rename createCat(dna): createDragon(dna)!?
 async function createCat(dna){
     try {
         await Instance_Of_DragonToken.methods.createDragonGen0(dna).send({}, function(err, txHash){
@@ -248,7 +242,6 @@ async function createCat(dna){
 }
 
 
-// Kenneth rename breedCats(mumId, dadId): breedDragons(mumId, dadId)!?
 async function breedCats(mumId, dadId){
     try {
         await Instance_Of_DragonToken.methods.breed(mumId, dadId).send({}, function(err, txHash){
@@ -282,7 +275,6 @@ function onMarketplaceEvent(uiCallbackFunc) {
 
 // Marketplace Contract Interface functions
 
-// Kenenth rename getAllCatIdsOnSale(): getAllDragonIdsOnSale())!?
 async function getAllCatIdsOnSale() {
     try {
         let dragonIdsOnSale = []
@@ -298,7 +290,6 @@ async function getAllCatIdsOnSale() {
 }
 
 
-// Kenneth rename getDetailsOfAllCatsForSale(catIds): getDetailsOfAllDragonsForSale(tokenIds))!?
 async function getDetailsOfAllCatsForSale(tokenIds) {
     try {
         let allDragonsForSale = []
@@ -316,7 +307,7 @@ async function getDetailsOfAllCatsForSale(tokenIds) {
     }
 }
 
-// Kenneth rename isCatOnSale(catId): isDragonOnSale(tokenId))!?
+
 async function isCatOnSale(tokenId) {
     try {
         let isOnSale
@@ -334,7 +325,6 @@ async function isCatOnSale(tokenId) {
 }
 
 
-// Kenneth rename getDragonForSaleDetails(tokenId)!?
 async function getForSaleDetails(tokenId) {
     try {
         const forSaleDetails = {
@@ -365,7 +355,6 @@ async function getForSaleDetails(tokenId) {
 }
 
 
-// Kenneth rename setMarketplaceApprovalForAllDragons()!?
 async function setMarketplaceApproval(){
     try {
         const isMarketplaceAnOperator = await Instance_Of_DragonToken.methods.isApprovedForAll(User, Maketplace_Proxy_Address).call()
@@ -383,7 +372,7 @@ async function setMarketplaceApproval(){
     }
 }
 
-// Kenneth: NEW FUNCTION FOR YOU - Not used by my UI (so needs to be tested!!)
+// NEW FUNCTION - Not used by my Kitty-Master UI (so needs to be tested!)
 async function setMarketplaceApprovalForDragon(tokenId){
     try {
         const approvedOperator = await Instance_Of_DragonToken.methods.getApproved(tokenId).call() 
@@ -403,7 +392,6 @@ async function setMarketplaceApprovalForDragon(tokenId){
 }
 
 
-// Kenneth rename to setDragonForSale(tokenId, salePriceInWei)!?
 async function setForSale(tokenId, salePriceInWei) {
     try {
         await Instance_Of_Marketplace.methods.setOffer(salePriceInWei, tokenId).send({}, function(err, txHash){
@@ -420,7 +408,7 @@ async function setForSale(tokenId, salePriceInWei) {
     }
 }
 
-// Kenneth rename to withdrawDragonFromSale(tokenId)!?
+
 async function withdrawFromSale(tokenId) {
     try {
         await Instance_Of_Marketplace.methods.removeOffer(tokenId).send({}, function(err, txHash){
@@ -437,7 +425,7 @@ async function withdrawFromSale(tokenId) {
     }
 }
 
-// Kenneth rename buyKitty(tokenId, priceInWei): buyDragon(tokenId, priceInWei)!?
+
 async function buyKitty(tokenId, priceInWei) {
     try {
         await Instance_Of_Marketplace.methods.buyDragon(tokenId).send({value: priceInWei}, function(err, txHash){
