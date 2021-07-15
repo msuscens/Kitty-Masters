@@ -6,6 +6,7 @@ const { deployProxy } = require('@openzeppelin/truffle-upgrades')
 const DragonToken = artifacts.require("DragonToken")
 const Marketplace = artifacts.require("Marketplace")
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 contract("Marketplace: Functionality", async accounts => {
 
@@ -55,7 +56,7 @@ contract("Marketplace: Functionality", async accounts => {
         const dragonOwner = accounts[0]
         const priceInWei = 5000000
 
-        it("(marketplace) should NOT accept a dragon 'for sale' offer if it doesn't have operator approval", async () => {
+        it("(marketplace) should NOT accept a dragon 'for sale' offer if it doesn't have 'sales' operator approval", async () => {
 
             // Check marketplace doesn't have operator approval on all owners tokens
             let approvedForAll
@@ -86,11 +87,11 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("(user) should be able to set operator approval for all their tokens", async () => {
+        it("(user) should be able to grant and revoke the marketplace 'sales' operator approval on all their tokens", async () => {
 
             await truffleAssert.passes(
                 dragonToken.setApprovalForAll(marketplace.address, true, {from:dragonOwner}),
-                "User unable to grant marketplace approval for all "
+                "User unable to grant marketplace 'approval for all'"
             )
 
             // Assert that operator approval is now granted
@@ -102,14 +103,127 @@ contract("Marketplace: Functionality", async accounts => {
             assert.deepStrictEqual(
                 approvedForAll,
                 true,
-                "Marketplace should be an approved operator, but isn't!"
+                "Marketplace should be an approved 'sales' operator, but isn't!"
+            )
+
+            // Ensure that user can withdraw marketplace's 'sales' operator approval
+            await truffleAssert.passes(
+                dragonToken.setApprovalForAll(marketplace.address, false, {from:dragonOwner}),
+                "Unable to revoke marketplace's operator approval for all users tokens"
+            )
+            await truffleAssert.passes(
+                approvedForAll = await dragonToken.isApprovedForAll(dragonOwner, marketplace.address),
+                "Unable to get approvedForAll status"
+            )
+            assert.deepStrictEqual(
+                approvedForAll,
+                false,
+                "Marketplace should no longer be an approved 'sales' operator, but it is!"
             )
         })
 
-        it("should NOT allow an non-owner/non-operator of a dragon token to grant operator approval on it", async () => {
+        it("(token owner) should be able to grant and revoke 'sales' operator approval on that specific token", async () => {
 
+            // Grant marketplace 'sales' operator approval (on the token)
+            await truffleAssert.passes(
+                dragonToken.approve(marketplace.address, 0 /*tokenId*/, {from:dragonOwner}),
+                "Failed to grant marketplace 'sales' operatior approval on single token"
+            )
+            let approvedOperator
+            await truffleAssert.passes(
+                approvedOperator = await dragonToken.getApproved( 0 /*tokenId*/), {from:dragonOwner},
+                "Unable to get approved operator address for the token "
+            )
+            assert.deepStrictEqual(
+                approvedOperator,
+                marketplace.address, 
+                "Marketplace doesn't have 'sales' operator approval on the token (but it should)!"
+            )
+
+            // Withdraw marketplace's 'sales' operator approval (on the token)
+            await truffleAssert.passes(
+                dragonToken.approve(ZERO_ADDRESS, 0 /*tokenId*/, {from:dragonOwner}),
+                "Failed to revoke marketplace's 'sales' operatior approval on token"
+            )
+            await truffleAssert.passes(
+                approvedOperator = await dragonToken.getApproved( 0 /*tokenId*/), {from:dragonOwner},
+                "Unable to get approved operator address for the token "
+            )
+            assert.notStrictEqual(
+                approvedOperator,
+                marketplace.address, 
+                "Marketplace has 'sales' operator approval on the token (but it shouldn't)!"
+            )
+        })
+
+        it("should NOT allow non-owner of token to grant or revoke marketplace's 'sales' operator approval on it", async () => {
+
+            // Non-owner (of token) without 'approval for all' from token owner
+            // Attempts to grant marketplace 'sales' operator approval on token
             await truffleAssert.reverts(
-                dragonToken.approve(accounts[1], 0 /*tokenId*/, {from:accounts[1]}),
+                dragonToken.approve(marketplace.address, 0 /*tokenId*/, {from:accounts[1]})
+            )
+
+            // Owner grants marketplace 'sales' operator approval (on their token)
+            await truffleAssert.passes(
+                dragonToken.approve(marketplace.address, 0 /*tokenId*/, {from:dragonOwner}),
+                "Owner failed to grant marketplace 'sales' operatior approval on their token"
+            )
+            // Non-owner attempts to revoke marketplace's 'sales' operator approval (on token)
+            await truffleAssert.reverts(
+                dragonToken.approve(ZERO_ADDRESS, 0 /*tokenId*/, {from:accounts[1]}),
+            )
+        })
+
+        it("should allow an 'approved for all' operator account to grant and revoke marketplace's 'sales' operator approval", async () => {
+
+            // Token-owner first grants 'approved for all' operator to another account
+            await truffleAssert.passes(
+                dragonToken.setApprovalForAll(accounts[1], true, {from:dragonOwner}),
+                "Unable to grant marketplace 'approval for all'"
+            )
+            let approved
+            await truffleAssert.passes(
+                approved = await dragonToken.isApprovedForAll(dragonOwner, accounts[1]),
+                "Unable to get approvedForAll status"
+            )
+            assert.deepStrictEqual(
+                approved,
+                true,
+                "Marketplace should be an approved for all 'sales' operator, but isn't!"
+            )
+
+            // 'Approved for all' account revokes marketplace's 'sales' operator approval (on token)
+            await truffleAssert.passes(
+                dragonToken.approve(ZERO_ADDRESS, 0 /*tokenId*/, {from:accounts[1]}),
+                "'Approved for all' operator' failed to revoke marketplace's 'sales' operator approval on token"
+            )
+            // Check that marketplace's 'sales operator' for token has actually been removed
+            let approvedOperator
+            await truffleAssert.passes(
+                approvedOperator = await dragonToken.getApproved(0 /*tokenId*/),
+                "Failed to get approved operator for token 0"
+            )
+            assert.deepStrictEqual(
+                approvedOperator,
+                ZERO_ADDRESS, 
+                "Unexpectidly a non-zero address has 'sales' operator approval on the token (but it shouldn't)!"
+            )
+
+            // 'Approved for all' account grants marketplace 'sales' operator approval (on token)
+            await truffleAssert.passes(
+                dragonToken.approve(marketplace.address, 0 /*tokenId*/, {from:accounts[1]}),
+                "'Approved for all' operator' unable to grant marketplace 'sales' operator approval on token"
+            )
+            // Check that marketplace is actually set as 'sales operator' for token
+            await truffleAssert.passes(
+                approvedOperator = await dragonToken.getApproved(0 /*tokenId*/),
+                "Failed to get approved operator for token 0"
+            )
+            assert.deepStrictEqual(
+                approvedOperator,
+                marketplace.address, 
+                "marketplace address doesn't have 'sales' operator approval on the token (but it should)!"
             )
         })
 
@@ -137,7 +251,13 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should allow a dragon token's owner to offer it 'for sale' in the marketplace", async () => {
+        it("should allow a dragon's owner to offer it 'for sale' in the marketplace", async () => {
+
+            // Grant marketplace 'sales' operator approval
+            await truffleAssert.passes(
+                dragonToken.setApprovalForAll(marketplace.address, true, {from:dragonOwner}),
+                "User unable to grant marketplace approval for all "
+            )
 
             await truffleAssert.passes(
                 marketplace.setOffer(priceInWei, 0 /*tokenId*/, {from:dragonOwner}),
@@ -157,7 +277,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should allow only dragon token's owner to withdraw the 'for sale' offer", async () => {
+        it("should allow only dragon's owner to withdraw the 'for sale' offer from the marketplace", async () => {
 
             // Non-owner/operator attempts to withdraw 'for sale' offer 
             await truffleAssert.reverts(
@@ -254,7 +374,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should immediately remove any sold dragon from the marketplace", async () => {
+        it("should automtically remove any bought dragon from the marketplace", async () => {
 
             // *** TODO ***
             assert.deepStrictEqual(
@@ -262,6 +382,16 @@ contract("Marketplace: Functionality", async accounts => {
                 true
             )
         })
+
+        it("(bought dragon) should automtically remove any of previous owners' approved operators", async () => {
+
+            // *** TODO ***
+            assert.deepStrictEqual(
+                false,
+                true
+            )
+        })
+
 
         it("should prevent dragon being bought when contract is in 'paused' state", async () => {
 
