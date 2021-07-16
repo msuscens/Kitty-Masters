@@ -33,6 +33,17 @@ contract("DragonToken: Upgraded to DragonTokenV2", async accounts => {
             {initializer: 'init_DragonToken', from: accounts[0]}
         )
 
+        // Create two dragons
+        const DNA = Number(1011223345667789)
+        await truffleAssert.passes(
+            dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+            "Owner was unable to create a Gen0 dragon"
+        )
+        await truffleAssert.passes(
+            dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+            "Owner was unable to create a Gen0 dragon"
+        )
+
         // Get contract's state (before upgrade)
         ownerV1 = await dragonToken.owner()
         nameV1 = await dragonToken.name()

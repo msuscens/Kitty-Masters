@@ -43,6 +43,27 @@ contract("Marketplace: Upgraded to MarketplaceV2", async accounts => {
             {initializer: 'init_Marketplace', from: accounts[0]}
         )
 
+        // Create two dragons
+        const DNA = Number(1011223345667789)
+        await truffleAssert.passes(
+            dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+            "Owner was unable to create a Gen0 dragon"
+        )
+        await truffleAssert.passes(
+            dragonToken.createDragonGen0(DNA, {from: accounts[0]}),
+            "Owner was unable to create a Gen0 dragon"
+        )
+
+        // Place one dragon into marketplace (for sale)
+        await truffleAssert.passes(
+            dragonToken.setApprovalForAll(marketplace.address, true, {from:accounts[0]}),
+            "User unable to grant marketplace approval for all "
+        )
+        await truffleAssert.passes(
+            marketplace.setOffer( 1000000 /*price*/, 0 /*tokenId*/, {from:accounts[0]}),
+            "Unable to put dragon for sale in the marketplace"
+        )
+
         // Get contract's state (before upgrade)
         ownerV1 = await marketplace.owner()
         linkedDragonTokenV1 = await marketplace.getDragonToken()
