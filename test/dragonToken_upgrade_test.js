@@ -107,7 +107,7 @@ contract("DragonToken: Upgraded to DragonTokenV2", async accounts => {
 
     describe('Added Functionality Available', () => {
 
-        it('should allow (only) the owner to set the contract version number', async () => {
+        it('should allow only the owner to set the contract version number', async () => {
             
             await truffleAssert.reverts(
                 dragonTokenV2.setVersion(2, {from: accounts[4]}),

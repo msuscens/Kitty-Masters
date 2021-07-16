@@ -81,7 +81,7 @@ contract("Marketplace: Upgraded to MarketplaceV2", async accounts => {
 
     describe('Added Functionality', () => {
 
-        it('should allow (only) the owner to set the contract version number', async () => {
+        it('should allow only the owner to set the contract version number', async () => {
             
             await truffleAssert.reverts(
                 marketplaceV2.setVersion(2, {from: accounts[4]}),
@@ -142,7 +142,7 @@ contract("Marketplace: Upgraded to MarketplaceV2", async accounts => {
 
     describe("Upgraded DragonToken (used by Marketplace)", () => {
 
-        it("(the Marketplace) continues to reference correct DragonToken (when it is upgraded)", async () => {
+        it("(the Marketplace) should reference latest DragonToken (when DragonToken is upgraded)", async () => {
 
             // Get Marketplace's current DragonToken (proxy) address
             let proxyDragonToken

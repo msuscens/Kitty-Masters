@@ -31,9 +31,9 @@ contract("DragonToken: Functionality", async accounts => {
     let dragon1
     let dragon2 
      
-    describe("Create Generation 0 Dragons", () => {
+    describe("Create Generation 0: Newborn Dragons", () => {
 
-        it("should only allow contract owner to create a Gen0 dragons", async () => {
+        it("should allow contract owner only to create generation 0 dragons", async () => {
 
             // Non-owner account
             await truffleAssert.reverts(
@@ -47,7 +47,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should have a birth time, given genes, be gen 0, and have no mother and no father)", async () => {
+        it("should have a birth time, genes, generation, but have no mother or father)", async () => {
 
             await truffleAssert.passes(
                 dragon1 = await dragonToken.getDragon(0),
@@ -86,7 +86,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should have birthtime no earlier than previous hatched dragon before them", async () => {
+        it("should have birthtime no earlier than dragon born just before them", async () => {
 
             // Create another (2nd) dragon
             await truffleAssert.passes(
@@ -105,7 +105,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should update the total supply when a dragon is hatched", async () => {
+        it("should update the total supply when a dragon is born", async () => {
 
             let totalDragons
             await truffleAssert.passes(
@@ -119,7 +119,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should prevent creation a Gen0 dragons when contract is in 'paused' state", async () => {
+        it("should NOT be able to create generation 0 dragons when contract is in 'paused' state", async () => {
 
             // Put contract into paused state
             await truffleAssert.passes(
@@ -138,7 +138,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should be able to create Gen0 dragons only up to maximum number limit", async () => {
+        it("should NOT be able to create generation 0 dragons beyond the maximum limit", async () => {
 
             for(let num = 2; num < gen0Limit; num++){
                 await truffleAssert.passes(
@@ -167,11 +167,11 @@ contract("DragonToken: Functionality", async accounts => {
     })
 
 
-    describe("Breed Dragons", () => {
+    describe("Breed Dragons: Newborn Dragons", () => {
 
         let babyDragon    // offspring of dragon1 and dragon2
 
-        it("should allow an owner to breed two of their dragons (to create a baby dragon)", async () => {
+        it("should allow an owner to breed two of their dragons", async () => {
 
             await truffleAssert.passes(
                 dragonToken.breed(0, 1, {from: accounts[0]}),
@@ -183,7 +183,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("(baby dragon) should know it's parents", async () => {
+        it("should know who are it's parents", async () => {
 
             assert.deepStrictEqual(
                 Number(babyDragon.mumId),
@@ -197,7 +197,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("(baby dragon) should be of the next generation to it's gen 0 parents", async () => {
+        it("should be of the next generation to it's parents", async () => {
 
             assert.deepStrictEqual(
                 Number(babyDragon.generation),
@@ -206,7 +206,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("(baby dragon) should inherit from it's parents dna", async () => {
+        it("should inherit from it's parent's dna", async () => {
 
             const genesBaby = Number(babyDragon.genes)
 
@@ -219,7 +219,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("(baby dragon) should not be born before it's parents", async () => {
+        it("should NOT be born before it's parents", async () => {
 
             const babyBirthTime = Number(babyDragon.birthTime)
             const mumsBirthTime = Number(dragon1.birthTime)
@@ -231,7 +231,7 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
 
-        it("should prevent dragon breeding when contract is in 'paused' state", async () => {
+        it("should NOT allow dragon's to bread when contract is in 'paused' state", async () => {
 
             await truffleAssert.passes(
                 dragonToken.pause(),
@@ -248,5 +248,4 @@ contract("DragonToken: Functionality", async accounts => {
             )
         })
     })
-
 })

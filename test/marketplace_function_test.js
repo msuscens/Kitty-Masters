@@ -302,7 +302,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should allow only dragon's owner to withdraw the 'for sale' offer from the marketplace", async () => {
+        it("should allow dragon's owner (only) to withdraw the 'for sale' offer from the marketplace", async () => {
 
             // Non-owner/operator attempts to withdraw 'for sale' offer 
             await truffleAssert.reverts(
@@ -470,7 +470,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should only allow purchase of dragon token upon paying the full asking price", async () => {
+        it("should allow purchase of dragon token only upon paying the full asking price", async () => {
 
             // Try to buy at below the asking price
             await truffleAssert.reverts(
@@ -580,7 +580,7 @@ contract("Marketplace: Functionality", async accounts => {
         })
 
 
-        it ("should prevent dragon being bought when marketplace is in 'paused' state", async () => {
+        it ("should NOT allow dragon to be bought when marketplace is in 'paused' state", async () => {
 
             await truffleAssert.passes(
                 marketplace.pause(),
