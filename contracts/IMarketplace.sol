@@ -17,7 +17,8 @@ interface IMarketplace {
     * Emits the MarketTransaction event with txType "Create offer"
     * Requirement: Only the owner of _tokenId can create an offer.
     * Requirement: There can only be one active offer for a token at a time.
-    * Requirement: Marketplace contract (this) needs to be an approved operator when the offer is created.
+    * Requirement: Marketplace contract (this) needs to be an approved operator 
+    *   when the offer is created (either for token in question or all tokens).
      */
     function setOffer(uint256 _price, uint256 _tokenId) external;
 

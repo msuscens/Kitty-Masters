@@ -45,7 +45,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
         );
         require(_isOnOffer(tokenId) == false, "Already on offer for sale!");
         require(
-            _dragonToken.isApprovedForAll(msg.sender, address(this)),
+            _dragonToken.isApprovedForAll(msg.sender, address(this)) ||
+            _dragonToken.getApproved(tokenId) == address(this),
             "Contract must be sales operator!"
         );
 
