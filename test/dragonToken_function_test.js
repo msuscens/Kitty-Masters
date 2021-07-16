@@ -20,6 +20,7 @@ contract("DragonToken: Functionality", async accounts => {
 
     before(async function() {
 
+        // Deploy DragonToken proxy (and 'logic' contract) 
         dragonToken = await deployProxy(
             DragonToken,
             [tokenName, tokenSymbol, gen0Limit],

@@ -26,6 +26,7 @@ contract("DragonToken: Upgraded to DragonTokenV2", async accounts => {
 
     before(async function() {
 
+        // Deploy DragonToken proxy (and 'logic' contract) 
         dragonToken = await deployProxy(
             DragonToken,
             [tokenName, tokenSymbol, gen0Limit],
@@ -40,7 +41,7 @@ contract("DragonToken: Upgraded to DragonTokenV2", async accounts => {
         balanceAccount0V1 = await dragonToken.balanceOf( accounts[0])
         balanceAccount1V1 = await dragonToken.balanceOf( accounts[1])
 
-        // Upgrade to new version of DragonToken (V2)
+        // Upgrade DragonToken logic to new version (DragonTokenV2)
         dragonTokenV2 = await upgradeProxy(dragonToken.address, DragonTokenV2)
     })
 

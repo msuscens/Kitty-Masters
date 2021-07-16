@@ -20,18 +20,19 @@ contract("Marketplace: Functionality", async accounts => {
     const priceInWei = 50000000
 
     before(async function() {
+
+        // Deploy DragonToken proxy (and 'logic' contract) 
         const tokenName = "Dragon Masters Token"
         const tokenSymbol = "DRAGON"
         const gen0Limit = 10
 
-        // dragonToken = await DragonToken.deployed()
         dragonToken = await deployProxy(
             DragonToken,
             [tokenName, tokenSymbol, gen0Limit],
             {initializer: 'init_DragonToken', from: accounts[0]}
         )
 
-        // Deploy upgradeable Marketplace 'logic'' contract (with a proxy) 
+        // Deploy Marketplace proxy (and'logic' contract) 
         marketplace = await deployProxy(
             Marketplace,
             [dragonToken.address],

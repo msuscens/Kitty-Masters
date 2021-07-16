@@ -15,9 +15,18 @@ contract("Marketplace: Deployment", async accounts => {
 
     before(async function() {
 
-        dragonToken = await DragonToken.deployed()
+        // Deploy DragonToken proxy (and 'logic' contract) 
+        const tokenName = "Dragon Masters Token"
+        const tokenSymbol = "DRAGON"
+        const gen0Limit = 10
 
-        // Deploy upgradeable Marketplace 'logic'' contract (with a proxy) 
+        dragonToken = await deployProxy(
+            DragonToken,
+            [tokenName, tokenSymbol, gen0Limit],
+            {initializer: 'init_DragonToken', from: accounts[0]}
+        )
+
+        // Deploy Marketplace proxy (and'logic' contract) 
         marketplace = await deployProxy(
             Marketplace,
             [dragonToken.address],
