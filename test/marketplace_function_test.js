@@ -70,7 +70,7 @@ contract("Marketplace: Functionality", async accounts => {
       
     describe("Marketplace: 'Sales' Operator approval'", () => {
 
-        it("(marketplace) should NOT accept a dragon 'for sale' offer without operator approval", async () => {
+        it("should NOT take an offer 'for sale' without having operator approval", async () => {
 
             // Setup: check marketplace isn't an 'operator for all' on dragonOwner's account
             let approvedForAll
@@ -112,7 +112,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("(token owner) should be able to grant/revoke approval to marketplace as an 'operator for all'", async () => {
+        it("(token owner) should be able to grant/revoke marketplace as an 'operator for all'", async () => {
 
             // Test: Make marketplace 'operator for all' (on grantor's account)
             await truffleAssert.passes(
@@ -214,7 +214,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should NOT allow non-owner of token to grant/revoke marketplace's 'token operator' approval", async () => {
+        it("should NOT allow non-owner of token to grant/revoke marketplace as 'token operator'", async () => {
 
             // Test: Non-owner (of token) without 'approval for all' (from token owner)
             //      unable to grant marketplace 'token operator' approval
@@ -246,7 +246,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should allow 'operator for all' on token owner's account, to set/revoke marketplace as 'token operator'", async () => {
+        it("should allow 'operator for all', to set/revoke marketplace as owner's 'token operator'", async () => {
 
             // Token-owner first grants 'approved for all' to accounts[1]
             await truffleAssert.passes(
@@ -318,7 +318,56 @@ contract("Marketplace: Functionality", async accounts => {
     })
 
 
-    describe("Marketplace: Offering Dragons 'for sale'", () => {
+    describe("Marketplace: Creating an Offer to sell your Dragon", () => {
+
+        beforeEach(async function() {
+
+            // Revoke marketplace's 'operator for all' (on all accounts used)
+            await truffleAssert.passes(
+                dragonToken.setApprovalForAll(
+                    marketplace.address, 
+                    false, 
+                    {from:dragonOwner}
+                ),
+                "Unable to revoke marketplace's 'approval for all' "
+            )
+            await truffleAssert.passes(
+                dragonToken.setApprovalForAll(
+                    marketplace.address, 
+                    false, 
+                    {from:accounts[1]}
+                ),
+                "Unable to revoke marketplace's 'approval for all' "
+            )
+
+            // Revoke other account's 'operator for all' approval
+            await truffleAssert.passes(
+                dragonToken.setApprovalForAll(
+                    accounts[1],
+                    false,
+                    {from:dragonOwner}
+                ),
+                "Owner unable to revoke another accounts 'operator approval for all'"
+            )
+
+            // Revoke 'token operator' approval (on tokenId==0, tokenId==1)
+            await truffleAssert.passes(
+                dragonToken.approve(
+                    ZERO_ADDRESS, 
+                    0, //tokenId
+                    {from:dragonOwner}
+                ),
+                "Owner unable to revoke another account's token operator approval"
+            )
+            await truffleAssert.passes(
+                dragonToken.approve(
+                    ZERO_ADDRESS, 
+                    1, //tokenId
+                    {from:dragonOwner}
+                ),
+                "Owner unable to revoke another marketplace's 'token operator approval'"
+            )
+        })
 
         it("should NOT allow non-owner of a dragon to offer it 'for sale'", async () => {
 
@@ -348,27 +397,9 @@ contract("Marketplace: Functionality", async accounts => {
                     {from:accounts[1]}
                 )
             )
-
-            // Tidy-Up: Both accounts revoke marketplace's sales operator approval
-            await truffleAssert.passes(
-                dragonToken.setApprovalForAll(
-                    marketplace.address, 
-                    false, 
-                    {from:dragonOwner}
-                ),
-                "Unable to revoke marketplace's 'approval for all' "
-            )
-            await truffleAssert.passes(
-                dragonToken.setApprovalForAll(
-                    marketplace.address, 
-                    false, 
-                    {from:accounts[1]}
-                ),
-                "Unable to revoke marketplace's 'approval for all' "
-            )
         })
 
-        it("should NOT allow 'token approved' operator to offer that dragon 'for sale'", async () => {
+        it("should NOT allow 'token operator' to offer that dragon 'for sale'", async () => {
 
             // Setup: Approve 'token operator'
             await truffleAssert.passes(
@@ -388,19 +419,9 @@ contract("Marketplace: Functionality", async accounts => {
                     {from:accounts[1]}
                 )
             )
-
-            // Tidy-up: Revoke token operator approval
-            await truffleAssert.passes(
-                dragonToken.approve(
-                    ZERO_ADDRESS, 
-                    0, //tokenId
-                    {from:dragonOwner}
-                ),
-                "Owner unable to revoke another account's token operator approval"
-            )
         })
 
-        it("should NOT allow 'operator for all' to offer owner's dragon for sale'", async () => {
+        it("should NOT allow 'operator for all' to offer owner's dragon 'for sale''", async () => {
 
             // Setup: Owner grants another account operator 'approval for all'
             await truffleAssert.passes(
@@ -429,28 +450,9 @@ contract("Marketplace: Functionality", async accounts => {
                     {from:accounts[1]}
                 )
             )
-
-            // Tidy-up: Revoke other account's operator 'approval for all'
-            await truffleAssert.passes(
-                dragonToken.setApprovalForAll(
-                    accounts[1],
-                    false,
-                    {from:dragonOwner}
-                ),
-                "Owner unable to revoke another accounts 'operator approval for all'"
-            )
-            // Tidy-up: Owner revokes marketplace's operator 'approval for all'
-            await truffleAssert.passes(
-                dragonToken.setApprovalForAll(
-                    marketplace.address, 
-                    false, 
-                    {from:dragonOwner}
-                ),
-                "Unable to revoke marketplace's operator 'approval for all' "
-            )
         })
 
-        it("should (with marketplace having 'approval for all') allow dragon owner to create 'for sale' offer", async () => {
+        it("(marketplace with 'approval for all') should allow owner to create 'for sale' offer", async () => {
 
             // Setup: Grant marketplace 'sales' operator approval
             await truffleAssert.passes(
@@ -483,19 +485,9 @@ contract("Marketplace: Functionality", async accounts => {
                 true,
                 "Expected dragon token to be 'for sale' in marketplace (but it isn't)"
             )
-
-            // Tidy-Up: Revoke marketplace's 'operator approval for all'
-            await truffleAssert.passes(
-                dragonToken.setApprovalForAll(
-                    marketplace.address, 
-                    false, 
-                    {from:dragonOwner}
-                ),
-                "Owner unable to revoke marketplace's 'approval for all' "
-            )
         })
 
-        it("should (with marketplace being 'token operator') allow dragon owner to create 'for sale' offer", async () => {
+        it("(marketplace as 'token operator') should allow owner to create 'for sale' offer", async () => {
 
             // Setup: Owner grants marketplace 'sales' operator approval (on their token)
             await truffleAssert.passes(
@@ -537,19 +529,9 @@ contract("Marketplace: Functionality", async accounts => {
                 true,
                 "Expected dragon token to be 'for sale' in marketplace (but it isn't)"
             )
-
-            // Tidy-up: Revoke 'token operator' approval
-            await truffleAssert.passes(
-                dragonToken.approve(
-                    ZERO_ADDRESS, 
-                    1, //tokenId
-                    {from:dragonOwner}
-                ),
-                "Owner unable to revoke another marketplace's 'token operator approval'"
-            )
         })
 
-        it("should allow only a dragon's owner to withdraw 'for sale' offer from the marketplace", async () => {
+        it("should only allow a dragon's owner to withdraw 'for sale' offer", async () => {
 
             // Test: Non-owner/operator unable to withdraw 'for sale' offer 
             await truffleAssert.reverts(
@@ -588,7 +570,7 @@ contract("Marketplace: Functionality", async accounts => {
     })
 
 
-    describe("Marketplace: Dragon's 'for sale'", () => {
+    describe("Marketplace: Showing Dragons 'For Sale'", () => {
 
         before(async function() {
 
@@ -860,7 +842,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should remove bought dragon's 'approved operator' (as set by previous owner)", async () => {
+        it("should remove bought dragon's 'approved operator' (set by previous owner)", async () => {
 
             // Setup: Seller grants 'token operator'' approval on dragon before it is sold
             await truffleAssert.passes(
