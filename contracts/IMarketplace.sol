@@ -32,8 +32,9 @@ interface IMarketplace {
     * Executes the purchase of _tokenId.
     * Sends the funds to the seller and transfers the token using transferFrom in DragonToken.
     * Emits the MarketTransaction event with txType "Buy".
-    * Requirement: The msg.value needs to equal the price of _tokenId
     * Requirement: There must be an active offer for _tokenId
+    * Requirement: Buyer must not already be the owner of _tokenId
+    * Requirement: The msg.value needs to equal the price of _tokenId
      */
     function buyDragon(uint256 _tokenId) external payable;
 
