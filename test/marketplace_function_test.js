@@ -17,7 +17,7 @@ contract("Marketplace: Functionality", async accounts => {
     let marketplace
 
     const dragonOwner = accounts[0]
-    const priceInWei = 5000000
+    const priceInWei = 50000000
 
     before(async function() {
         const tokenName = "Dragon Masters Token"
