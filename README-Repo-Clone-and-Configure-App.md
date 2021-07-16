@@ -1,12 +1,13 @@
 
-HOW TO CLONE THE GITHUB REPO AND CONFIGURE APPLICATION TO RUN LOCALLY
+HOW TO CLONE REPO, SWITCH TO DRAGONS BRANCH AND CONFIGURE DAPP TO RUN LOCALLY
 
 1. Created a new local directory for the application (e.g. Dragon-Masters)
 
 2. Open terminal and enter:
     $ cd <your Dragon-Masters directory>
-    $ git clone https://github.com/msuscens/Kitty-Masters/tree/dragons
-    $ cd Dragon-Masters
+    $ git clone https://github.com/msuscens/Kitty-Masters
+    $ cd Kitty-Masters
+    $ git checkout dragons
     $ npm i
     $ npm install @truffle/hdwallet-provider --save
 
