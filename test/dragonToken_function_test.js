@@ -34,7 +34,7 @@ contract("DragonToken: Functionality", async accounts => {
      
     describe("Create Generation 0: Newborn Dragons", () => {
 
-        it("should allow contract owner only to create generation 0 dragons", async () => {
+        it("should allow only contract owner to create generation 0 dragons", async () => {
 
             // Non-owner account
             await truffleAssert.reverts(
