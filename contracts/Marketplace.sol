@@ -78,7 +78,12 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, IMarketplace {
     }
 
     
-    function buyDragon(uint256 tokenId) override external payable {
+    function buyDragon(uint256 tokenId)
+        override
+        external
+        payable
+        whenNotPaused
+    {
         Offer memory tokenOffer = _tokenIdToOffer[tokenId];
         require(_isOnOffer(tokenId) == true, "Active offer doesn't exist!");
         require(_tokenIdToOffer[tokenId].seller != msg.sender, "Can't buy own token!");
