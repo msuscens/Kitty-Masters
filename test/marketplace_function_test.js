@@ -112,7 +112,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should be able to grant/revoke approval to marketplace as an 'operator for all'", async () => {
+        it("(token owner) should be able to grant/revoke approval to marketplace as an 'operator for all'", async () => {
 
             // Test: Make marketplace 'operator for all' (on grantor's account)
             await truffleAssert.passes(
@@ -246,7 +246,7 @@ contract("Marketplace: Functionality", async accounts => {
             )
         })
 
-        it("should allow 'operator for all' onbehalf of token owner, to set/revoke marketplace as 'token operator'", async () => {
+        it("should allow 'operator for all' on token owner's account, to set/revoke marketplace as 'token operator'", async () => {
 
             // Token-owner first grants 'approved for all' to accounts[1]
             await truffleAssert.passes(
@@ -452,7 +452,7 @@ contract("Marketplace: Functionality", async accounts => {
 
         it("should (with marketplace having 'approval for all') allow dragon owner to create 'for sale' offer", async () => {
 
-            // Grant marketplace 'sales' operator approval
+            // Setup: Grant marketplace 'sales' operator approval
             await truffleAssert.passes(
                 dragonToken.setApprovalForAll(
                     marketplace.address,
@@ -472,7 +472,7 @@ contract("Marketplace: Functionality", async accounts => {
                 "Unable to put dragon for sale in the marketplace"
             )
 
-            // Check token is actual on offer 'for sale'
+            // Check: token is actual on offer 'for sale'
             let onSale
             await truffleAssert.passes(
                 onSale = await marketplace.isTokenOnSale( 0 /*tokenId*/),
@@ -526,7 +526,7 @@ contract("Marketplace: Functionality", async accounts => {
                 "Unable to put dragon for sale in the marketplace"
             )
 
-            // Check token is actual on offer 'for sale'
+            // Check: token is actual on offer 'for sale'
             let onSale
             await truffleAssert.passes(
                 onSale = await marketplace.isTokenOnSale( 1 /*tokenId*/),
@@ -551,21 +551,23 @@ contract("Marketplace: Functionality", async accounts => {
 
         it("should allow only a dragon's owner to withdraw 'for sale' offer from the marketplace", async () => {
 
-            // Non-owner/operator attempts to withdraw 'for sale' offer 
+            // Test: Non-owner/operator unable to withdraw 'for sale' offer 
             await truffleAssert.reverts(
                 marketplace.removeOffer( 0 /*tokenId*/, {from:accounts[2]} )
             )
 
-            // Approved operator attempts to withdraw 'for sale' offer 
+            // Test: Approved operator unable to withdraw 'for sale' offer 
             await truffleAssert.reverts(
                 marketplace.removeOffer( 0 /*tokenId*/, {from:accounts[1]} )
             )
 
-            // Owner withdraws (both) 'for sale' offers
+            // Test: Owner able to withdraw their dragon 'for sale' offer
             await truffleAssert.passes(
                 marketplace.removeOffer( 0 /*tokenId*/, {from:dragonOwner} ),
                 "Failed to remove token's 'for sale' offer from marketplace"
             )
+
+            // Check: No longer offered 'for sale' in marketplace
             let onSale
             await truffleAssert.passes(
                 onSale = await marketplace.isTokenOnSale( 0 /*tokenId*/),
@@ -576,6 +578,8 @@ contract("Marketplace: Functionality", async accounts => {
                 false,
                 "Expected dragon token NOT to be 'on sale' in marketplace (but it is)"
             )
+
+            // Tidy-up: dragonOwner removes remaining 'for sale' offer from marketplace
             await truffleAssert.passes(
                 marketplace.removeOffer( 1 /*tokenId*/, {from:dragonOwner} ),
                 "Failed to remove token 'for sale' offer from marketplace"
@@ -756,7 +760,7 @@ contract("Marketplace: Functionality", async accounts => {
 
         it("should allow dragon purchase upon paying the full asking price", async () => {
 
-            // Try to buy at below the asking price
+            // Test: Unable to buy dragon at below the asking price
             await truffleAssert.reverts(
                 marketplace.buyDragon(
                     4, //tokenId
@@ -765,20 +769,20 @@ contract("Marketplace: Functionality", async accounts => {
                 ),
             )
 
-            // Purchase dragon token (paying asking price)
+            // Test: Can buy dragon token (paying asking price)
             await truffleAssert.passes(
                 marketplace.buyDragon(
                     4, //tokenId
                     {from:accounts[1],
                     value: priceInWei}
                 ),
-                "Unable to buy dragon 0 in the marketplace"
+                "Unable to buy dragon token (at asking price) in the marketplace"
             )
         })
 
         it("should transfer the bought dragon to the buyer", async () => {
 
-            // Check now has a balance of 1 token (following previous purchase)
+            // Check: buyer has balance == 1 (following previous purchase)
             let balance
             await truffleAssert.passes(
                 balance = await dragonToken.balanceOf(accounts[1]),
@@ -789,7 +793,7 @@ contract("Marketplace: Functionality", async accounts => {
                 1
             )
 
-            // Check the expected tokenId 4 is now owned by purchaser
+            // Check: dragon (tokenId 4) is now owned by purchaser
             let tokenId
             await truffleAssert.passes(
                 tokenId = await dragonToken.tokenOfOwnerByIndex(
@@ -807,7 +811,7 @@ contract("Marketplace: Functionality", async accounts => {
 
         it("should remove bought dragon from the marketplace", async () => {
 
-            // Check the bought token is no longer on sale
+            // Check: bought token is no longer 'on sale' in marketplace
             let onSale
             await truffleAssert.passes(
                 onSale = await marketplace.isTokenOnSale(4 /*tokenId*/),
@@ -822,10 +826,11 @@ contract("Marketplace: Functionality", async accounts => {
 
         it("should transfer the purchase price of the dragon to the seller", async () => {
 
+            // Setup: 
             let balanceSellerBefore = await web3.eth.getBalance(dragonOwner)
             let balanceBuyerBefore = await web3.eth.getBalance(accounts[2])
 
-            // Purchase  dragon token 
+            // Test: Purchase dragon token 
             await truffleAssert.passes(
                 marketplace.buyDragon(
                     0, //tokenId
@@ -835,6 +840,7 @@ contract("Marketplace: Functionality", async accounts => {
                 "Unable to buy dragon in the marketplace"
             )
 
+            // Check: new balances
             let balanceSellerAfter = await web3.eth.getBalance(dragonOwner)
             let balanceBuyerAfter = await web3.eth.getBalance(accounts[2])
             
@@ -856,7 +862,7 @@ contract("Marketplace: Functionality", async accounts => {
 
         it("should remove bought dragon's 'approved operator' (as set by previous owner)", async () => {
 
-            // Seller of token for sale grants approved operator status
+            // Setup: Seller grants 'token operator'' approval on dragon before it is sold
             await truffleAssert.passes(
                 dragonToken.approve(
                     accounts[1],
@@ -866,7 +872,7 @@ contract("Marketplace: Functionality", async accounts => {
                 "Token owner failed to grant operator approval on token"
             )
 
-            // Dragon token purchased
+            // Test: Dragon token purchased
             await truffleAssert.passes(
                 marketplace.buyDragon(
                     2, //tokenId
@@ -875,7 +881,7 @@ contract("Marketplace: Functionality", async accounts => {
                 "Unable to buy dragon in the marketplace"
             )
 
-            // Check that token's previous approved operator has been removed
+            // Check: token's previous 'token operator' has been removed
             let approvedOperator
             await truffleAssert.passes(
                 approvedOperator = await dragonToken.getApproved(2 /*tokenId*/),
@@ -927,13 +933,13 @@ contract("Marketplace: Functionality", async accounts => {
 
         it ("should allow buying of dragon when marketplace is 'unpaused'", async () => {
 
-            // Return to unpaused state
+            // Setup: Return to unpaused state
             await truffleAssert.passes(
                 marketplace.unpause(),
                 "Failed to put marketplace contract into 'unpaused' state!"
             )
 
-            // Check - can now buy dragon in marketplace
+            // Test: can now buy dragon in marketplace
             await truffleAssert.passes(
                 marketplace.buyDragon(
                     4, //tokenId
