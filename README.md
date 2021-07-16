@@ -1,4 +1,4 @@
-Dragons
+Dragons : https://github.com/msuscens/Kitty-Masters/tree/dragons
 A branch of Kitty-Masters project (see below) to rename contracts, functions 
 and variables ready for the Dragon-Masters (team) project.  There is also 
 some minor refactoring and tidying-up to remove unused functions, comment
@@ -8,8 +8,8 @@ The contracts now have the pause() and unpause() functions (moved across
 from the V2 contracts) and migration scripts for transfer ownership of the
 proxyAdmin and to upgrade the contracts to V2 have internals commented out
 (since we are not ready to perform these actions with Dragon-Masters yet).
-Additionally, added Truffle tests for contract functionality (on-going).
-
+Additionally, added Truffle tests for contract functionality.
+Developed by Mark Suscens (July 2021)
 _______________________________________________________________________________
 
 KITTY-MASTERS : Developed by Mark Suscens May-July 2021 (final project in the
@@ -17,6 +17,7 @@ KITTY-MASTERS : Developed by Mark Suscens May-July 2021 (final project in the
                 Kitty-Masters was developed with the aim of creating a solid
                 basis/structure for 'Dragon Masters' (a future project that 
                 in a team we aim to develop and commercially launch).
+                https://github.com/msuscens/Kitty-Masters/tree/master
 
 Running on Ropsten: https://reverent-mirzakhani-acd298.netlify.app/index.html
 
