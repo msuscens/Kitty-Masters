@@ -10,7 +10,7 @@ const Marketplace = artifacts.require("Marketplace")
 const MarketplaceV2 = artifacts.require("MarketplaceV2")
 
 
-contract("Marketplace: Upgraded to MarketplaceV2", async accounts => {
+contract("Marketplace - Upgraded to MarketplaceV2", async accounts => {
 
     "use strict"
 

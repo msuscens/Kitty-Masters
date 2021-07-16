@@ -6,7 +6,7 @@ const { deployProxy } = require('@openzeppelin/truffle-upgrades')
 const DragonToken = artifacts.require("DragonToken")
 const Marketplace = artifacts.require("Marketplace")
 
-contract("Marketplace: Deployment", async accounts => {
+contract("Marketplace - Deployment", async accounts => {
 
     "use strict"
 

@@ -10,7 +10,7 @@ const tokenName = "Dragon Masters Token"
 const tokenSymbol = "DRAGON"
 const gen0Limit = 10
 
-contract("DragonToken: Upgraded to DragonTokenV2", async accounts => {
+contract("DragonToken - Upgraded to DragonTokenV2", async accounts => {
 
     "use strict"
 

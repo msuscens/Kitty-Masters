@@ -9,7 +9,7 @@ const Marketplace = artifacts.require("Marketplace")
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 
-contract("Marketplace: Functionality", async accounts => {
+contract("Marketplace - Functionality", async accounts => {
 
     "use strict"
 
@@ -318,7 +318,7 @@ contract("Marketplace: Functionality", async accounts => {
     })
 
 
-    describe("Marketplace: Creating an Offer to sell your Dragon", () => {
+    describe("Marketplace: Set an Offer to sell your Dragon", () => {
 
         beforeEach(async function() {
 

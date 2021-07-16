@@ -12,7 +12,7 @@ const gen0Limit = 10
 const DNA = Number(1011223345667789)
 
 
-contract("DragonToken: Functionality", async accounts => {
+contract("DragonToken - Functionality", async accounts => {
 
     "use strict"
 
