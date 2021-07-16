@@ -372,7 +372,7 @@ async function setMarketplaceApproval(){
     }
 }
 
-// NEW FUNCTION - Not used by my Kitty-Master UI (so needs to be tested!)
+// NEW FUNCTION - Not used by my Kitty-Master UI
 async function setMarketplaceApprovalForDragon(tokenId){
     try {
         const approvedOperator = await Instance_Of_DragonToken.methods.getApproved(tokenId).call() 

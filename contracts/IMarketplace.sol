@@ -38,7 +38,6 @@ interface IMarketplace {
      */
     function buyDragon(uint256 _tokenId) external payable;
 
-
     /*
     * Get the current DragonToken contract address held by the Marketplace contract.
      */
@@ -58,5 +57,4 @@ interface IMarketplace {
     * Checks if given tokenId is on sale or not; returning true if it is, false if not.
     */
     function isTokenOnSale(uint256 tokenId) external view returns (bool);
-
 }
